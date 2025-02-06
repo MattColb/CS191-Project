@@ -20,4 +20,4 @@ class CdkStack(Stack):
         create_hello_resource(self, api, ddb_table)
         bucket:aws_s3.Bucket = create_frontend_bucket(self, api, api_key_value)
 
-        CfnOutput(self, "Website Output", bucket.bucket_website_url)
+        CfnOutput(self, "Website Output", value=bucket.bucket_website_url)
