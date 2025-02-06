@@ -12,7 +12,7 @@ def create_hello_resource(scope:Construct, api:apg.RestApi, ddb_table:aws_dynamo
     hello_fn = aws_lambda.Function(
         scope, 
         "Hello World API Endpoint", 
-        code = aws_lambda.Code.from_asset(os.path.join(os.path.dirname(__file__), "../api_functions")),
+        code = aws_lambda.Code.from_asset(os.path.join(os.path.dirname(__file__), "../../../api_functions")),
         runtime=aws_lambda.Runtime.PYTHON_3_10,
         handler="hello.handler",
         timeout = Duration.seconds(300),
@@ -34,7 +34,7 @@ def create_hello_resource(scope:Construct, api:apg.RestApi, ddb_table:aws_dynamo
     hello_post_fn = aws_lambda.Function(
         scope, 
         "Testing Post API Endpoint", 
-        code = aws_lambda.Code.from_asset(os.path.join(os.path.dirname(__file__), "../api_functions")),
+        code = aws_lambda.Code.from_asset(os.path.join(os.path.dirname(__file__), "../../../api_functions")),
         runtime=aws_lambda.Runtime.PYTHON_3_10,
         handler="test_post.handler",
         timeout = Duration.seconds(300),

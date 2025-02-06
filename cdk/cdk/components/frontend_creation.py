@@ -25,7 +25,7 @@ def create_frontend_bucket(scope:Construct, api:apg.RestApi, api_key_value):
         scope,
         "Frontend Deployment",
         sources = [
-            aws_s3_deployment.Source.asset(os.path.join(os.path.dirname(__file__), "../frontend")),
+            aws_s3_deployment.Source.asset(os.path.join(os.path.dirname(__file__), "../../../frontend")),
             aws_s3_deployment.Source.data("api_info.json", json_api_url)
             ],
         destination_bucket=s3_bucket
