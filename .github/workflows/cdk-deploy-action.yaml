@@ -30,8 +30,5 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
-      - name: cd in cdk
-        run: cd cdk
-
       - name: Deploy to AWS
-        run: cdk deploy --app="python3 ${PWD}/app.py" --require-approval=never
+        run: cdk deploy --app="python3 ${PWD}/cdk/app.py" --require-approval=never
