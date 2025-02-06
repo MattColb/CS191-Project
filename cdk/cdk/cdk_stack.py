@@ -1,5 +1,7 @@
 from aws_cdk import (
-    Stack
+    Stack,
+    CfnOutput,
+    aws_s3
 )
 from constructs import Construct
 from .components.api_creation import create_api
@@ -16,4 +18,6 @@ class CdkStack(Stack):
         api, api_key_value = create_api(self)
         ddb_table = create_db(self)
         create_hello_resource(self, api, ddb_table)
-        create_frontend_bucket(self, api, api_key_value)
+        bucket:aws_s3.Bucket = create_frontend_bucket(self, api, api_key_value)
+
+        CfnOutput(self, "Website Output", bucket.bucket_website_url)

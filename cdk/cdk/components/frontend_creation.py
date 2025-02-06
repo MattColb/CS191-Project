@@ -30,3 +30,5 @@ def create_frontend_bucket(scope:Construct, api:apg.RestApi, api_key_value):
             ],
         destination_bucket=s3_bucket
     )
+
+    return s3_bucket
