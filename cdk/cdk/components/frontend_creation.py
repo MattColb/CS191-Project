@@ -2,8 +2,7 @@ from aws_cdk import (
     aws_apigateway as apg,
     aws_s3,
     RemovalPolicy,
-    aws_s3_deployment,
-    core
+    aws_s3_deployment
 )
 from constructs import Construct
 import json
