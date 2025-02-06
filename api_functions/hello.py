@@ -9,11 +9,12 @@ def handler(event, context):
     results = ddb_client.scan(
         TableName=ddb_table_name
     )
-    all_items = json.dumps(results.get("Items"))
+    all_items = json.dumps({"Status":results.get("Items")})
     return {
         "statusCode":200,
         "headers":{
-            "Content-Type":"application/json"
+            "Content-Type":"application/json",
+            "Access-Control-Allow-Origin":"*"
         },
         "body":all_items
     }

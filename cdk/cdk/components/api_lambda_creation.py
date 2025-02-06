@@ -18,9 +18,16 @@ def create_hello_resource(scope:Construct, api:apg.RestApi, ddb_table:aws_dynamo
             "DYNAMODB_TABLE_NAME":ddb_table.table_name
         }
     )
+
     hello_resource = api.root.add_resource("Hello")
     ddb_table.grant_read_data(hello_fn)
-    hello_resource.add_method("GET", apg.LambdaIntegration(hello_fn))
+
+    hello_resource.add_method(
+        "GET", 
+        apg.LambdaIntegration(hello_fn), 
+        api_key_required=True,
+        request_parameters={"method.request.header.x-api-key":True}
+    )
 
     hello_post_fn = aws_lambda.Function(
         scope, 
@@ -33,5 +40,11 @@ def create_hello_resource(scope:Construct, api:apg.RestApi, ddb_table:aws_dynamo
             "DYNAMODB_TABLE_NAME":ddb_table.table_name
         }
     )
+
     ddb_table.grant_read_write_data(hello_post_fn)
-    hello_resource.add_method("POST", apg.LambdaIntegration(hello_post_fn))
+    hello_resource.add_method(
+        "POST", 
+        apg.LambdaIntegration(hello_post_fn), 
+        api_key_required=True,
+        request_parameters={"method.request.header.x-api-key":True}
+    )

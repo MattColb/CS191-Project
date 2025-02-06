@@ -1,0 +1,1 @@
+- Create API Key and store it in a secret manager for the frontend to access

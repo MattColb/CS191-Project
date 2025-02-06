@@ -13,7 +13,7 @@ class CdkStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         
-        api = create_api(self)
+        api, api_key_value = create_api(self)
         ddb_table = create_db(self)
         create_hello_resource(self, api, ddb_table)
-        create_frontend_bucket(self, api)
+        create_frontend_bucket(self, api, api_key_value)

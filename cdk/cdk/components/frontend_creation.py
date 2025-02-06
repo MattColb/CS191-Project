@@ -7,17 +7,18 @@ from aws_cdk import (
 from constructs import Construct
 import json
 
-def create_frontend_bucket(scope:Construct, api:apg.RestApi):
+def create_frontend_bucket(scope:Construct, api:apg.RestApi, api_key_value):
     s3_bucket = aws_s3.Bucket(
         scope, 
         "Frontend Website Bucket", 
         removal_policy=RemovalPolicy.DESTROY,
         public_read_access=True,
         website_index_document="index.html",
-        block_public_access=aws_s3.BlockPublicAccess.BLOCK_ACLS
+        block_public_access=aws_s3.BlockPublicAccess.BLOCK_ACLS,
+        auto_delete_objects=True
     )
 
-    json_api_url = json.dumps({"api_url":api.url})
+    json_api_url = json.dumps({"api_url":api.url, "api_key":api_key_value})
 
     aws_s3_deployment.BucketDeployment(
         scope,
