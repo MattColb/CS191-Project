@@ -3,9 +3,12 @@ import hashlib
 import base64
 
 def jwt_creation(payload):
-    header = ""
+    header = """{
+      "alg": "SHA256",
+      "typ": "JWT"
+    }"""
     b64_header = base64.b64encode(header)
-    secret_string = ""
+    secret_string = "" 
     json_payload = json.dumps(payload)
     b64_json_payload = base64.b64encode(json_payload)
     full_to_encode = b64_header + "." + b64_json_payload + "." + secret_string

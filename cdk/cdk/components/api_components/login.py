@@ -10,14 +10,14 @@ def create_login_system(scope:Construct, api:apigw.RestApi, ddb_table:aws_dynamo
     login_resource = api.root.add_resource("Login")
 
     handler_dict = {"GET":"login_handlers.login_handler", 
-                    "POST":"login_handlers.create_account", 
+                    "POST":"login_handlers.create_account_handler", 
                     "PUT":"login_handlers.update_account_handler", 
                     "DELETE":"login_handlers.delete_account_handler"}
     lambda_handlers = []
     for (method, handler) in handler_dict.items():
         current_fn = aws_lambda.Function(
             scope, 
-            "Hello World API Endpoint", 
+            f"Login {method} endpoint", 
             code = aws_lambda.Code.from_asset("../api_functions"),
             runtime=aws_lambda.Runtime.PYTHON_3_10,
             handler=handler,
