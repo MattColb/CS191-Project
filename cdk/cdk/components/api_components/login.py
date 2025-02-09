@@ -28,4 +28,11 @@ def create_login_system(scope:Construct, api:apigw.RestApi, ddb_table:aws_dynamo
         )
 
         lambda_handlers.append(current_fn)
-        login_resource.add_method(method, apigw.LambdaIntegration(current_fn))
+        login_resource.add_method(
+            method, 
+            apigw.LambdaIntegration(current_fn),
+            api_key_required=True,
+            request_parameters={"method.request.header.x-api-key":True}
+        )
+
+        ddb_table.grant_read_write_data(current_fn)
