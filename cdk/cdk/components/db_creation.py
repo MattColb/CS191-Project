@@ -15,5 +15,11 @@ def create_db(scope:Construct):
         ),
         removal_policy=RemovalPolicy.DESTROY
     )
-
+    ddb_table.add_global_secondary_index(
+        partition_key=aws_dynamodb.Attribute(
+            name="username",
+            type=aws_dynamodb.AttributeType.STRING
+        ),
+        index_name="username-index"
+    )
     return ddb_table

@@ -7,12 +7,12 @@ def jwt_creation(payload):
       "alg": "SHA256",
       "typ": "JWT"
     }"""
-    b64_header = base64.b64encode(header)
+    b64_header = base64.b64encode(header.encode()).decode()
     secret_string = "" 
-    json_payload = json.dumps(payload)
-    b64_json_payload = base64.b64encode(json_payload)
+    json_payload = json.dumps(payload).encode()
+    b64_json_payload = base64.b64encode(json_payload).decode()
     full_to_encode = b64_header + "." + b64_json_payload + "." + secret_string
-    validation = hashlib.sha256(full_to_encode).hexdigest()
+    validation = hashlib.sha256(full_to_encode.encode()).hexdigest()
     full_jwt = b64_header + "." + b64_json_payload + "." + validation
     return full_jwt
 

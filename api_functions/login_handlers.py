@@ -21,13 +21,13 @@ def create_account_handler(event, context):
     # Check if username exists
     response = ddb_client.query(
         TableName=ddb_table_name,
-
+        IndexName="username-index",
         KeyConditionExpression='username = :username',
         ExpressionAttributeValues={
             ':username': {'S': username}
         }
     )
-    if response["Count"] == 0:
+    if response["Count"] > 0:
         return {
         "statusCode":400,
         "headers":{
@@ -38,30 +38,31 @@ def create_account_handler(event, context):
     }
 
     # Post it to a db
-    ddb_client.post_item(TableName=ddb_table_name, Item = {
+    ddb_client.put_item(TableName=ddb_table_name, Item = {
         "user_id":{"S":user_id},
         "username":{"S":username},
         "account_type":{"S":account_type},
         "password":{"S":hashed_passoword}
     })
-
+    jwt_token = jwt_creation({"user_id":user_id})
     return {
         "statusCode":200,
         "headers":{
             "Content-Type":"application/json",
             "Access-Control-Allow-Origin":"*",
-            "Set-Cookie":f"user_jwt={jwt_creation({"user_id":user_id})}; HttpOnly; Secure"
+            "Set-Cookie":f"user_jwt={jwt_token}; HttpOnly; Secure"
         },
         "body":json.dumps({"Status":"Successfully Created account", "user_id":user_id})
     }
 
 def login_handler(event, context):
-    body = json.loads(event.get("body"))
-    username = body.get("username")
-    password = body.get("password")
+    qsp = event.get("queryStringParameters")
+    username = qsp.get("username")
+    password = qsp.get("password")
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
     response = ddb_client.query(
         TableName=ddb_table_name,
+        IndexName="username-index",
         KeyConditionExpression='username = :username',
         ExpressionAttributeValues={
             ':username': {'S': username}
@@ -86,27 +87,58 @@ def login_handler(event, context):
             "body":json.dumps({"Status":"Account could not be logged in"})
         }
     user_id = response["Items"][0]["user_id"]["S"]
+    jwt_token = jwt_creation({"user_id":user_id})
     return {
         "statusCode":200,
         "headers":{
             "Content-Type":"application/json",
             "Access-Control-Allow-Origin":"*",
-            "Set-Cookie":f"user_jwt={jwt_creation({"user_id":user_id})}; HttpOnly; Secure"
+            "Set-Cookie":f"user_jwt={jwt_token}; HttpOnly; Secure"
         },
-        "body":json.dumps({"Status":"Successfully Logged In", "username":"username", "user_id":user_id})
+        "body":json.dumps({"Status":"Successfully Logged In", "username":username, "user_id":user_id})
     }
 
 def update_account_handler(event, context):
     # get jwt and parse it to get the user id
-    # See what info should be updated
-    # Update the info with the user id
-    # Return
-    pass
+    jwt = ""
+    valid_user_keys = ["username", "password"]
+
+    jwt_payload = jwt_payload_retrieval(jwt)
+    user_id = jwt_payload.get("user_id")
+    if user_id == None:
+        return "Error"
+    #Parse out the body and validate that they can modify everything that they want to
+    body = json.loads(event.get("body"))
+    real_put_dict = dict()
+    for (key, value) in body.items():
+        if key == "password":
+            real_put_dict["password"] = hashlib.sha256(value.encode()).hexdigest()
+        if key in valid_user_keys:
+            real_put_dict[key] = value
+
+    #Put the items based on the new values
+    ddb_client.put_item(
+        TableName=ddb_table_name,
+        Key={"user_id":{"S":user_id}},
+        # This is likely wrong
+        AttributeUpates=real_put_dict
+    )
+    return {
+        "statusCode":200,
+        "headers":{
+            "Content-Type":"application/json",
+            "Access-Control-Allow-Origin":"*"
+        },
+        "body":json.dumps({"Status":"Successfully Updated User"})
+    }
     
 
 def delete_account_handler(event, context):
-    # Get JWT and parse to get the user id
-    user_id = ""
+    jwt = ""
+    jwt_payload = jwt_payload_retrieval(jwt)
+    user_id = jwt_payload.get("user_id")
+    if user_id == None:
+        return "Error"
     ddb_client.delete_item(TableName=ddb_table_name, Key={"user_id", user_id})
-    # Remove the JWT
+    # Remove the JWT from client
     pass
