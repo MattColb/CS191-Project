@@ -2,6 +2,9 @@ name: AWS CDK Deploy
 
 on: 
   workflow_dispatch:
+  push:
+    branches:
+      - main
     
 jobs:
   build:
@@ -29,5 +32,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
+
       - name: Deploy to AWS
         run: cdk deploy --app="python3 ${PWD}/cdk/app.py" --require-approval=never
