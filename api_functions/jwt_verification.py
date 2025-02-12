@@ -28,3 +28,5 @@ def jwt_verification_retrieval(event, jwt):
     if validation == valid:
         return True, json.loads(json_payload)
     return False, None
+
+
