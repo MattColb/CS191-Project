@@ -4,6 +4,7 @@ from aws_cdk import (
     Duration,
     aws_dynamodb
 )
+import os
 from constructs import Construct
 from .api_components.login import *
 
