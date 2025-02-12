@@ -17,7 +17,6 @@ def jwt_creation(payload):
     return full_jwt
 
 def jwt_verification_retrieval(event, jwt):
-    
     b64_json_payload = jwt.split(".")[1]
     json_payload = base64.b64decode(b64_json_payload)
     valid = jwt.split(".")[2]
