@@ -1,6 +1,6 @@
-from db_functions.account.login import *
-from db_functions.account.register import *
-from api_functions.jwt_verification import jwt_creation
+from buzzy_bee_db.account.login import *
+from buzzy_bee_db.account.register import *
+from jwt_verification import jwt_creation
 import json
 import hashlib
 import os
@@ -33,9 +33,9 @@ def register_handler(event, context):
     #Think about salt
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
-    user_id, success, error_message = register_account(username, hashed_password, email_address, ddb_table_name)
+    account_response = register_account(username, hashed_password, email_address, ddb_table_name)
 
-    if not success:
+    if not account_response.success:
         return {
             "statusCode":409,
             "headers":{
@@ -46,7 +46,7 @@ def register_handler(event, context):
         }
 
 
-    jwt_token = jwt_creation({"user_id":user_id})
+    jwt_token = jwt_creation({"user_id":account_response.user_id})
 
     return {
         "statusCode":200,
@@ -59,9 +59,9 @@ def register_handler(event, context):
     }
 
 def login_handler(event, context):
-    qsp = event.get("queryStringParameters")
-    username = qsp.get("username")
-    password = qsp.get("password")
+    body = json.loads(event.get("body"))
+    username = body.get("username")
+    password = body.get("password")
 
     if not (username and password):
         return {
@@ -75,9 +75,9 @@ def login_handler(event, context):
 
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
     
-    user_id, success, error_message = login_account(username, hashed_password, ddb_table_name)
+    account_response = login_account(username, hashed_password, ddb_table_name)
 
-    if not success:
+    if not account_response.success:
         return {
             "statusCode":401,
             "headers":{
@@ -87,7 +87,7 @@ def login_handler(event, context):
             "body":json.dumps({"Status":"Login was not successful"})
         }
 
-    jwt_token = jwt_creation({"user_id":user_id})
+    jwt_token = jwt_creation({"user_id":account_response.user_id})
     return {
         "statusCode":200,
         "headers":{
@@ -95,5 +95,5 @@ def login_handler(event, context):
             "Access-Control-Allow-Origin":"*",
             "Set-Cookie":f"user_jwt={jwt_token}; HttpOnly; Secure"
         },
-        "body":json.dumps({"Status":"Successfully Logged In", "username":username})
+        "body":json.dumps({"Status":"Successfully Logged In"})
     }

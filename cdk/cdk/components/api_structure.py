@@ -3,6 +3,6 @@ API_STRUCTURE = {
         "POST":"register_login.login_handler"
     },
     "Register":{
-        "POST":"register_login.login_handler"
+        "POST":"register_login.register_handler"
     }
 }

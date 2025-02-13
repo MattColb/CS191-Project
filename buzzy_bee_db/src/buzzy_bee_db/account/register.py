@@ -1,5 +1,6 @@
 import uuid
 import boto3
+from .account_response import AccountResponse
 
 ddb_client = boto3.client("dynamodb")
 
@@ -20,7 +21,7 @@ def register_account(username:str, hashed_password:str, email_address:str, ddb_t
     )
 
     if response["Count"] > 0:
-        return None, False, "There is already someone with this username"
+        return AccountResponse(success=False, message="That account already exists", user_id=None)
     
     user_id = str(uuid.uuid4())
     
@@ -29,7 +30,7 @@ def register_account(username:str, hashed_password:str, email_address:str, ddb_t
         "username":{"S":username},
         "password":{"S":hashed_password},
         "email":{"S":email_address},
-        "users":{"L":[]}
+        "sub_users":{"L":[]}
     })
 
-    return user_id, True, None
+    return AccountResponse(success=True, user_id=user_id, message=None)

@@ -1,4 +1,4 @@
-from db_functions.db_response import DB_Response
+from buzzy_bee_db.db_response import DB_Response
 
 class AccountResponse(DB_Response):
     def __init__(self, success=None, message=None, user_id=None):
@@ -11,7 +11,5 @@ class AccountResponse(DB_Response):
     def set_user_id(self, user_id):
         self.user_id = user_id
 
-class SubAccountResponse(DB_Response):
-    def __init__(self, success=None, message=None, user_id=None):
-        super().__init__(success, message)
-        
+    def __repr__(self):
+        return f"{self.user_id}, {self.message}, {self.success}"
