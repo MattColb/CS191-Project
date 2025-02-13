@@ -5,7 +5,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 from .components.api_creation import create_api
-from .components.api_lambda_creation import create_api_resources
+from .components.api_construction import create_api_resources
 from .components.frontend_creation import create_frontend_bucket
 from .components.db_creation import create_db
 
