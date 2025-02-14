@@ -9,3 +9,6 @@ __pycache__
 .cdk.staging
 cdk.out
 api_info.json
+
+.build
+*.ipynb
