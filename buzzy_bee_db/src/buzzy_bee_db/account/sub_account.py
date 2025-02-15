@@ -46,7 +46,7 @@ def create_sub_account(main_account_id, ddb_table_name, sub_account_name, sub_ac
 
     return SubAccountResponse(sub_user_id=None, success=False, message="Something went wrong when updating the table")
 
-def update_sub_account(main_account_id, ddb_table_name, sub_account_id, sub_account_new_name, sub_account_new_grade):
+def update_sub_account(main_account_id, ddb_table_name, sub_account_id, sub_account_new_name=None, sub_account_new_grade=None):
     result = ddb_client.get_item(
         TableName=ddb_table_name,
         Key={

@@ -16,14 +16,25 @@ def jwt_creation(payload):
     full_jwt = b64_header + "." + b64_json_payload + "." + validation
     return full_jwt
 
-def jwt_verification_retrieval(event, jwt):
+def jwt_verification_retrieval(event):
+    print(event)
+    headers = event.get("headers")
+    if headers == None:
+        return False, None
+    cookie = headers.get("Cookie")
+    if cookie == None:
+        return False, None
+    try:
+        jwt = cookie[9:]
+    except:
+        return False, None
     b64_json_payload = jwt.split(".")[1]
     json_payload = base64.b64decode(b64_json_payload)
     valid = jwt.split(".")[2]
     secret_string = ""
-    front_piece = jwt.split(".")[0:2].join(".")
+    front_piece = ".".join(jwt.split(".")[0:2])
     full_to_encode = front_piece + "." + secret_string
-    validation = hashlib.sha256(full_to_encode).hexdigest()
+    validation = hashlib.sha256(full_to_encode.encode()).hexdigest()
     if validation == valid:
         return True, json.loads(json_payload)
     return False, None
