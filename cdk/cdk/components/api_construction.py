@@ -51,7 +51,7 @@ def recursive_call(structure_dictionary, previous_resource, current_resource_nam
         else:
             current_resource = previous_resource.add_resource(key)
             current_resource_dict = resource_dict.get(key)
-            recursive_call(value, current_resource, key, current_resource_dict, resource_items)
+            recursive_call(value, current_resource, current_resource_name+"-"+key, current_resource_dict, resource_items)
 
 def create_endpoint(
     handler, 

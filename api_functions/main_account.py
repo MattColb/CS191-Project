@@ -97,3 +97,15 @@ def login_handler(event, context):
         },
         "body":json.dumps({"Status":"Successfully Logged In"})
     }
+
+def logout_handler(event, context):
+    return {
+        "statusCode":200,
+        "headers":{
+            "Content-Type":"application/json",
+            "Access-Control-Allow-Origin":"*",
+            "Set-Cookie":"user_jwt=deleted; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+        },
+        "body":json.dumps({"Status":"Successfully Logged Out"})
+    }
+    
