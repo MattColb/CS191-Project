@@ -8,7 +8,3 @@ __pycache__
 # CDK asset staging directory
 .cdk.staging
 cdk.out
-api_info.json
-
-.build
-*.ipynb
