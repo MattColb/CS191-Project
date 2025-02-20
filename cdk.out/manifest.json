@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/eb98276f47f50deb74f2ded394f28f0ff9ba1efd254b23660d35a1cf8be1a894.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/62e40404a586f8fc40e616d5618f6145d9fff0acdf150f0359af265edde8855d.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -170,54 +170,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "MyVpcVPCGW488ACE0D"
-          }
-        ],
-        "/CdkStack/MyDocDBCluster/Subnets": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MyDocDBClusterSubnets751F6A7B"
-          }
-        ],
-        "/CdkStack/MyDocDBCluster/SecurityGroup/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MyDocDBClusterSecurityGroup0DECC9E0"
-          }
-        ],
-        "/CdkStack/MyDocDBCluster/SecurityGroup/from CdkStackFargateServiceSecurityGroupC8C12BE1:{IndirectPort}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MyDocDBClusterSecurityGroupfromCdkStackFargateServiceSecurityGroupC8C12BE1IndirectPortEE01238B"
-          }
-        ],
-        "/CdkStack/MyDocDBCluster/SecurityGroup/from 0.0.0.0_0:{IndirectPort}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MyDocDBClusterSecurityGroupfrom00000IndirectPortFDF9336C"
-          }
-        ],
-        "/CdkStack/MyDocDBCluster/Secret/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MyDocDBClusterSecretC6CFD73C"
-          }
-        ],
-        "/CdkStack/MyDocDBCluster/Secret/Attachment/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MyDocDBClusterSecretAttachment177E240D"
-          }
-        ],
-        "/CdkStack/MyDocDBCluster/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MyDocDBCluster0FE291A8"
-          }
-        ],
-        "/CdkStack/MyDocDBCluster/Instance1": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MyDocDBClusterInstance1B9B05A9D"
           }
         ],
         "/CdkStack/MyEcsCluster/Resource": [
