@@ -460,371 +460,10 @@
     "aws:cdk:path": "CdkStack/MyVpc/VPCGW"
    }
   },
-  "MyEcsCluster989E66E0": {
-   "Type": "AWS::ECS::Cluster",
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/MyEcsCluster/Resource"
-   }
-  },
-  "FargateServiceLBB353E155": {
-   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
-   "Properties": {
-    "LoadBalancerAttributes": [
-     {
-      "Key": "deletion_protection.enabled",
-      "Value": "false"
-     }
-    ],
-    "Scheme": "internet-facing",
-    "SecurityGroups": [
-     {
-      "Fn::GetAtt": [
-       "FargateServiceLBSecurityGroup5F444C78",
-       "GroupId"
-      ]
-     }
-    ],
-    "Subnets": [
-     {
-      "Ref": "MyVpcPublicSubnet1SubnetF6608456"
-     },
-     {
-      "Ref": "MyVpcPublicSubnet2Subnet492B6BFB"
-     }
-    ],
-    "Type": "application"
-   },
-   "DependsOn": [
-    "MyVpcPublicSubnet1DefaultRoute95FDF9EB",
-    "MyVpcPublicSubnet1RouteTableAssociation2ECEE1CB",
-    "MyVpcPublicSubnet2DefaultRoute052936F6",
-    "MyVpcPublicSubnet2RouteTableAssociation227DE78D"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/LB/Resource"
-   }
-  },
-  "FargateServiceLBSecurityGroup5F444C78": {
+  "MongoDBSecurityGroup561E7CDB": {
    "Type": "AWS::EC2::SecurityGroup",
    "Properties": {
-    "GroupDescription": "Automatically created Security Group for ELB CdkStackFargateServiceLB29CE988E",
-    "SecurityGroupIngress": [
-     {
-      "CidrIp": "0.0.0.0/0",
-      "Description": "Allow from anyone on port 80",
-      "FromPort": 80,
-      "IpProtocol": "tcp",
-      "ToPort": 80
-     }
-    ],
-    "VpcId": {
-     "Ref": "MyVpcF9F0CA6F"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/LB/SecurityGroup/Resource"
-   }
-  },
-  "FargateServiceLBSecurityGrouptoCdkStackFargateServiceSecurityGroupC8C12BE180E56EC8C7": {
-   "Type": "AWS::EC2::SecurityGroupEgress",
-   "Properties": {
-    "Description": "Load balancer to target",
-    "DestinationSecurityGroupId": {
-     "Fn::GetAtt": [
-      "FargateServiceSecurityGroup262B61DD",
-      "GroupId"
-     ]
-    },
-    "FromPort": 80,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "FargateServiceLBSecurityGroup5F444C78",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "ToPort": 80
-   },
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/LB/SecurityGroup/to CdkStackFargateServiceSecurityGroupC8C12BE1:80"
-   }
-  },
-  "FargateServiceLBPublicListener4B4929CA": {
-   "Type": "AWS::ElasticLoadBalancingV2::Listener",
-   "Properties": {
-    "DefaultActions": [
-     {
-      "TargetGroupArn": {
-       "Ref": "FargateServiceLBPublicListenerECSGroupBE57E081"
-      },
-      "Type": "forward"
-     }
-    ],
-    "LoadBalancerArn": {
-     "Ref": "FargateServiceLBB353E155"
-    },
-    "Port": 80,
-    "Protocol": "HTTP"
-   },
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/LB/PublicListener/Resource"
-   }
-  },
-  "FargateServiceLBPublicListenerECSGroupBE57E081": {
-   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-   "Properties": {
-    "Port": 80,
-    "Protocol": "HTTP",
-    "TargetGroupAttributes": [
-     {
-      "Key": "stickiness.enabled",
-      "Value": "false"
-     }
-    ],
-    "TargetType": "ip",
-    "VpcId": {
-     "Ref": "MyVpcF9F0CA6F"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/LB/PublicListener/ECSGroup/Resource"
-   }
-  },
-  "FargateServiceTaskDefTaskRole8CDCF85E": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/TaskDef/TaskRole/Resource"
-   }
-  },
-  "FargateServiceTaskDef940E3A80": {
-   "Type": "AWS::ECS::TaskDefinition",
-   "Properties": {
-    "ContainerDefinitions": [
-     {
-      "Essential": true,
-      "Image": {
-       "Fn::Sub": "${AWS::AccountId}.dkr.ecr.${AWS::Region}.${AWS::URLSuffix}/cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}:71375f27703c0b154af96a48f9db1cd6d52387cca96e0cc1b8997e524bc7a039"
-      },
-      "LogConfiguration": {
-       "LogDriver": "awslogs",
-       "Options": {
-        "awslogs-group": {
-         "Ref": "FargateServiceTaskDefwebLogGroup71FAF541"
-        },
-        "awslogs-stream-prefix": "FargateService",
-        "awslogs-region": {
-         "Ref": "AWS::Region"
-        }
-       }
-      },
-      "Name": "web",
-      "PortMappings": [
-       {
-        "ContainerPort": 80,
-        "Protocol": "tcp"
-       }
-      ]
-     }
-    ],
-    "Cpu": "256",
-    "ExecutionRoleArn": {
-     "Fn::GetAtt": [
-      "FargateServiceTaskDefExecutionRole9194820E",
-      "Arn"
-     ]
-    },
-    "Family": "CdkStackFargateServiceTaskDef2C533A52",
-    "Memory": "512",
-    "NetworkMode": "awsvpc",
-    "RequiresCompatibilities": [
-     "FARGATE"
-    ],
-    "TaskRoleArn": {
-     "Fn::GetAtt": [
-      "FargateServiceTaskDefTaskRole8CDCF85E",
-      "Arn"
-     ]
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/TaskDef/Resource"
-   }
-  },
-  "FargateServiceTaskDefwebLogGroup71FAF541": {
-   "Type": "AWS::Logs::LogGroup",
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/TaskDef/web/LogGroup/Resource"
-   }
-  },
-  "FargateServiceTaskDefExecutionRole9194820E": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/TaskDef/ExecutionRole/Resource"
-   }
-  },
-  "FargateServiceTaskDefExecutionRoleDefaultPolicy827E7CA2": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": [
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage"
-       ],
-       "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:",
-          {
-           "Ref": "AWS::Partition"
-          },
-          ":ecr:",
-          {
-           "Ref": "AWS::Region"
-          },
-          ":",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":repository/",
-          {
-           "Fn::Sub": "cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}"
-          }
-         ]
-        ]
-       }
-      },
-      {
-       "Action": "ecr:GetAuthorizationToken",
-       "Effect": "Allow",
-       "Resource": "*"
-      },
-      {
-       "Action": [
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-       ],
-       "Effect": "Allow",
-       "Resource": {
-        "Fn::GetAtt": [
-         "FargateServiceTaskDefwebLogGroup71FAF541",
-         "Arn"
-        ]
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "FargateServiceTaskDefExecutionRoleDefaultPolicy827E7CA2",
-    "Roles": [
-     {
-      "Ref": "FargateServiceTaskDefExecutionRole9194820E"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/TaskDef/ExecutionRole/DefaultPolicy/Resource"
-   }
-  },
-  "FargateServiceECC8084D": {
-   "Type": "AWS::ECS::Service",
-   "Properties": {
-    "Cluster": {
-     "Ref": "MyEcsCluster989E66E0"
-    },
-    "DeploymentConfiguration": {
-     "Alarms": {
-      "AlarmNames": [],
-      "Enable": false,
-      "Rollback": false
-     },
-     "MaximumPercent": 200,
-     "MinimumHealthyPercent": 50
-    },
-    "EnableECSManagedTags": false,
-    "HealthCheckGracePeriodSeconds": 60,
-    "LaunchType": "FARGATE",
-    "LoadBalancers": [
-     {
-      "ContainerName": "web",
-      "ContainerPort": 80,
-      "TargetGroupArn": {
-       "Ref": "FargateServiceLBPublicListenerECSGroupBE57E081"
-      }
-     }
-    ],
-    "NetworkConfiguration": {
-     "AwsvpcConfiguration": {
-      "AssignPublicIp": "DISABLED",
-      "SecurityGroups": [
-       {
-        "Fn::GetAtt": [
-         "FargateServiceSecurityGroup262B61DD",
-         "GroupId"
-        ]
-       }
-      ],
-      "Subnets": [
-       {
-        "Ref": "MyVpcPrivateSubnet1Subnet5057CF7E"
-       },
-       {
-        "Ref": "MyVpcPrivateSubnet2Subnet0040C983"
-       }
-      ]
-     }
-    },
-    "TaskDefinition": {
-     "Ref": "FargateServiceTaskDef940E3A80"
-    }
-   },
-   "DependsOn": [
-    "FargateServiceLBPublicListenerECSGroupBE57E081",
-    "FargateServiceLBPublicListener4B4929CA",
-    "FargateServiceTaskDefTaskRole8CDCF85E"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/Service/Service"
-   }
-  },
-  "FargateServiceSecurityGroup262B61DD": {
-   "Type": "AWS::EC2::SecurityGroup",
-   "Properties": {
-    "GroupDescription": "CdkStack/FargateService/Service/SecurityGroup",
+    "GroupDescription": "CdkStack/MongoDBSecurityGroup",
     "SecurityGroupEgress": [
      {
       "CidrIp": "0.0.0.0/0",
@@ -832,141 +471,207 @@
       "IpProtocol": "-1"
      }
     ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow MongoDB access from within the VPC",
+      "FromPort": 27017,
+      "IpProtocol": "tcp",
+      "ToPort": 27017
+     }
+    ],
     "VpcId": {
      "Ref": "MyVpcF9F0CA6F"
     }
    },
-   "DependsOn": [
-    "FargateServiceTaskDefTaskRole8CDCF85E"
-   ],
    "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/Service/SecurityGroup/Resource"
+    "aws:cdk:path": "CdkStack/MongoDBSecurityGroup/Resource"
    }
   },
-  "FargateServiceSecurityGroupfromCdkStackFargateServiceLBSecurityGroupE310278F80EDB8A948": {
-   "Type": "AWS::EC2::SecurityGroupIngress",
+  "MongoDBRole99749068": {
+   "Type": "AWS::IAM::Role",
    "Properties": {
-    "Description": "Load balancer to target",
-    "FromPort": 80,
-    "GroupId": {
-     "Fn::GetAtt": [
-      "FargateServiceSecurityGroup262B61DD",
-      "GroupId"
-     ]
-    },
-    "IpProtocol": "tcp",
-    "SourceSecurityGroupId": {
-     "Fn::GetAtt": [
-      "FargateServiceLBSecurityGroup5F444C78",
-      "GroupId"
-     ]
-    },
-    "ToPort": 80
-   },
-   "DependsOn": [
-    "FargateServiceTaskDefTaskRole8CDCF85E"
-   ],
-   "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/Service/SecurityGroup/from CdkStackFargateServiceLBSecurityGroupE310278F:80"
-   }
-  },
-  "FargateServiceTaskCountTarget294B63AC": {
-   "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
-   "Properties": {
-    "MaxCapacity": 20,
-    "MinCapacity": 1,
-    "ResourceId": {
-     "Fn::Join": [
-      "",
-      [
-       "service/",
-       {
-        "Ref": "MyEcsCluster989E66E0"
-       },
-       "/",
-       {
-        "Fn::GetAtt": [
-         "FargateServiceECC8084D",
-         "Name"
-        ]
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
        }
-      ]
-     ]
-    },
-    "RoleARN": {
-     "Fn::Join": [
-      "",
-      [
-       "arn:",
-       {
-        "Ref": "AWS::Partition"
-       },
-       ":iam::",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService"
-      ]
-     ]
-    },
-    "ScalableDimension": "ecs:service:DesiredCount",
-    "ServiceNamespace": "ecs"
+      }
+     ],
+     "Version": "2012-10-17"
+    }
    },
-   "DependsOn": [
-    "FargateServiceTaskDefTaskRole8CDCF85E"
-   ],
    "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/Service/TaskCount/Target/Resource"
+    "aws:cdk:path": "CdkStack/MongoDBRole/Resource"
    }
   },
-  "FargateServiceTaskCountTargetCpuScalingAEE9D78C": {
-   "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+  "MongoDBRoleDefaultPolicy23BCB18E": {
+   "Type": "AWS::IAM::Policy",
    "Properties": {
-    "PolicyName": "CdkStackFargateServiceTaskCountTargetCpuScalingFE72AE4D",
-    "PolicyType": "TargetTrackingScaling",
-    "ScalingTargetId": {
-     "Ref": "FargateServiceTaskCountTarget294B63AC"
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "MongoDBSecretC815593A"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
     },
-    "TargetTrackingScalingPolicyConfiguration": {
-     "PredefinedMetricSpecification": {
-      "PredefinedMetricType": "ECSServiceAverageCPUUtilization"
-     },
-     "TargetValue": 50
+    "PolicyName": "MongoDBRoleDefaultPolicy23BCB18E",
+    "Roles": [
+     {
+      "Ref": "MongoDBRole99749068"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkStack/MongoDBRole/DefaultPolicy/Resource"
+   }
+  },
+  "MongoDBKeyPair958FB10A": {
+   "Type": "AWS::EC2::KeyPair",
+   "Properties": {
+    "KeyFormat": "pem",
+    "KeyName": "MongoDBKeyPair",
+    "KeyType": "rsa"
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkStack/MongoDBKeyPair/Resource"
+   }
+  },
+  "MongoDBInstanceProfile619F7ACD": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "MongoDBRole99749068"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkStack/MongoDB/InstanceProfile"
+   }
+  },
+  "MongoDB469701C9": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "BlockDeviceMappings": [
+     {
+      "DeviceName": "/dev/xvda",
+      "Ebs": {
+       "VolumeSize": 20
+      }
+     }
+    ],
+    "IamInstanceProfile": {
+     "Ref": "MongoDBInstanceProfile619F7ACD"
+    },
+    "ImageId": {
+     "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amikernel510hvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    "InstanceType": "t2.micro",
+    "KeyName": {
+     "Ref": "MongoDBKeyPair958FB10A"
+    },
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "MongoDBSecurityGroup561E7CDB",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": {
+     "Ref": "MyVpcPrivateSubnet1Subnet5057CF7E"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CdkStack/MongoDB"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": "#!/bin/bash\nyum install -y amazon-linux-extras\namazon-linux-extras enable mongodb4.0\nyum install -y mongodb-org\nservice mongod start"
     }
    },
    "DependsOn": [
-    "FargateServiceTaskDefTaskRole8CDCF85E"
+    "MongoDBRoleDefaultPolicy23BCB18E",
+    "MongoDBRole99749068"
    ],
    "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/Service/TaskCount/Target/CpuScaling/Resource"
+    "aws:cdk:path": "CdkStack/MongoDB/Resource"
    }
   },
-  "FargateServiceTaskCountTargetMemoryScalingC13CB959": {
-   "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+  "MongoDBSecretC815593A": {
+   "Type": "AWS::SecretsManager::Secret",
    "Properties": {
-    "PolicyName": "CdkStackFargateServiceTaskCountTargetMemoryScalingD3B2E8D7",
-    "PolicyType": "TargetTrackingScaling",
-    "ScalingTargetId": {
-     "Ref": "FargateServiceTaskCountTarget294B63AC"
-    },
-    "TargetTrackingScalingPolicyConfiguration": {
-     "PredefinedMetricSpecification": {
-      "PredefinedMetricType": "ECSServiceAverageMemoryUtilization"
-     },
-     "TargetValue": 50
+    "GenerateSecretString": {
+     "ExcludeCharacters": "\"/@",
+     "GenerateStringKey": "password",
+     "PasswordLength": 12,
+     "SecretStringTemplate": "{\"username\": \"admin\"}"
     }
    },
-   "DependsOn": [
-    "FargateServiceTaskDefTaskRole8CDCF85E"
-   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "CdkStack/FargateService/Service/TaskCount/Target/MemoryScaling/Resource"
+    "aws:cdk:path": "CdkStack/MongoDBSecret/Resource"
+   }
+  },
+  "MongoDBSSMPolicyBDBFAF8B": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:GetParametersByPath",
+        "ssm:UpdateInstanceInformation",
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MongoDBSSMPolicyBDBFAF8B",
+    "Roles": [
+     {
+      "Ref": "MongoDBRole99749068"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CdkStack/MongoDBSSMPolicy/Resource"
    }
   },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31SwW4iMQz9lt5DdoHDnintVkjV7ohBvSIT3NRLSEaxA0Kj+fdVMsBAt9qTn19enGc7Ez3+MdXjBzjyyGx3I0cb3dYCZqfgyOsWzUS3b41R83f/Vs1VlTaOTJ02HiVzA1qGJLiCjcOBH7gZczAEQsFfxRk8L6ocfoG8gOARTqqKdADBofDCC0aPV0Hv5JzNRMB87NGLqtGkSHJ6iSE1xcN/iWcbkfkfeuEL3yk0rNu5SywYs+oCf0K0kLvi3RO+k6dLT5+Z4AXIY7zhzndrjAcy/ZzOsDbg8pxykXlIXoqBdQOSm2c9axpHpszvNcD2ERx4g9tPBdEBCxkXYLspCvL2MNHt17dLW3f5rY5Y0J81F3xzvoJoUa6jvUk7RbDX7TL0P6HEKjgyZXU9yt3FNTCjsH4KZodxsQebvwlKPtNLbAKThHh6BEblgmXdvgZ7ffGCOwWDK0gS2IAjb3U7zDR7K9O+Z/qwimB25G3d3xus3hFdp5bIIcV+b7+TNElU8VsLWPK2NHsjmQe/LWvvVHWSj+C/TfX4ux5PH/4w0SgmL7RHvezjXyn25GKJAwAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VQ0W6DMAz8lr6HbJSHPVdoqtCkKYKpr5NJ3dUrOFXiDCHEv09AW7anO59PuXO2On3JdLqBLiT2eEkaqvVQCdiLgi58Dmi3ejhcrcpPfDC5MrFuyFaxZpRJW1npouAH1A2u+qrtQnCWQMjxwzyR18JM8A6yB8EOemU8/YDg+nDBgp7xYVia3KadCNhziyyqQhs9Sb/3Ll7nDv+EN+wNkJ8Wd1pwEGCLS8rCR0XQ6qF0yx0zGteQnYNXdvcb707U4KgCWo8SWmD4Qq+Hap5vPTzKOKoSg4t+yTPgoUXBudDfRe74SNM/jcr0cnb8lOn0WafZ5jsQJT6yUIu6XPAXU6xOY8ABAAA="
    },
    "Metadata": {
     "aws:cdk:path": "CdkStack/CDKMetadata/Default"
@@ -974,38 +679,15 @@
    "Condition": "CDKMetadataAvailable"
   }
  },
- "Outputs": {
-  "FargateServiceLoadBalancerDNS9433D5F6": {
-   "Value": {
-    "Fn::GetAtt": [
-     "FargateServiceLBB353E155",
-     "DNSName"
-    ]
-   }
+ "Parameters": {
+  "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amikernel510hvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+   "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-kernel-5.10-hvm-x86_64-gp2"
   },
-  "FargateServiceServiceURL47701F45": {
-   "Value": {
-    "Fn::Join": [
-     "",
-     [
-      "http://",
-      {
-       "Fn::GetAtt": [
-        "FargateServiceLBB353E155",
-        "DNSName"
-       ]
-      }
-     ]
-    ]
-   }
-  },
-  "LoadBalancerDNS": {
-   "Value": {
-    "Fn::GetAtt": [
-     "FargateServiceLBB353E155",
-     "DNSName"
-    ]
-   }
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
   }
  },
  "Conditions": {
@@ -1272,13 +954,6 @@
      ]
     }
    ]
-  }
- },
- "Parameters": {
-  "BootstrapVersion": {
-   "Type": "AWS::SSM::Parameter::Value<String>",
-   "Default": "/cdk-bootstrap/hnb659fds/version",
-   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
   }
  },
  "Rules": {

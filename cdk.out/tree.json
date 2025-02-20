@@ -651,819 +651,339 @@
               "version": "2.173.1"
             }
           },
-          "MyEcsCluster": {
-            "id": "MyEcsCluster",
-            "path": "CdkStack/MyEcsCluster",
+          "MongoDBSecurityGroup": {
+            "id": "MongoDBSecurityGroup",
+            "path": "CdkStack/MongoDBSecurityGroup",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "CdkStack/MyEcsCluster/Resource",
+                "path": "CdkStack/MongoDBSecurityGroup/Resource",
                 "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::ECS::Cluster",
-                  "aws:cdk:cloudformation:props": {}
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "CdkStack/MongoDBSecurityGroup",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "securityGroupIngress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "ipProtocol": "tcp",
+                        "fromPort": 27017,
+                        "toPort": 27017,
+                        "description": "Allow MongoDB access from within the VPC"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "MyVpcF9F0CA6F"
+                    }
+                  }
                 },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_ecs.CfnCluster",
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
                   "version": "2.173.1"
                 }
               }
             },
             "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_ecs.Cluster",
+              "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
               "version": "2.173.1"
             }
           },
-          "FargateService": {
-            "id": "FargateService",
-            "path": "CdkStack/FargateService",
+          "MongoDBRole": {
+            "id": "MongoDBRole",
+            "path": "CdkStack/MongoDBRole",
             "children": {
-              "LB": {
-                "id": "LB",
-                "path": "CdkStack/FargateService/LB",
+              "ImportMongoDBRole": {
+                "id": "ImportMongoDBRole",
+                "path": "CdkStack/MongoDBRole/ImportMongoDBRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.173.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkStack/MongoDBRole/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "ec2.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.173.1"
+                }
+              },
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "CdkStack/MongoDBRole/DefaultPolicy",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "CdkStack/FargateService/LB/Resource",
+                    "path": "CdkStack/MongoDBRole/DefaultPolicy/Resource",
                     "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                       "aws:cdk:cloudformation:props": {
-                        "loadBalancerAttributes": [
-                          {
-                            "key": "deletion_protection.enabled",
-                            "value": "false"
-                          }
-                        ],
-                        "scheme": "internet-facing",
-                        "securityGroups": [
-                          {
-                            "Fn::GetAtt": [
-                              "FargateServiceLBSecurityGroup5F444C78",
-                              "GroupId"
-                            ]
-                          }
-                        ],
-                        "subnets": [
-                          {
-                            "Ref": "MyVpcPublicSubnet1SubnetF6608456"
-                          },
-                          {
-                            "Ref": "MyVpcPublicSubnet2Subnet492B6BFB"
-                          }
-                        ],
-                        "type": "application"
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnLoadBalancer",
-                      "version": "2.173.1"
-                    }
-                  },
-                  "SecurityGroup": {
-                    "id": "SecurityGroup",
-                    "path": "CdkStack/FargateService/LB/SecurityGroup",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "CdkStack/FargateService/LB/SecurityGroup/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
-                          "aws:cdk:cloudformation:props": {
-                            "groupDescription": "Automatically created Security Group for ELB CdkStackFargateServiceLB29CE988E",
-                            "securityGroupIngress": [
-                              {
-                                "cidrIp": "0.0.0.0/0",
-                                "ipProtocol": "tcp",
-                                "fromPort": 80,
-                                "toPort": 80,
-                                "description": "Allow from anyone on port 80"
-                              }
-                            ],
-                            "vpcId": {
-                              "Ref": "MyVpcF9F0CA6F"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
-                          "version": "2.173.1"
-                        }
-                      },
-                      "to CdkStackFargateServiceSecurityGroupC8C12BE1:80": {
-                        "id": "to CdkStackFargateServiceSecurityGroupC8C12BE1:80",
-                        "path": "CdkStack/FargateService/LB/SecurityGroup/to CdkStackFargateServiceSecurityGroupC8C12BE1:80",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupEgress",
-                          "aws:cdk:cloudformation:props": {
-                            "description": "Load balancer to target",
-                            "destinationSecurityGroupId": {
-                              "Fn::GetAtt": [
-                                "FargateServiceSecurityGroup262B61DD",
-                                "GroupId"
-                              ]
-                            },
-                            "fromPort": 80,
-                            "groupId": {
-                              "Fn::GetAtt": [
-                                "FargateServiceLBSecurityGroup5F444C78",
-                                "GroupId"
-                              ]
-                            },
-                            "ipProtocol": "tcp",
-                            "toPort": 80
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroupEgress",
-                          "version": "2.173.1"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
-                      "version": "2.173.1"
-                    }
-                  },
-                  "PublicListener": {
-                    "id": "PublicListener",
-                    "path": "CdkStack/FargateService/LB/PublicListener",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "CdkStack/FargateService/LB/PublicListener/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::Listener",
-                          "aws:cdk:cloudformation:props": {
-                            "defaultActions": [
-                              {
-                                "type": "forward",
-                                "targetGroupArn": {
-                                  "Ref": "FargateServiceLBPublicListenerECSGroupBE57E081"
-                                }
-                              }
-                            ],
-                            "loadBalancerArn": {
-                              "Ref": "FargateServiceLBB353E155"
-                            },
-                            "port": 80,
-                            "protocol": "HTTP"
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnListener",
-                          "version": "2.173.1"
-                        }
-                      },
-                      "ECSGroup": {
-                        "id": "ECSGroup",
-                        "path": "CdkStack/FargateService/LB/PublicListener/ECSGroup",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "CdkStack/FargateService/LB/PublicListener/ECSGroup/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-                              "aws:cdk:cloudformation:props": {
-                                "port": 80,
-                                "protocol": "HTTP",
-                                "targetGroupAttributes": [
-                                  {
-                                    "key": "stickiness.enabled",
-                                    "value": "false"
-                                  }
-                                ],
-                                "targetType": "ip",
-                                "vpcId": {
-                                  "Ref": "MyVpcF9F0CA6F"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnTargetGroup",
-                              "version": "2.173.1"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.ApplicationTargetGroup",
-                          "version": "2.173.1"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.ApplicationListener",
-                      "version": "2.173.1"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.ApplicationLoadBalancer",
-                  "version": "2.173.1"
-                }
-              },
-              "LoadBalancerDNS": {
-                "id": "LoadBalancerDNS",
-                "path": "CdkStack/FargateService/LoadBalancerDNS",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnOutput",
-                  "version": "2.173.1"
-                }
-              },
-              "ServiceURL": {
-                "id": "ServiceURL",
-                "path": "CdkStack/FargateService/ServiceURL",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnOutput",
-                  "version": "2.173.1"
-                }
-              },
-              "TaskDef": {
-                "id": "TaskDef",
-                "path": "CdkStack/FargateService/TaskDef",
-                "children": {
-                  "TaskRole": {
-                    "id": "TaskRole",
-                    "path": "CdkStack/FargateService/TaskDef/TaskRole",
-                    "children": {
-                      "ImportTaskRole": {
-                        "id": "ImportTaskRole",
-                        "path": "CdkStack/FargateService/TaskDef/TaskRole/ImportTaskRole",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.Resource",
-                          "version": "2.173.1"
-                        }
-                      },
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "CdkStack/FargateService/TaskDef/TaskRole/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                          "aws:cdk:cloudformation:props": {
-                            "assumeRolePolicyDocument": {
-                              "Statement": [
-                                {
-                                  "Action": "sts:AssumeRole",
-                                  "Effect": "Allow",
-                                  "Principal": {
-                                    "Service": "ecs-tasks.amazonaws.com"
-                                  }
-                                }
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "secretsmanager:GetSecretValue",
+                                "secretsmanager:DescribeSecret"
                               ],
-                              "Version": "2012-10-17"
+                              "Effect": "Allow",
+                              "Resource": {
+                                "Ref": "MongoDBSecretC815593A"
+                              }
                             }
-                          }
+                          ],
+                          "Version": "2012-10-17"
                         },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                          "version": "2.173.1"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.Role",
-                      "version": "2.173.1"
-                    }
-                  },
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "CdkStack/FargateService/TaskDef/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::ECS::TaskDefinition",
-                      "aws:cdk:cloudformation:props": {
-                        "containerDefinitions": [
+                        "policyName": "MongoDBRoleDefaultPolicy23BCB18E",
+                        "roles": [
                           {
-                            "essential": true,
-                            "image": {
-                              "Fn::Sub": "${AWS::AccountId}.dkr.ecr.${AWS::Region}.${AWS::URLSuffix}/cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}:71375f27703c0b154af96a48f9db1cd6d52387cca96e0cc1b8997e524bc7a039"
-                            },
-                            "name": "web",
-                            "portMappings": [
-                              {
-                                "containerPort": 80,
-                                "protocol": "tcp"
-                              }
-                            ],
-                            "logConfiguration": {
-                              "logDriver": "awslogs",
-                              "options": {
-                                "awslogs-group": {
-                                  "Ref": "FargateServiceTaskDefwebLogGroup71FAF541"
-                                },
-                                "awslogs-stream-prefix": "FargateService",
-                                "awslogs-region": {
-                                  "Ref": "AWS::Region"
-                                }
-                              }
-                            }
+                            "Ref": "MongoDBRole99749068"
                           }
-                        ],
-                        "cpu": "256",
-                        "executionRoleArn": {
-                          "Fn::GetAtt": [
-                            "FargateServiceTaskDefExecutionRole9194820E",
-                            "Arn"
-                          ]
-                        },
-                        "family": "CdkStackFargateServiceTaskDef2C533A52",
-                        "memory": "512",
-                        "networkMode": "awsvpc",
-                        "requiresCompatibilities": [
-                          "FARGATE"
-                        ],
-                        "taskRoleArn": {
-                          "Fn::GetAtt": [
-                            "FargateServiceTaskDefTaskRole8CDCF85E",
-                            "Arn"
-                          ]
-                        }
+                        ]
                       }
                     },
                     "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_ecs.CfnTaskDefinition",
-                      "version": "2.173.1"
-                    }
-                  },
-                  "web": {
-                    "id": "web",
-                    "path": "CdkStack/FargateService/TaskDef/web",
-                    "children": {
-                      "AssetImage": {
-                        "id": "AssetImage",
-                        "path": "CdkStack/FargateService/TaskDef/web/AssetImage",
-                        "children": {
-                          "Staging": {
-                            "id": "Staging",
-                            "path": "CdkStack/FargateService/TaskDef/web/AssetImage/Staging",
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.AssetStaging",
-                              "version": "2.173.1"
-                            }
-                          },
-                          "Repository": {
-                            "id": "Repository",
-                            "path": "CdkStack/FargateService/TaskDef/web/AssetImage/Repository",
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_ecr.RepositoryBase",
-                              "version": "2.173.1"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_ecr_assets.DockerImageAsset",
-                          "version": "2.173.1"
-                        }
-                      },
-                      "LogGroup": {
-                        "id": "LogGroup",
-                        "path": "CdkStack/FargateService/TaskDef/web/LogGroup",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "CdkStack/FargateService/TaskDef/web/LogGroup/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
-                              "aws:cdk:cloudformation:props": {}
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_logs.CfnLogGroup",
-                              "version": "2.173.1"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_logs.LogGroup",
-                          "version": "2.173.1"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_ecs.ContainerDefinition",
-                      "version": "2.173.1"
-                    }
-                  },
-                  "ExecutionRole": {
-                    "id": "ExecutionRole",
-                    "path": "CdkStack/FargateService/TaskDef/ExecutionRole",
-                    "children": {
-                      "ImportExecutionRole": {
-                        "id": "ImportExecutionRole",
-                        "path": "CdkStack/FargateService/TaskDef/ExecutionRole/ImportExecutionRole",
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.Resource",
-                          "version": "2.173.1"
-                        }
-                      },
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "CdkStack/FargateService/TaskDef/ExecutionRole/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                          "aws:cdk:cloudformation:props": {
-                            "assumeRolePolicyDocument": {
-                              "Statement": [
-                                {
-                                  "Action": "sts:AssumeRole",
-                                  "Effect": "Allow",
-                                  "Principal": {
-                                    "Service": "ecs-tasks.amazonaws.com"
-                                  }
-                                }
-                              ],
-                              "Version": "2012-10-17"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                          "version": "2.173.1"
-                        }
-                      },
-                      "DefaultPolicy": {
-                        "id": "DefaultPolicy",
-                        "path": "CdkStack/FargateService/TaskDef/ExecutionRole/DefaultPolicy",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "CdkStack/FargateService/TaskDef/ExecutionRole/DefaultPolicy/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                              "aws:cdk:cloudformation:props": {
-                                "policyDocument": {
-                                  "Statement": [
-                                    {
-                                      "Action": [
-                                        "ecr:BatchCheckLayerAvailability",
-                                        "ecr:GetDownloadUrlForLayer",
-                                        "ecr:BatchGetImage"
-                                      ],
-                                      "Effect": "Allow",
-                                      "Resource": {
-                                        "Fn::Join": [
-                                          "",
-                                          [
-                                            "arn:",
-                                            {
-                                              "Ref": "AWS::Partition"
-                                            },
-                                            ":ecr:",
-                                            {
-                                              "Ref": "AWS::Region"
-                                            },
-                                            ":",
-                                            {
-                                              "Ref": "AWS::AccountId"
-                                            },
-                                            ":repository/",
-                                            {
-                                              "Fn::Sub": "cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}"
-                                            }
-                                          ]
-                                        ]
-                                      }
-                                    },
-                                    {
-                                      "Action": "ecr:GetAuthorizationToken",
-                                      "Effect": "Allow",
-                                      "Resource": "*"
-                                    },
-                                    {
-                                      "Action": [
-                                        "logs:CreateLogStream",
-                                        "logs:PutLogEvents"
-                                      ],
-                                      "Effect": "Allow",
-                                      "Resource": {
-                                        "Fn::GetAtt": [
-                                          "FargateServiceTaskDefwebLogGroup71FAF541",
-                                          "Arn"
-                                        ]
-                                      }
-                                    }
-                                  ],
-                                  "Version": "2012-10-17"
-                                },
-                                "policyName": "FargateServiceTaskDefExecutionRoleDefaultPolicy827E7CA2",
-                                "roles": [
-                                  {
-                                    "Ref": "FargateServiceTaskDefExecutionRole9194820E"
-                                  }
-                                ]
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                              "version": "2.173.1"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_iam.Policy",
-                          "version": "2.173.1"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.Role",
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
                       "version": "2.173.1"
                     }
                   }
                 },
                 "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_ecs.FargateTaskDefinition",
-                  "version": "2.173.1"
-                }
-              },
-              "Service": {
-                "id": "Service",
-                "path": "CdkStack/FargateService/Service",
-                "children": {
-                  "Service": {
-                    "id": "Service",
-                    "path": "CdkStack/FargateService/Service/Service",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::ECS::Service",
-                      "aws:cdk:cloudformation:props": {
-                        "cluster": {
-                          "Ref": "MyEcsCluster989E66E0"
-                        },
-                        "deploymentConfiguration": {
-                          "maximumPercent": 200,
-                          "minimumHealthyPercent": 50,
-                          "alarms": {
-                            "alarmNames": [],
-                            "enable": false,
-                            "rollback": false
-                          }
-                        },
-                        "enableEcsManagedTags": false,
-                        "healthCheckGracePeriodSeconds": 60,
-                        "launchType": "FARGATE",
-                        "loadBalancers": [
-                          {
-                            "targetGroupArn": {
-                              "Ref": "FargateServiceLBPublicListenerECSGroupBE57E081"
-                            },
-                            "containerName": "web",
-                            "containerPort": 80
-                          }
-                        ],
-                        "networkConfiguration": {
-                          "awsvpcConfiguration": {
-                            "assignPublicIp": "DISABLED",
-                            "subnets": [
-                              {
-                                "Ref": "MyVpcPrivateSubnet1Subnet5057CF7E"
-                              },
-                              {
-                                "Ref": "MyVpcPrivateSubnet2Subnet0040C983"
-                              }
-                            ],
-                            "securityGroups": [
-                              {
-                                "Fn::GetAtt": [
-                                  "FargateServiceSecurityGroup262B61DD",
-                                  "GroupId"
-                                ]
-                              }
-                            ]
-                          }
-                        },
-                        "taskDefinition": {
-                          "Ref": "FargateServiceTaskDef940E3A80"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_ecs.CfnService",
-                      "version": "2.173.1"
-                    }
-                  },
-                  "SecurityGroup": {
-                    "id": "SecurityGroup",
-                    "path": "CdkStack/FargateService/Service/SecurityGroup",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "CdkStack/FargateService/Service/SecurityGroup/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
-                          "aws:cdk:cloudformation:props": {
-                            "groupDescription": "CdkStack/FargateService/Service/SecurityGroup",
-                            "securityGroupEgress": [
-                              {
-                                "cidrIp": "0.0.0.0/0",
-                                "description": "Allow all outbound traffic by default",
-                                "ipProtocol": "-1"
-                              }
-                            ],
-                            "vpcId": {
-                              "Ref": "MyVpcF9F0CA6F"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
-                          "version": "2.173.1"
-                        }
-                      },
-                      "from CdkStackFargateServiceLBSecurityGroupE310278F:80": {
-                        "id": "from CdkStackFargateServiceLBSecurityGroupE310278F:80",
-                        "path": "CdkStack/FargateService/Service/SecurityGroup/from CdkStackFargateServiceLBSecurityGroupE310278F:80",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupIngress",
-                          "aws:cdk:cloudformation:props": {
-                            "description": "Load balancer to target",
-                            "fromPort": 80,
-                            "groupId": {
-                              "Fn::GetAtt": [
-                                "FargateServiceSecurityGroup262B61DD",
-                                "GroupId"
-                              ]
-                            },
-                            "ipProtocol": "tcp",
-                            "sourceSecurityGroupId": {
-                              "Fn::GetAtt": [
-                                "FargateServiceLBSecurityGroup5F444C78",
-                                "GroupId"
-                              ]
-                            },
-                            "toPort": 80
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroupIngress",
-                          "version": "2.173.1"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
-                      "version": "2.173.1"
-                    }
-                  },
-                  "ScalingRole": {
-                    "id": "ScalingRole",
-                    "path": "CdkStack/FargateService/Service/ScalingRole",
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.Resource",
-                      "version": "2.173.1"
-                    }
-                  },
-                  "TaskCount": {
-                    "id": "TaskCount",
-                    "path": "CdkStack/FargateService/Service/TaskCount",
-                    "children": {
-                      "Target": {
-                        "id": "Target",
-                        "path": "CdkStack/FargateService/Service/TaskCount/Target",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "CdkStack/FargateService/Service/TaskCount/Target/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::ApplicationAutoScaling::ScalableTarget",
-                              "aws:cdk:cloudformation:props": {
-                                "maxCapacity": 20,
-                                "minCapacity": 1,
-                                "resourceId": {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      "service/",
-                                      {
-                                        "Ref": "MyEcsCluster989E66E0"
-                                      },
-                                      "/",
-                                      {
-                                        "Fn::GetAtt": [
-                                          "FargateServiceECC8084D",
-                                          "Name"
-                                        ]
-                                      }
-                                    ]
-                                  ]
-                                },
-                                "roleArn": {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      "arn:",
-                                      {
-                                        "Ref": "AWS::Partition"
-                                      },
-                                      ":iam::",
-                                      {
-                                        "Ref": "AWS::AccountId"
-                                      },
-                                      ":role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService"
-                                    ]
-                                  ]
-                                },
-                                "scalableDimension": "ecs:service:DesiredCount",
-                                "serviceNamespace": "ecs"
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_applicationautoscaling.CfnScalableTarget",
-                              "version": "2.173.1"
-                            }
-                          },
-                          "CpuScaling": {
-                            "id": "CpuScaling",
-                            "path": "CdkStack/FargateService/Service/TaskCount/Target/CpuScaling",
-                            "children": {
-                              "Resource": {
-                                "id": "Resource",
-                                "path": "CdkStack/FargateService/Service/TaskCount/Target/CpuScaling/Resource",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::ApplicationAutoScaling::ScalingPolicy",
-                                  "aws:cdk:cloudformation:props": {
-                                    "policyName": "CdkStackFargateServiceTaskCountTargetCpuScalingFE72AE4D",
-                                    "policyType": "TargetTrackingScaling",
-                                    "scalingTargetId": {
-                                      "Ref": "FargateServiceTaskCountTarget294B63AC"
-                                    },
-                                    "targetTrackingScalingPolicyConfiguration": {
-                                      "predefinedMetricSpecification": {
-                                        "predefinedMetricType": "ECSServiceAverageCPUUtilization"
-                                      },
-                                      "targetValue": 50
-                                    }
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_applicationautoscaling.CfnScalingPolicy",
-                                  "version": "2.173.1"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_applicationautoscaling.TargetTrackingScalingPolicy",
-                              "version": "2.173.1"
-                            }
-                          },
-                          "MemoryScaling": {
-                            "id": "MemoryScaling",
-                            "path": "CdkStack/FargateService/Service/TaskCount/Target/MemoryScaling",
-                            "children": {
-                              "Resource": {
-                                "id": "Resource",
-                                "path": "CdkStack/FargateService/Service/TaskCount/Target/MemoryScaling/Resource",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::ApplicationAutoScaling::ScalingPolicy",
-                                  "aws:cdk:cloudformation:props": {
-                                    "policyName": "CdkStackFargateServiceTaskCountTargetMemoryScalingD3B2E8D7",
-                                    "policyType": "TargetTrackingScaling",
-                                    "scalingTargetId": {
-                                      "Ref": "FargateServiceTaskCountTarget294B63AC"
-                                    },
-                                    "targetTrackingScalingPolicyConfiguration": {
-                                      "predefinedMetricSpecification": {
-                                        "predefinedMetricType": "ECSServiceAverageMemoryUtilization"
-                                      },
-                                      "targetValue": 50
-                                    }
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_applicationautoscaling.CfnScalingPolicy",
-                                  "version": "2.173.1"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_applicationautoscaling.TargetTrackingScalingPolicy",
-                              "version": "2.173.1"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_applicationautoscaling.ScalableTarget",
-                          "version": "2.173.1"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_ecs.ScalableTaskCount",
-                      "version": "2.173.1"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_ecs.FargateService",
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
                   "version": "2.173.1"
                 }
               }
             },
             "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_ecs_patterns.ApplicationLoadBalancedFargateService",
+              "fqn": "aws-cdk-lib.aws_iam.Role",
               "version": "2.173.1"
             }
           },
-          "LoadBalancerDNS": {
-            "id": "LoadBalancerDNS",
-            "path": "CdkStack/LoadBalancerDNS",
+          "MongoDBKeyPair": {
+            "id": "MongoDBKeyPair",
+            "path": "CdkStack/MongoDBKeyPair",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkStack/MongoDBKeyPair/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::KeyPair",
+                  "aws:cdk:cloudformation:props": {
+                    "keyFormat": "pem",
+                    "keyName": "MongoDBKeyPair",
+                    "keyType": "rsa"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnKeyPair",
+                  "version": "2.173.1"
+                }
+              }
+            },
             "constructInfo": {
-              "fqn": "aws-cdk-lib.CfnOutput",
+              "fqn": "aws-cdk-lib.aws_ec2.KeyPair",
+              "version": "2.173.1"
+            }
+          },
+          "MongoDB": {
+            "id": "MongoDB",
+            "path": "CdkStack/MongoDB",
+            "children": {
+              "InstanceProfile": {
+                "id": "InstanceProfile",
+                "path": "CdkStack/MongoDB/InstanceProfile",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::InstanceProfile",
+                  "aws:cdk:cloudformation:props": {
+                    "roles": [
+                      {
+                        "Ref": "MongoDBRole99749068"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnInstanceProfile",
+                  "version": "2.173.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkStack/MongoDB/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::Instance",
+                  "aws:cdk:cloudformation:props": {
+                    "availabilityZone": {
+                      "Fn::Select": [
+                        0,
+                        {
+                          "Fn::GetAZs": ""
+                        }
+                      ]
+                    },
+                    "blockDeviceMappings": [
+                      {
+                        "deviceName": "/dev/xvda",
+                        "ebs": {
+                          "volumeSize": 20
+                        }
+                      }
+                    ],
+                    "iamInstanceProfile": {
+                      "Ref": "MongoDBInstanceProfile619F7ACD"
+                    },
+                    "imageId": {
+                      "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amikernel510hvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+                    },
+                    "instanceType": "t2.micro",
+                    "keyName": {
+                      "Ref": "MongoDBKeyPair958FB10A"
+                    },
+                    "securityGroupIds": [
+                      {
+                        "Fn::GetAtt": [
+                          "MongoDBSecurityGroup561E7CDB",
+                          "GroupId"
+                        ]
+                      }
+                    ],
+                    "subnetId": {
+                      "Ref": "MyVpcPrivateSubnet1Subnet5057CF7E"
+                    },
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "CdkStack/MongoDB"
+                      }
+                    ],
+                    "userData": {
+                      "Fn::Base64": "#!/bin/bash\nyum install -y amazon-linux-extras\namazon-linux-extras enable mongodb4.0\nyum install -y mongodb-org\nservice mongod start"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnInstance",
+                  "version": "2.173.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.Instance",
+              "version": "2.173.1"
+            }
+          },
+          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": {
+            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
+            "path": "CdkStack/SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.173.1"
+            }
+          },
+          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118": {
+            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118",
+            "path": "CdkStack/SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.173.1"
+            }
+          },
+          "MongoDBSecret": {
+            "id": "MongoDBSecret",
+            "path": "CdkStack/MongoDBSecret",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkStack/MongoDBSecret/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                  "aws:cdk:cloudformation:props": {
+                    "generateSecretString": {
+                      "excludeCharacters": "\"/@",
+                      "generateStringKey": "password",
+                      "passwordLength": 12,
+                      "secretStringTemplate": "{\"username\": \"admin\"}"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                  "version": "2.173.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
+              "version": "2.173.1"
+            }
+          },
+          "MongoDBSSMPolicy": {
+            "id": "MongoDBSSMPolicy",
+            "path": "CdkStack/MongoDBSSMPolicy",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "CdkStack/MongoDBSSMPolicy/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                  "aws:cdk:cloudformation:props": {
+                    "policyDocument": {
+                      "Statement": [
+                        {
+                          "Action": [
+                            "ssm:GetParameter",
+                            "ssm:GetParameters",
+                            "ssm:GetParametersByPath",
+                            "ssm:UpdateInstanceInformation",
+                            "ssmmessages:CreateControlChannel",
+                            "ssmmessages:CreateDataChannel",
+                            "ssmmessages:OpenControlChannel",
+                            "ssmmessages:OpenDataChannel"
+                          ],
+                          "Effect": "Allow",
+                          "Resource": "*"
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "policyName": "MongoDBSSMPolicyBDBFAF8B",
+                    "roles": [
+                      {
+                        "Ref": "MongoDBRole99749068"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                  "version": "2.173.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Policy",
               "version": "2.173.1"
             }
           },

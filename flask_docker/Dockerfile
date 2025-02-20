@@ -4,8 +4,12 @@ WORKDIR /app
 
 COPY app.py requirements.txt ./
 
+#Adding the flask_blueprints
+COPY flask_blueprints flask_blueprints
+COPY templates templates
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 80
+EXPOSE 5000
 
 CMD ["python", "app.py"]

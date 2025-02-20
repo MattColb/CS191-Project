@@ -18,7 +18,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/62e40404a586f8fc40e616d5618f6145d9fff0acdf150f0359af265edde8855d.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/3f933aff4d61253fb1756bc4685cc9290e1635f2565ce67f8543ba9f1c536408.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -172,124 +172,58 @@
             "data": "MyVpcVPCGW488ACE0D"
           }
         ],
-        "/CdkStack/MyEcsCluster/Resource": [
+        "/CdkStack/MongoDBSecurityGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "MyEcsCluster989E66E0"
+            "data": "MongoDBSecurityGroup561E7CDB"
           }
         ],
-        "/CdkStack/FargateService/LB/Resource": [
+        "/CdkStack/MongoDBRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "FargateServiceLBB353E155"
+            "data": "MongoDBRole99749068"
           }
         ],
-        "/CdkStack/FargateService/LB/SecurityGroup/Resource": [
+        "/CdkStack/MongoDBRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "FargateServiceLBSecurityGroup5F444C78"
+            "data": "MongoDBRoleDefaultPolicy23BCB18E"
           }
         ],
-        "/CdkStack/FargateService/LB/SecurityGroup/to CdkStackFargateServiceSecurityGroupC8C12BE1:80": [
+        "/CdkStack/MongoDBKeyPair/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "FargateServiceLBSecurityGrouptoCdkStackFargateServiceSecurityGroupC8C12BE180E56EC8C7"
+            "data": "MongoDBKeyPair958FB10A"
           }
         ],
-        "/CdkStack/FargateService/LB/PublicListener/Resource": [
+        "/CdkStack/MongoDB/InstanceProfile": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "FargateServiceLBPublicListener4B4929CA"
+            "data": "MongoDBInstanceProfile619F7ACD"
           }
         ],
-        "/CdkStack/FargateService/LB/PublicListener/ECSGroup/Resource": [
+        "/CdkStack/MongoDB/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "FargateServiceLBPublicListenerECSGroupBE57E081"
+            "data": "MongoDB469701C9"
           }
         ],
-        "/CdkStack/FargateService/LoadBalancerDNS": [
+        "/CdkStack/SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "FargateServiceLoadBalancerDNS9433D5F6"
+            "data": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amikernel510hvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
           }
         ],
-        "/CdkStack/FargateService/ServiceURL": [
+        "/CdkStack/MongoDBSecret/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "FargateServiceServiceURL47701F45"
+            "data": "MongoDBSecretC815593A"
           }
         ],
-        "/CdkStack/FargateService/TaskDef/TaskRole/Resource": [
+        "/CdkStack/MongoDBSSMPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "FargateServiceTaskDefTaskRole8CDCF85E"
-          }
-        ],
-        "/CdkStack/FargateService/TaskDef/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "FargateServiceTaskDef940E3A80"
-          }
-        ],
-        "/CdkStack/FargateService/TaskDef/web/LogGroup/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "FargateServiceTaskDefwebLogGroup71FAF541"
-          }
-        ],
-        "/CdkStack/FargateService/TaskDef/ExecutionRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "FargateServiceTaskDefExecutionRole9194820E"
-          }
-        ],
-        "/CdkStack/FargateService/TaskDef/ExecutionRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "FargateServiceTaskDefExecutionRoleDefaultPolicy827E7CA2"
-          }
-        ],
-        "/CdkStack/FargateService/Service/Service": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "FargateServiceECC8084D"
-          }
-        ],
-        "/CdkStack/FargateService/Service/SecurityGroup/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "FargateServiceSecurityGroup262B61DD"
-          }
-        ],
-        "/CdkStack/FargateService/Service/SecurityGroup/from CdkStackFargateServiceLBSecurityGroupE310278F:80": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "FargateServiceSecurityGroupfromCdkStackFargateServiceLBSecurityGroupE310278F80EDB8A948"
-          }
-        ],
-        "/CdkStack/FargateService/Service/TaskCount/Target/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "FargateServiceTaskCountTarget294B63AC"
-          }
-        ],
-        "/CdkStack/FargateService/Service/TaskCount/Target/CpuScaling/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "FargateServiceTaskCountTargetCpuScalingAEE9D78C"
-          }
-        ],
-        "/CdkStack/FargateService/Service/TaskCount/Target/MemoryScaling/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "FargateServiceTaskCountTargetMemoryScalingC13CB959"
-          }
-        ],
-        "/CdkStack/LoadBalancerDNS": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "LoadBalancerDNS"
+            "data": "MongoDBSSMPolicyBDBFAF8B"
           }
         ],
         "/CdkStack/CDKMetadata/Default": [
