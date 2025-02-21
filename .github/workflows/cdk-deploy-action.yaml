@@ -5,6 +5,10 @@ on:
   push:
     branches:
       - main
+
+env:
+  MONGODB_USER: ${{secrets.MONGODB_USER}}
+  MONGODB_PASS: ${{secrets.MONGODB_PASS}}
     
 jobs:
   build:

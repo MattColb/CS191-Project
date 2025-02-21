@@ -8,13 +8,13 @@
         "id": "CdkStack",
         "path": "CdkStack",
         "children": {
-          "MyVpc": {
-            "id": "MyVpc",
-            "path": "CdkStack/MyVpc",
+          "VPC": {
+            "id": "VPC",
+            "path": "CdkStack/VPC",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "CdkStack/MyVpc/Resource",
+                "path": "CdkStack/VPC/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::VPC",
                   "aws:cdk:cloudformation:props": {
@@ -25,7 +25,7 @@
                     "tags": [
                       {
                         "key": "Name",
-                        "value": "CdkStack/MyVpc"
+                        "value": "CdkStack/VPC"
                       }
                     ]
                   }
@@ -37,11 +37,11 @@
               },
               "PublicSubnet1": {
                 "id": "PublicSubnet1",
-                "path": "CdkStack/MyVpc/PublicSubnet1",
+                "path": "CdkStack/VPC/PublicSubnet1",
                 "children": {
                   "Subnet": {
                     "id": "Subnet",
-                    "path": "CdkStack/MyVpc/PublicSubnet1/Subnet",
+                    "path": "CdkStack/VPC/PublicSubnet1/Subnet",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
                       "aws:cdk:cloudformation:props": {
@@ -66,11 +66,11 @@
                           },
                           {
                             "key": "Name",
-                            "value": "CdkStack/MyVpc/PublicSubnet1"
+                            "value": "CdkStack/VPC/PublicSubnet1"
                           }
                         ],
                         "vpcId": {
-                          "Ref": "MyVpcF9F0CA6F"
+                          "Ref": "VPCB9E5F0B4"
                         }
                       }
                     },
@@ -81,7 +81,7 @@
                   },
                   "Acl": {
                     "id": "Acl",
-                    "path": "CdkStack/MyVpc/PublicSubnet1/Acl",
+                    "path": "CdkStack/VPC/PublicSubnet1/Acl",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.173.1"
@@ -89,18 +89,18 @@
                   },
                   "RouteTable": {
                     "id": "RouteTable",
-                    "path": "CdkStack/MyVpc/PublicSubnet1/RouteTable",
+                    "path": "CdkStack/VPC/PublicSubnet1/RouteTable",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
                       "aws:cdk:cloudformation:props": {
                         "tags": [
                           {
                             "key": "Name",
-                            "value": "CdkStack/MyVpc/PublicSubnet1"
+                            "value": "CdkStack/VPC/PublicSubnet1"
                           }
                         ],
                         "vpcId": {
-                          "Ref": "MyVpcF9F0CA6F"
+                          "Ref": "VPCB9E5F0B4"
                         }
                       }
                     },
@@ -111,15 +111,15 @@
                   },
                   "RouteTableAssociation": {
                     "id": "RouteTableAssociation",
-                    "path": "CdkStack/MyVpc/PublicSubnet1/RouteTableAssociation",
+                    "path": "CdkStack/VPC/PublicSubnet1/RouteTableAssociation",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
                       "aws:cdk:cloudformation:props": {
                         "routeTableId": {
-                          "Ref": "MyVpcPublicSubnet1RouteTableC46AB2F4"
+                          "Ref": "VPCPublicSubnet1RouteTableFEE4B781"
                         },
                         "subnetId": {
-                          "Ref": "MyVpcPublicSubnet1SubnetF6608456"
+                          "Ref": "VPCPublicSubnet1SubnetB4246D30"
                         }
                       }
                     },
@@ -130,16 +130,16 @@
                   },
                   "DefaultRoute": {
                     "id": "DefaultRoute",
-                    "path": "CdkStack/MyVpc/PublicSubnet1/DefaultRoute",
+                    "path": "CdkStack/VPC/PublicSubnet1/DefaultRoute",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Route",
                       "aws:cdk:cloudformation:props": {
                         "destinationCidrBlock": "0.0.0.0/0",
                         "gatewayId": {
-                          "Ref": "MyVpcIGW5C4A4F63"
+                          "Ref": "VPCIGWB7E252D3"
                         },
                         "routeTableId": {
-                          "Ref": "MyVpcPublicSubnet1RouteTableC46AB2F4"
+                          "Ref": "VPCPublicSubnet1RouteTableFEE4B781"
                         }
                       }
                     },
@@ -150,7 +150,7 @@
                   },
                   "EIP": {
                     "id": "EIP",
-                    "path": "CdkStack/MyVpc/PublicSubnet1/EIP",
+                    "path": "CdkStack/VPC/PublicSubnet1/EIP",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
                       "aws:cdk:cloudformation:props": {
@@ -158,7 +158,7 @@
                         "tags": [
                           {
                             "key": "Name",
-                            "value": "CdkStack/MyVpc/PublicSubnet1"
+                            "value": "CdkStack/VPC/PublicSubnet1"
                           }
                         ]
                       }
@@ -170,23 +170,23 @@
                   },
                   "NATGateway": {
                     "id": "NATGateway",
-                    "path": "CdkStack/MyVpc/PublicSubnet1/NATGateway",
+                    "path": "CdkStack/VPC/PublicSubnet1/NATGateway",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
                       "aws:cdk:cloudformation:props": {
                         "allocationId": {
                           "Fn::GetAtt": [
-                            "MyVpcPublicSubnet1EIP096967CB",
+                            "VPCPublicSubnet1EIP6AD938E8",
                             "AllocationId"
                           ]
                         },
                         "subnetId": {
-                          "Ref": "MyVpcPublicSubnet1SubnetF6608456"
+                          "Ref": "VPCPublicSubnet1SubnetB4246D30"
                         },
                         "tags": [
                           {
                             "key": "Name",
-                            "value": "CdkStack/MyVpc/PublicSubnet1"
+                            "value": "CdkStack/VPC/PublicSubnet1"
                           }
                         ]
                       }
@@ -204,11 +204,11 @@
               },
               "PublicSubnet2": {
                 "id": "PublicSubnet2",
-                "path": "CdkStack/MyVpc/PublicSubnet2",
+                "path": "CdkStack/VPC/PublicSubnet2",
                 "children": {
                   "Subnet": {
                     "id": "Subnet",
-                    "path": "CdkStack/MyVpc/PublicSubnet2/Subnet",
+                    "path": "CdkStack/VPC/PublicSubnet2/Subnet",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
                       "aws:cdk:cloudformation:props": {
@@ -233,11 +233,11 @@
                           },
                           {
                             "key": "Name",
-                            "value": "CdkStack/MyVpc/PublicSubnet2"
+                            "value": "CdkStack/VPC/PublicSubnet2"
                           }
                         ],
                         "vpcId": {
-                          "Ref": "MyVpcF9F0CA6F"
+                          "Ref": "VPCB9E5F0B4"
                         }
                       }
                     },
@@ -248,7 +248,7 @@
                   },
                   "Acl": {
                     "id": "Acl",
-                    "path": "CdkStack/MyVpc/PublicSubnet2/Acl",
+                    "path": "CdkStack/VPC/PublicSubnet2/Acl",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.173.1"
@@ -256,18 +256,18 @@
                   },
                   "RouteTable": {
                     "id": "RouteTable",
-                    "path": "CdkStack/MyVpc/PublicSubnet2/RouteTable",
+                    "path": "CdkStack/VPC/PublicSubnet2/RouteTable",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
                       "aws:cdk:cloudformation:props": {
                         "tags": [
                           {
                             "key": "Name",
-                            "value": "CdkStack/MyVpc/PublicSubnet2"
+                            "value": "CdkStack/VPC/PublicSubnet2"
                           }
                         ],
                         "vpcId": {
-                          "Ref": "MyVpcF9F0CA6F"
+                          "Ref": "VPCB9E5F0B4"
                         }
                       }
                     },
@@ -278,15 +278,15 @@
                   },
                   "RouteTableAssociation": {
                     "id": "RouteTableAssociation",
-                    "path": "CdkStack/MyVpc/PublicSubnet2/RouteTableAssociation",
+                    "path": "CdkStack/VPC/PublicSubnet2/RouteTableAssociation",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
                       "aws:cdk:cloudformation:props": {
                         "routeTableId": {
-                          "Ref": "MyVpcPublicSubnet2RouteTable1DF17386"
+                          "Ref": "VPCPublicSubnet2RouteTable6F1A15F1"
                         },
                         "subnetId": {
-                          "Ref": "MyVpcPublicSubnet2Subnet492B6BFB"
+                          "Ref": "VPCPublicSubnet2Subnet74179F39"
                         }
                       }
                     },
@@ -297,69 +297,21 @@
                   },
                   "DefaultRoute": {
                     "id": "DefaultRoute",
-                    "path": "CdkStack/MyVpc/PublicSubnet2/DefaultRoute",
+                    "path": "CdkStack/VPC/PublicSubnet2/DefaultRoute",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Route",
                       "aws:cdk:cloudformation:props": {
                         "destinationCidrBlock": "0.0.0.0/0",
                         "gatewayId": {
-                          "Ref": "MyVpcIGW5C4A4F63"
+                          "Ref": "VPCIGWB7E252D3"
                         },
                         "routeTableId": {
-                          "Ref": "MyVpcPublicSubnet2RouteTable1DF17386"
+                          "Ref": "VPCPublicSubnet2RouteTable6F1A15F1"
                         }
                       }
                     },
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
-                      "version": "2.173.1"
-                    }
-                  },
-                  "EIP": {
-                    "id": "EIP",
-                    "path": "CdkStack/MyVpc/PublicSubnet2/EIP",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
-                      "aws:cdk:cloudformation:props": {
-                        "domain": "vpc",
-                        "tags": [
-                          {
-                            "key": "Name",
-                            "value": "CdkStack/MyVpc/PublicSubnet2"
-                          }
-                        ]
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_ec2.CfnEIP",
-                      "version": "2.173.1"
-                    }
-                  },
-                  "NATGateway": {
-                    "id": "NATGateway",
-                    "path": "CdkStack/MyVpc/PublicSubnet2/NATGateway",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
-                      "aws:cdk:cloudformation:props": {
-                        "allocationId": {
-                          "Fn::GetAtt": [
-                            "MyVpcPublicSubnet2EIP8CCBA239",
-                            "AllocationId"
-                          ]
-                        },
-                        "subnetId": {
-                          "Ref": "MyVpcPublicSubnet2Subnet492B6BFB"
-                        },
-                        "tags": [
-                          {
-                            "key": "Name",
-                            "value": "CdkStack/MyVpc/PublicSubnet2"
-                          }
-                        ]
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_ec2.CfnNatGateway",
                       "version": "2.173.1"
                     }
                   }
@@ -371,11 +323,11 @@
               },
               "PrivateSubnet1": {
                 "id": "PrivateSubnet1",
-                "path": "CdkStack/MyVpc/PrivateSubnet1",
+                "path": "CdkStack/VPC/PrivateSubnet1",
                 "children": {
                   "Subnet": {
                     "id": "Subnet",
-                    "path": "CdkStack/MyVpc/PrivateSubnet1/Subnet",
+                    "path": "CdkStack/VPC/PrivateSubnet1/Subnet",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
                       "aws:cdk:cloudformation:props": {
@@ -400,11 +352,11 @@
                           },
                           {
                             "key": "Name",
-                            "value": "CdkStack/MyVpc/PrivateSubnet1"
+                            "value": "CdkStack/VPC/PrivateSubnet1"
                           }
                         ],
                         "vpcId": {
-                          "Ref": "MyVpcF9F0CA6F"
+                          "Ref": "VPCB9E5F0B4"
                         }
                       }
                     },
@@ -415,7 +367,7 @@
                   },
                   "Acl": {
                     "id": "Acl",
-                    "path": "CdkStack/MyVpc/PrivateSubnet1/Acl",
+                    "path": "CdkStack/VPC/PrivateSubnet1/Acl",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.173.1"
@@ -423,18 +375,18 @@
                   },
                   "RouteTable": {
                     "id": "RouteTable",
-                    "path": "CdkStack/MyVpc/PrivateSubnet1/RouteTable",
+                    "path": "CdkStack/VPC/PrivateSubnet1/RouteTable",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
                       "aws:cdk:cloudformation:props": {
                         "tags": [
                           {
                             "key": "Name",
-                            "value": "CdkStack/MyVpc/PrivateSubnet1"
+                            "value": "CdkStack/VPC/PrivateSubnet1"
                           }
                         ],
                         "vpcId": {
-                          "Ref": "MyVpcF9F0CA6F"
+                          "Ref": "VPCB9E5F0B4"
                         }
                       }
                     },
@@ -445,15 +397,15 @@
                   },
                   "RouteTableAssociation": {
                     "id": "RouteTableAssociation",
-                    "path": "CdkStack/MyVpc/PrivateSubnet1/RouteTableAssociation",
+                    "path": "CdkStack/VPC/PrivateSubnet1/RouteTableAssociation",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
                       "aws:cdk:cloudformation:props": {
                         "routeTableId": {
-                          "Ref": "MyVpcPrivateSubnet1RouteTable8819E6E2"
+                          "Ref": "VPCPrivateSubnet1RouteTableBE8A6027"
                         },
                         "subnetId": {
-                          "Ref": "MyVpcPrivateSubnet1Subnet5057CF7E"
+                          "Ref": "VPCPrivateSubnet1Subnet8BCA10E0"
                         }
                       }
                     },
@@ -464,16 +416,16 @@
                   },
                   "DefaultRoute": {
                     "id": "DefaultRoute",
-                    "path": "CdkStack/MyVpc/PrivateSubnet1/DefaultRoute",
+                    "path": "CdkStack/VPC/PrivateSubnet1/DefaultRoute",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Route",
                       "aws:cdk:cloudformation:props": {
                         "destinationCidrBlock": "0.0.0.0/0",
                         "natGatewayId": {
-                          "Ref": "MyVpcPublicSubnet1NATGatewayAD3400C1"
+                          "Ref": "VPCPublicSubnet1NATGatewayE0556630"
                         },
                         "routeTableId": {
-                          "Ref": "MyVpcPrivateSubnet1RouteTable8819E6E2"
+                          "Ref": "VPCPrivateSubnet1RouteTableBE8A6027"
                         }
                       }
                     },
@@ -490,11 +442,11 @@
               },
               "PrivateSubnet2": {
                 "id": "PrivateSubnet2",
-                "path": "CdkStack/MyVpc/PrivateSubnet2",
+                "path": "CdkStack/VPC/PrivateSubnet2",
                 "children": {
                   "Subnet": {
                     "id": "Subnet",
-                    "path": "CdkStack/MyVpc/PrivateSubnet2/Subnet",
+                    "path": "CdkStack/VPC/PrivateSubnet2/Subnet",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
                       "aws:cdk:cloudformation:props": {
@@ -519,11 +471,11 @@
                           },
                           {
                             "key": "Name",
-                            "value": "CdkStack/MyVpc/PrivateSubnet2"
+                            "value": "CdkStack/VPC/PrivateSubnet2"
                           }
                         ],
                         "vpcId": {
-                          "Ref": "MyVpcF9F0CA6F"
+                          "Ref": "VPCB9E5F0B4"
                         }
                       }
                     },
@@ -534,7 +486,7 @@
                   },
                   "Acl": {
                     "id": "Acl",
-                    "path": "CdkStack/MyVpc/PrivateSubnet2/Acl",
+                    "path": "CdkStack/VPC/PrivateSubnet2/Acl",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.173.1"
@@ -542,18 +494,18 @@
                   },
                   "RouteTable": {
                     "id": "RouteTable",
-                    "path": "CdkStack/MyVpc/PrivateSubnet2/RouteTable",
+                    "path": "CdkStack/VPC/PrivateSubnet2/RouteTable",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
                       "aws:cdk:cloudformation:props": {
                         "tags": [
                           {
                             "key": "Name",
-                            "value": "CdkStack/MyVpc/PrivateSubnet2"
+                            "value": "CdkStack/VPC/PrivateSubnet2"
                           }
                         ],
                         "vpcId": {
-                          "Ref": "MyVpcF9F0CA6F"
+                          "Ref": "VPCB9E5F0B4"
                         }
                       }
                     },
@@ -564,15 +516,15 @@
                   },
                   "RouteTableAssociation": {
                     "id": "RouteTableAssociation",
-                    "path": "CdkStack/MyVpc/PrivateSubnet2/RouteTableAssociation",
+                    "path": "CdkStack/VPC/PrivateSubnet2/RouteTableAssociation",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
                       "aws:cdk:cloudformation:props": {
                         "routeTableId": {
-                          "Ref": "MyVpcPrivateSubnet2RouteTableCEDCEECE"
+                          "Ref": "VPCPrivateSubnet2RouteTable0A19E10E"
                         },
                         "subnetId": {
-                          "Ref": "MyVpcPrivateSubnet2Subnet0040C983"
+                          "Ref": "VPCPrivateSubnet2SubnetCFCDAA7A"
                         }
                       }
                     },
@@ -583,16 +535,16 @@
                   },
                   "DefaultRoute": {
                     "id": "DefaultRoute",
-                    "path": "CdkStack/MyVpc/PrivateSubnet2/DefaultRoute",
+                    "path": "CdkStack/VPC/PrivateSubnet2/DefaultRoute",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::Route",
                       "aws:cdk:cloudformation:props": {
                         "destinationCidrBlock": "0.0.0.0/0",
                         "natGatewayId": {
-                          "Ref": "MyVpcPublicSubnet2NATGateway91BFBEC9"
+                          "Ref": "VPCPublicSubnet1NATGatewayE0556630"
                         },
                         "routeTableId": {
-                          "Ref": "MyVpcPrivateSubnet2RouteTableCEDCEECE"
+                          "Ref": "VPCPrivateSubnet2RouteTable0A19E10E"
                         }
                       }
                     },
@@ -609,14 +561,14 @@
               },
               "IGW": {
                 "id": "IGW",
-                "path": "CdkStack/MyVpc/IGW",
+                "path": "CdkStack/VPC/IGW",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::InternetGateway",
                   "aws:cdk:cloudformation:props": {
                     "tags": [
                       {
                         "key": "Name",
-                        "value": "CdkStack/MyVpc"
+                        "value": "CdkStack/VPC"
                       }
                     ]
                   }
@@ -628,15 +580,15 @@
               },
               "VPCGW": {
                 "id": "VPCGW",
-                "path": "CdkStack/MyVpc/VPCGW",
+                "path": "CdkStack/VPC/VPCGW",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::VPCGatewayAttachment",
                   "aws:cdk:cloudformation:props": {
                     "internetGatewayId": {
-                      "Ref": "MyVpcIGW5C4A4F63"
+                      "Ref": "VPCIGWB7E252D3"
                     },
                     "vpcId": {
-                      "Ref": "MyVpcF9F0CA6F"
+                      "Ref": "VPCB9E5F0B4"
                     }
                   }
                 },
@@ -651,17 +603,17 @@
               "version": "2.173.1"
             }
           },
-          "MongoDBSecurityGroup": {
-            "id": "MongoDBSecurityGroup",
-            "path": "CdkStack/MongoDBSecurityGroup",
+          "MongoDB Security Group": {
+            "id": "MongoDB Security Group",
+            "path": "CdkStack/MongoDB Security Group",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "CdkStack/MongoDBSecurityGroup/Resource",
+                "path": "CdkStack/MongoDB Security Group/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                   "aws:cdk:cloudformation:props": {
-                    "groupDescription": "CdkStack/MongoDBSecurityGroup",
+                    "groupDescription": "CdkStack/MongoDB Security Group",
                     "securityGroupEgress": [
                       {
                         "cidrIp": "0.0.0.0/0",
@@ -676,10 +628,17 @@
                         "fromPort": 27017,
                         "toPort": 27017,
                         "description": "Allow MongoDB access from within the VPC"
+                      },
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "ipProtocol": "tcp",
+                        "fromPort": 22,
+                        "toPort": 22,
+                        "description": "Add SSH Access"
                       }
                     ],
                     "vpcId": {
-                      "Ref": "MyVpcF9F0CA6F"
+                      "Ref": "VPCB9E5F0B4"
                     }
                   }
                 },
@@ -730,80 +689,10 @@
                   "fqn": "aws-cdk-lib.aws_iam.CfnRole",
                   "version": "2.173.1"
                 }
-              },
-              "DefaultPolicy": {
-                "id": "DefaultPolicy",
-                "path": "CdkStack/MongoDBRole/DefaultPolicy",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "CdkStack/MongoDBRole/DefaultPolicy/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                      "aws:cdk:cloudformation:props": {
-                        "policyDocument": {
-                          "Statement": [
-                            {
-                              "Action": [
-                                "secretsmanager:GetSecretValue",
-                                "secretsmanager:DescribeSecret"
-                              ],
-                              "Effect": "Allow",
-                              "Resource": {
-                                "Ref": "MongoDBSecretC815593A"
-                              }
-                            }
-                          ],
-                          "Version": "2012-10-17"
-                        },
-                        "policyName": "MongoDBRoleDefaultPolicy23BCB18E",
-                        "roles": [
-                          {
-                            "Ref": "MongoDBRole99749068"
-                          }
-                        ]
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                      "version": "2.173.1"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_iam.Policy",
-                  "version": "2.173.1"
-                }
               }
             },
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_iam.Role",
-              "version": "2.173.1"
-            }
-          },
-          "MongoDBKeyPair": {
-            "id": "MongoDBKeyPair",
-            "path": "CdkStack/MongoDBKeyPair",
-            "children": {
-              "Resource": {
-                "id": "Resource",
-                "path": "CdkStack/MongoDBKeyPair/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::EC2::KeyPair",
-                  "aws:cdk:cloudformation:props": {
-                    "keyFormat": "pem",
-                    "keyName": "MongoDBKeyPair",
-                    "keyType": "rsa"
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_ec2.CfnKeyPair",
-                  "version": "2.173.1"
-                }
-              }
-            },
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_ec2.KeyPair",
               "version": "2.173.1"
             }
           },
@@ -843,35 +732,30 @@
                         }
                       ]
                     },
-                    "blockDeviceMappings": [
-                      {
-                        "deviceName": "/dev/xvda",
-                        "ebs": {
-                          "volumeSize": 20
-                        }
-                      }
-                    ],
                     "iamInstanceProfile": {
                       "Ref": "MongoDBInstanceProfile619F7ACD"
                     },
                     "imageId": {
-                      "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amikernel510hvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+                      "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter"
                     },
                     "instanceType": "t2.micro",
-                    "keyName": {
-                      "Ref": "MongoDBKeyPair958FB10A"
-                    },
-                    "securityGroupIds": [
+                    "networkInterfaces": [
                       {
-                        "Fn::GetAtt": [
-                          "MongoDBSecurityGroup561E7CDB",
-                          "GroupId"
+                        "deviceIndex": "0",
+                        "associatePublicIpAddress": true,
+                        "subnetId": {
+                          "Ref": "VPCPublicSubnet1SubnetB4246D30"
+                        },
+                        "groupSet": [
+                          {
+                            "Fn::GetAtt": [
+                              "MongoDBSecurityGroup12672B83",
+                              "GroupId"
+                            ]
+                          }
                         ]
                       }
                     ],
-                    "subnetId": {
-                      "Ref": "MyVpcPrivateSubnet1Subnet5057CF7E"
-                    },
                     "tags": [
                       {
                         "key": "Name",
@@ -879,7 +763,7 @@
                       }
                     ],
                     "userData": {
-                      "Fn::Base64": "#!/bin/bash\nyum install -y amazon-linux-extras\namazon-linux-extras enable mongodb4.0\nyum install -y mongodb-org\nservice mongod start"
+                      "Fn::Base64": "#!/bin/bash\nsudo yum update -y\nsudo tee /etc/yum.repos.d/mongodb-org-8.0.repo <<EOF\n[mongodb-org-8.0]\nname=MongoDB Repository\nbaseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/8.0/x86_64/\ngpgcheck=1\nenabled=1\ngpgkey=https://pgp.mongodb.com/server-8.0.asc\nEOF\nsudo yum install -y mongodb-org aws-cli jq\nsudo systemctl daemon-reload\nsudo systemctl start mongod\nsudo systemctl enable mongod\nsudo systemctl status mongod\nsudo chkconfig mongod on\nsleep 20\n\nmongosh <<EOF\nuse MY_DB\n\ndb.createCollection(\"COLLECTION_NAME\")\n\ndb.createUser({\nuser: 'buzzy_bee',\npwd: 'buzz',\nroles: [\n{ role: 'readWrite', db: 'TestDatabase' }\n]\n})\n\nEOF\n\nsudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf\nsudo systemctl restart mongod"
                     }
                   }
                 },
@@ -894,48 +778,19 @@
               "version": "2.173.1"
             }
           },
-          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": {
-            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
-            "path": "CdkStack/SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
+          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-x86_64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": {
+            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-x86_64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
+            "path": "CdkStack/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-x86_64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
               "version": "2.173.1"
             }
           },
-          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118": {
-            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118",
-            "path": "CdkStack/SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-kernel-5.10-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118",
+          "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-x86_64:C96584B6-F00A-464E-AD19-53AFF4B05118": {
+            "id": "SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-x86_64:C96584B6-F00A-464E-AD19-53AFF4B05118",
+            "path": "CdkStack/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-x86_64:C96584B6-F00A-464E-AD19-53AFF4B05118",
             "constructInfo": {
               "fqn": "aws-cdk-lib.Resource",
-              "version": "2.173.1"
-            }
-          },
-          "MongoDBSecret": {
-            "id": "MongoDBSecret",
-            "path": "CdkStack/MongoDBSecret",
-            "children": {
-              "Resource": {
-                "id": "Resource",
-                "path": "CdkStack/MongoDBSecret/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
-                  "aws:cdk:cloudformation:props": {
-                    "generateSecretString": {
-                      "excludeCharacters": "\"/@",
-                      "generateStringKey": "password",
-                      "passwordLength": 12,
-                      "secretStringTemplate": "{\"username\": \"admin\"}"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
-                  "version": "2.173.1"
-                }
-              }
-            },
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
               "version": "2.173.1"
             }
           },
@@ -953,10 +808,7 @@
                       "Statement": [
                         {
                           "Action": [
-                            "ssm:GetParameter",
-                            "ssm:GetParameters",
-                            "ssm:GetParametersByPath",
-                            "ssm:UpdateInstanceInformation",
+                            "ssm:*",
                             "ssmmessages:CreateControlChannel",
                             "ssmmessages:CreateDataChannel",
                             "ssmmessages:OpenControlChannel",
@@ -984,6 +836,14 @@
             },
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_iam.Policy",
+              "version": "2.173.1"
+            }
+          },
+          "MongoDBConnString": {
+            "id": "MongoDBConnString",
+            "path": "CdkStack/MongoDBConnString",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.173.1"
             }
           },

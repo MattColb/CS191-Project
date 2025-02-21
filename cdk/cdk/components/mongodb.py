@@ -2,75 +2,64 @@ from aws_cdk import (
     aws_ec2,
     aws_secretsmanager,
     aws_iam,
-    CfnOutput
+    CfnOutput,
+    aws_secretsmanager,
+    aws_ssm
 )
 from constructs import Construct
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 #Help from: https://medium.com/@davidnsoesie1/deploying-and-configuring-mongodb-on-ec2-with-aws-cdk-2530d8d5ec17
 
+#Help from https://bobbyhadz.com/blog/aws-cdk-ec2-instance-example
 
-def mongo_db_creation(stack:Construct, vpc):
+# Need: Proper connection
+
+def mongo_db_creation(scope:Construct, vpc):
 
     security_group = aws_ec2.SecurityGroup(
-        stack, 
-        "MongoDBSecurityGroup",
-        vpc=vpc
+        scope,
+        "MongoDB Security Group",
+        vpc=vpc,
+        allow_all_outbound=True,
+    )
+
+    security_group.add_ingress_rule(
+        peer=aws_ec2.Peer.any_ipv4(),
+        connection=aws_ec2.Port.tcp(27017),
+        description="Allow MongoDB access from within the VPC"
+    )
+
+    security_group.add_ingress_rule(
+        peer=aws_ec2.Peer.any_ipv4(),
+        connection=aws_ec2.Port.tcp(22),
+        description="Add SSH Access"
     )
 
     role = aws_iam.Role(
-        stack, "MongoDBRole",
+        scope, "MongoDBRole",
         assumed_by=aws_iam.ServicePrincipal("ec2.amazonaws.com")
     )
 
-    key_name = "MongoDBKeyPair"
-
-    key_pair = aws_ec2.KeyPair(
-        stack, "MongoDBKeyPair",
-        key_pair_name=key_name,
-        format=aws_ec2.KeyPairFormat.PEM,
-        type=aws_ec2.KeyPairType.RSA
-    )
-
-    # Create a documentdb with a mongodb connection and attach it to the fargate service
     ec2 = aws_ec2.Instance(
-        stack, "MongoDB",
-        instance_type=aws_ec2.InstanceType("t2.micro"),
-        machine_image=aws_ec2.MachineImage.latest_amazon_linux2(),
+        scope,
+        "MongoDB",
         vpc=vpc,
         role=role,
-        key_pair=key_pair,
         security_group=security_group,
-        block_devices=[
-            aws_ec2.BlockDevice(
-                device_name="/dev/xvda",
-                volume=aws_ec2.BlockDeviceVolume.ebs(
-                    volume_size=20
-                )
-            )
-        ]
+        instance_type=aws_ec2.InstanceType("t2.micro"),
+        machine_image=aws_ec2.MachineImage.latest_amazon_linux2023(),
+        vpc_subnets=aws_ec2.SubnetSelection(subnet_type=aws_ec2.SubnetType.PUBLIC),
+        associate_public_ip_address=True,
     )
-
-    credentials = aws_secretsmanager.Secret(
-        stack,
-        "MongoDBSecret",
-        generate_secret_string=aws_secretsmanager.SecretStringGenerator(
-            secret_string_template='{"username": "admin"}',
-            generate_string_key="password",
-            password_length=12,
-            exclude_characters='"/@'
-        )
-    )
-
-    credentials.grant_read(role)
 
     ssmPolicyDoc = aws_iam.PolicyDocument(
         statements=[
             aws_iam.PolicyStatement(
                 actions=[
-                    "ssm:GetParameter",
-                    "ssm:GetParameters",
-                    "ssm:GetParametersByPath",
-                    "ssm:UpdateInstanceInformation",
+                    "ssm:*",
                     "ssmmessages:CreateControlChannel",
                     "ssmmessages:CreateDataChannel",
                     "ssmmessages:OpenControlChannel",
@@ -84,22 +73,61 @@ def mongo_db_creation(stack:Construct, vpc):
     )
     
     ssmPolicy = aws_iam.Policy(
-        stack, "MongoDBSSMPolicy",
+        scope, "MongoDBSSMPolicy",
         document=ssmPolicyDoc
     )
 
     role.attach_inline_policy(ssmPolicy)
 
-    security_group.add_ingress_rule(
-        peer=aws_ec2.Peer.any_ipv4(),
-        connection=aws_ec2.Port.tcp(27017),
-        description="Allow MongoDB access from within the VPC"
-    )
-    
-    # Run script here
+    username = os.getenv("MONGODB_USER")
+    password = os.getenv("MONGODB_PASS")
+    #Copy it to remove the circular dependency?
+    public_ip = ec2.instance_public_ip[:]
+
+    # User Data to install MongoDB
+    #https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-amazon/
+    #Used this conversation with copilot to also help: https://github.com/copilot/share/40555334-4be0-8841-8902-2a43a0f86886
     ec2.user_data.add_commands(
-        "yum install -y amazon-linux-extras",
-        "amazon-linux-extras enable mongodb4.0",
-        "yum install -y mongodb-org",
-        "service mongod start"
+        "sudo yum update -y",
+        """sudo tee /etc/yum.repos.d/mongodb-org-8.0.repo <<EOF
+[mongodb-org-8.0]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/8.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://pgp.mongodb.com/server-8.0.asc
+EOF""",
+        "sudo yum install -y mongodb-org aws-cli jq",
+        "sudo systemctl daemon-reload",
+        "sudo systemctl start mongod",
+        "sudo systemctl enable mongod",
+        "sudo systemctl status mongod",
+
+        "sudo chkconfig mongod on",
+
+        "sleep 20",
+f"""
+mongosh <<EOF
+use MY_DB
+
+db.createCollection("COLLECTION_NAME")
+
+db.createUser({{
+user: '{username}',
+pwd: '{password}',
+roles: [
+{{ role: 'readWrite', db: 'TestDatabase' }}
+]
+}})
+
+EOF
+""",
+    "sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf",
+    "sudo systemctl restart mongod",
     )
+
+    mongo_connection = f"mongodb://{username}:{password}@{public_ip}/MY_DB"
+
+    CfnOutput(scope, "MongoDBConnString", value=mongo_connection)
+
+    return ec2
