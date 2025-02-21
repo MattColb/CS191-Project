@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, request, redirect
+from flask import Blueprint, render_template, abort, request, redirect, url_for
 from jinja2 import TemplateNotFound
 from helper_functions.login_register import LoginRegisterHandler
 
@@ -25,6 +25,10 @@ def register():
     if request.method == "POST":
         return LoginRegisterHandler.register(request)
     
+@login_register.route("/logout")
+def logout():
+    if request.method == "POST":
+        return redirect("/")
 
 @login_register.route('/')
 def index():

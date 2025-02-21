@@ -2,7 +2,7 @@ from aws_cdk import (
     aws_ec2,
     aws_secretsmanager,
     aws_iam,
-
+    CfnOutput
 )
 from constructs import Construct
 
