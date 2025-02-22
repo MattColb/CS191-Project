@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, session
 
 class LoginRegisterHandler:
     @staticmethod
@@ -7,4 +7,13 @@ class LoginRegisterHandler:
 
     @staticmethod
     def register(request):
+        
+        email = ""
+        username = "" 
+        password = ""
+        
+        session["logged_in"] = True
+
+    @staticmethod
+    def logout(request):
         pass

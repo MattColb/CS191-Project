@@ -110,8 +110,6 @@ f"""
 mongosh <<EOF
 use MY_DB
 
-db.createCollection("COLLECTION_NAME")
-
 db.createUser({{
 user: '{username}',
 pwd: '{password}',

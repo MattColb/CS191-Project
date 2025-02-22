@@ -5,13 +5,13 @@ WORKDIR /app
 COPY app.py requirements.txt ./
 
 #Adding the flask_blueprints
-COPY flask_blueprints ./
-COPY templates ./
-COPY buzzy_bee_db ./
+COPY flask_blueprints flask_blueprints 
+COPY templates templates 
+COPY buzzy_bee_db buzzy_bee_db 
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install buzzy_bee_db
+RUN pip install --upgrade ./buzzy_bee_db
 
 
 EXPOSE 5000

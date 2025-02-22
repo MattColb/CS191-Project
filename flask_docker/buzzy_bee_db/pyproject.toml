@@ -5,7 +5,6 @@ version = "0.0.1"
 authors = [
     { name = "Matt Colbert", email = "colbertmatt12@gmail.com" }
 ]
-dependencies = []
 
 [tool.poetry.dependencies]
 python = "^3.6"
