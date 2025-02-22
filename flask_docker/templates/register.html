@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block body %}
+{% block content %}
 
-<form action="/Register" method="POST">
+<form action="{{url_for('login_register.register')}}" method="POST">
     <input type="username" name="username" placeholder="Username">
     <input type="email" name="email" placeholder="example@example.com">
     <input type="password" name="password" placeholder="Password">

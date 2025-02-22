@@ -1,3 +1,6 @@
+import subprocess
+
+subprocess.run("pip install --upgrade ./buzzy_bee_db".split(" "))
 from flask import Flask, request, redirect
 from pymongo import MongoClient
 import os
