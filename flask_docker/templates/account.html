@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{{session.user_id}}<br>
+
+{% for account in sub_accounts  %}
+    {{account["sub_account_username"]}}
+    <form action="{{url_for('login_register.update_sub_account', sub_account_id=account['sub_account_id'])}}" method="GET">
+        <input type="submit" value="DELETE">
+    </form>
+
+    <form action="{{url_for('login_register.sub_account_login', sub_account_id=account['sub_account_id'])}}" method="GET">
+        <input type="submit" value="LOGIN">
+    </form>
+
+    <form action="{{url_for('login_register.update_sub_account', sub_account_id=account['sub_account_id'])}}" method="POST">
+        <input type="username" name="sub_account_name" placeholder="Username"><br>
+        <input type="submit" value="UPDATE">
+    </form>
+{% endfor %}
+
+<form action="/Subaccount" method="POST">
+    <input type="username" name="sub_account_name" placeholder="Username"><br>
+    <input type="submit" value="Create">
+</form>
+
+{% endblock %}

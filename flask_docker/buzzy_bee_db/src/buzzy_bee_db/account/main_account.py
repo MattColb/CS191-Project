@@ -8,7 +8,20 @@ curr_dir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(curr_dir, "../../../../.env"))
 
 def login(username, password):
-    pass
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client["buzzy_bee_db"]
+        collection = database["Users"]
+        query = collection.find({"username":username})
+        list_query = query.to_list()
+        if len(list_query) != 1:
+            return MainAccountResponse(success=False, message="Please enter a valid account username")
+        print(list_query)
+        if password != list_query[0].get("password"):
+            return MainAccountResponse(success=False, message="Incorrect password")
+        user_id = list_query[0].get("user_id")
+        return MainAccountResponse(success=True, user_id=user_id)
+    
 
 def register(username, password, email):
     connection = os.getenv("MONGODB_CONN_STRING")
@@ -24,12 +37,8 @@ def register(username, password, email):
             "user_id":user_id,
             "username":username,
             "password":password,
-            "email":email
+            "email":email,
+            "sub_accounts":[]
         })
-        print(response)
         return MainAccountResponse(success=True, user_id =user_id)
 
-    
-
-def logout():
-    pass

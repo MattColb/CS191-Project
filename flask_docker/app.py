@@ -7,6 +7,7 @@ import os
 from flask_blueprints.login_register import login_register
 
 app = Flask(__name__)
+app.secret_key="TestSecret"
 app.register_blueprint(login_register)
 
 if __name__ == "__main__":
