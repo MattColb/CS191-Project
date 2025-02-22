@@ -16,7 +16,6 @@ def fargate_creation(scope, vpc, connection_string):
         cpu=256,
         cluster=ecs_cluster,
         memory_limit_mib=512,
-        vpc=vpc,
         task_image_options=aws_ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
             image=aws_ecs.ContainerImage.from_asset("flask_docker"),
             environment={

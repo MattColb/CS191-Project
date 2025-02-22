@@ -128,4 +128,4 @@ EOF
 
     CfnOutput(scope, "MongoDBConnString", value=mongo_connection)
 
-    return ec2
+    return ec2, mongo_connection

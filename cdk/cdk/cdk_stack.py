@@ -7,6 +7,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 from cdk.components.mongodb import mongo_db_creation
+from cdk.components.fargate import fargate_creation
 
 
 class CdkStack(Stack):
@@ -34,4 +35,6 @@ class CdkStack(Stack):
         )
 
         #Creating the mongodb ec2
-        ec2 = mongo_db_creation(self, vpc)
+        ec2, mongo_connection = mongo_db_creation(self, vpc)
+
+        fargate_creation(self, vpc, mongo_connection)
