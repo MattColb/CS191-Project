@@ -108,15 +108,13 @@ EOF""",
         "sleep 20",
 f"""
 mongosh <<EOF
-use MY_DB
-
-db.createCollection("COLLECTION_NAME")
+use buzzy_bee_db
 
 db.createUser({{
 user: '{username}',
 pwd: '{password}',
 roles: [
-{{ role: 'readWrite', db: 'TestDatabase' }}
+{{ role: 'readWrite', db: 'buzzy_bee_db' }}
 ]
 }})
 
