@@ -8,7 +8,7 @@ load_dotenv()
 def create_cols():
     conn_string = os.getenv("MONGODB_CONN_STRING")
     client = MongoClient(conn_string)
-    my_db = client["MY_DB"] 
+    if "buzzy_bee_db"
     if "Users" in my_db.list_collection_names():
         return
     else:
