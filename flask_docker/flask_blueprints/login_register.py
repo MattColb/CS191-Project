@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, abort, request, redirect, url_for
 from jinja2 import TemplateNotFound
 from helper_functions.login_register import LoginRegisterHandler
+from buzzy_bee_db.mongo_init import test
 
 login_register = Blueprint('login_register', __name__,
                         template_folder='templates')
@@ -33,6 +34,7 @@ def logout():
 @login_register.route('/')
 def index():
     if request.method == "GET":
+        return test()
         try:
             return render_template('index.html')
         except TemplateNotFound:
