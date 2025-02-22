@@ -124,7 +124,7 @@ EOF
     "sudo systemctl restart mongod",
     )
 
-    mongo_connection = f"mongodb://{username}:{password}@{public_ip}/MY_DB"
+    mongo_connection = f"mongodb://{username}:{password}@{public_ip}/buzzy_bee_db"
 
     CfnOutput(scope, "MongoDBConnString", value=mongo_connection)
 
