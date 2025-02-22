@@ -108,13 +108,13 @@ EOF""",
         "sleep 20",
 f"""
 mongosh <<EOF
-use MY_DB
+use buzzy_bee_db
 
 db.createUser({{
 user: '{username}',
 pwd: '{password}',
 roles: [
-{{ role: 'readWrite', db: 'TestDatabase' }}
+{{ role: 'readWrite', db: 'buzzy_bee_db' }}
 ]
 }})
 
@@ -124,7 +124,7 @@ EOF
     "sudo systemctl restart mongod",
     )
 
-    mongo_connection = f"mongodb://{username}:{password}@{public_ip}/MY_DB"
+    mongo_connection = f"mongodb://{username}:{password}@{public_ip}/buzzy_bee_db"
 
     CfnOutput(scope, "MongoDBConnString", value=mongo_connection)
 
