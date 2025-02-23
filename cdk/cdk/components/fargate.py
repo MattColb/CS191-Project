@@ -6,7 +6,7 @@ from aws_cdk import (
 )
 
 
-def fargate_creation(scope, vpc):
+def fargate_creation(scope, vpc, connection_string):
     ecs_cluster = aws_ecs.Cluster(scope, "MyEcsCluster", vpc=vpc)
 
     # Create a docker container from the flask_docker folder
@@ -18,6 +18,9 @@ def fargate_creation(scope, vpc):
         memory_limit_mib=512,
         task_image_options=aws_ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
             image=aws_ecs.ContainerImage.from_asset("flask_docker"),
+            environment={
+                "MONGODB_CONN_STRING":connection_string
+            }
         ),
         public_load_balancer=True
     )

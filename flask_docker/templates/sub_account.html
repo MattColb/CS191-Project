@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{{session.user_id}}<br>
+
+{{session.sub_account_id}}
+
+<form action="{{url_for('login_register.sub_account_logout')}}" method="GET">
+    <input type="submit" value="LOGOUT">
+</form>
+
+{% endblock %}

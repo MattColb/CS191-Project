@@ -1,0 +1,16 @@
+[project]
+name = "buzzy_bee_db"
+description = "All of the Database Functions for the Buzzy Bee database"
+version = "0.0.1"
+authors = [
+    { name = "Matt Colbert", email = "colbertmatt12@gmail.com" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=1.0"]
+build-backend = "poetry.masonry.api"
