@@ -1,12 +1,19 @@
 from flask import request, session, url_for, flash, redirect
 from buzzy_bee_db.account.main_account import register, login
 from buzzy_bee_db.account.sub_account import create_sub_account, delete_sub_account, update_sub_account
+from hashlib import sha256
+
+def hash_password(password):
+    new_password = ""
+    new_password = sha256(str.encode(new_password)).hexdigest()
+    return new_password
 
 class LoginRegisterHandler:
     @staticmethod
     def login(request):
         username = request.form.get("username")
         password = request.form.get("password")
+        password = hash_password(password)
 
         if None in [username, password]:
             flash("Please enter all fields")
@@ -25,6 +32,7 @@ class LoginRegisterHandler:
         email = request.form.get("email")
         username = request.form.get("username")
         password = request.form.get("password")
+        password = hash_password(password)
         
         if None in [email, username, password]:
             flash("Please enter all fields")
@@ -39,8 +47,10 @@ class LoginRegisterHandler:
 
     @staticmethod
     def logout(request):
-        session.pop("user_id")
-        # session.pop("sub_account_id")
+        if session.get("user_id") != None:
+            session.pop("user_id")
+        if session.get("sub_account_id") != None:
+            session.pop("sub_account_id")
         return redirect("/")
 
     @staticmethod
