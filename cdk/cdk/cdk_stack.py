@@ -28,8 +28,8 @@ class CdkStack(Stack):
                     subnet_type=aws_ec2.SubnetType.PUBLIC
                 ),
                 aws_ec2.SubnetConfiguration(
-                    name="Private",
-                    subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
+                    name="Isolated",
+                    subnet_type=aws_ec2.SubnetType.PRIVATE_ISOLATED
                 )
             ]
         )
