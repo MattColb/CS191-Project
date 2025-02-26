@@ -66,9 +66,9 @@ def index():
     if request.method == "GET":
         return render_template("index.html")
 
-@login_register.route("/Subaccount", methods=["GET", "POST"])
+@login_register.route("/Account", methods=["GET", "POST"])
 @check_user_id_exists
-def sub_account():
+def account():
     if request.method == "GET":
         sub_accounts=get_sub_accounts(session.get("user_id")).sub_accounts
         return render_template("account.html", sub_accounts=sub_accounts)
@@ -90,5 +90,10 @@ def update_sub_account(sub_account_id):
 def sub_account_login(sub_account_id):
     if request.method == "GET":
         session["sub_account_id"] = sub_account_id
-        # Will redirect to sub account page
+        return redirect(url_for("login_register.sub_account"))
+        
+
+@login_register.route("/Subaccount", methods=["GET"])
+def sub_account():
+    if request.method == "GET":
         return render_template("sub_account.html")
