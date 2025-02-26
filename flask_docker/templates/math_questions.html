@@ -17,11 +17,7 @@
 
 {{question["question"]}}
 
-<<<<<<< HEAD
-<form action="{{url_for('math.math_questions', answer=question['answer'], start_dt=start_dt, question_id=question['question_id'], qtype=qtype)}}" method="POST">
-=======
 <form action="{{url_for('math.math_questions', answer=question['answer'], start_dt=start_dt, question_id=question['question_id'])}}" method="POST">
->>>>>>> 4ade809 (Very sloppy first attempt at a couple of different types of questions)
     <label name="question">{{question["question"]}}</label>
     <input type="text" name="user_answer">
     <input type="submit" value="ANSWER">

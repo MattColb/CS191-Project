@@ -70,11 +70,7 @@ def index():
         return render_template("index.html")
 
 @login_register.route("/Account", methods=["GET", "POST"])
-<<<<<<< HEAD
-@check_user_id_not_exists
-=======
 @check_user_id_exists
->>>>>>> 4ade809 (Very sloppy first attempt at a couple of different types of questions)
 def account():
     if request.method == "GET":
         sub_accounts=get_sub_accounts(session.get("user_id")).sub_accounts
@@ -101,10 +97,6 @@ def sub_account_login(sub_account_id):
         
 
 @login_register.route("/Subaccount", methods=["GET"])
-<<<<<<< HEAD
-@check_user_id_not_exists
-=======
->>>>>>> 4ade809 (Very sloppy first attempt at a couple of different types of questions)
 def sub_account():
     if request.method == "GET":
         return render_template("sub_account.html")
