@@ -2,9 +2,6 @@ name: AWS CDK Deploy
 
 on: 
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 env:
   MONGODB_USER: ${{secrets.MONGODB_USER}}
