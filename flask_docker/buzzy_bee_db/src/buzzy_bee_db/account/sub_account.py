@@ -24,9 +24,18 @@ def create_sub_account(user_id, username):
         database = client["buzzy_bee_db"]
         collection = database["Users"]
         sub_account_id = str(uuid4())
+
+        new_sub_account = {
+            "sub_account_id": sub_account_id,
+            "sub_account_username": username,
+            "name": "",
+            "score_in_math": 0,
+            "math_questions_answered": []
+        }
+
         collection.update_one(
-            {"user_id":user_id},
-            {"$push":{"sub_accounts": {"sub_account_id":sub_account_id, "sub_account_username":username}}}
+            {"user_id": user_id},
+            {"$push": {"sub_accounts": new_sub_account}}
         )
         return CreateSubAccount(sub_account_id=sub_account_id, success=True)
 
@@ -41,18 +50,54 @@ def delete_sub_account(user_id, sub_account_id):
         )
         return DBResponse(success=True)
 
-#Needs to be updated
-def update_sub_account(user_id, sub_account_id, sub_account_name):
+"""
+# Update subaccount info
+def update_sub_account(user_id, sub_account_id, name=None, score_in_math=None):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client["buzzy_bee_db"]
         collection = database["Users"]
+
+        update_fields = {}
+        if name:
+            update_fields["sub_accounts.$.name"] = name
+        if score_in_math is not None:
+            update_fields["sub_accounts.$.score_in_math"] = score_in_math
+
         result = collection.update_one(
             {"user_id": user_id},
-            {"$set": {"sub_accounts.$[elem].sub_account_name": sub_account_name}},
+            {"$set": update_fields},
             array_filters=[{"elem.sub_account_id": sub_account_id}]
         )
+
         print(result)
         if result.matched_count > 0:
             return DBResponse(success=True)
-        return DBResponse(success=False)
+        return DBResponse(success=False, message="Sub-account not found")
+
+# Add a question answered buy subaccount user
+def add_question_answered(user_id, sub_account_id, question_id, time_taken, correct):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client["buzzy_bee_db"]
+        collection = database["Users"]
+
+        question_data = {
+            "question_id": question_id,
+            "time_taken": time_taken,
+            "correct": correct
+        }
+
+        result = collection.update_one(
+            {"user_id": user_id, "sub_accounts.sub_account_id": sub_account_id},
+            {"$push": {"sub_accounts.$.math_questions_answered": question_data}}
+        )
+
+        if result.matched_count > 0:
+            return DBResponse(success=True)
+        return DBResponse(success=False, message="Sub-account or question not found")
+
+# Adjust Math Score
+def adjust_score(user_id, sub_account_id, score):
+
+"""
