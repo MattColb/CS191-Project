@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<a href="{{url_for('math.math_questions', qtype='Addition')}}">Addition</a>
+<a href="{{url_for('math.math_questions', qtype='Subtraction')}}">Subtraction</a>
+<a href="{{url_for('math.math_questions', qtype='Multiplication')}}">Multiplication</a>
+<a href="{{url_for('math.math_questions', qtype='Division')}}">Division</a>
+<a href="{{url_for('math.math_questions', qtype='All')}}">All</a>
+
+
+{% endblock %}
