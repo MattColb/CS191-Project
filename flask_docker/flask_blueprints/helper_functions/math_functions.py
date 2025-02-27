@@ -3,6 +3,7 @@ import hashlib
 from .math_question_generator import *
 from flask import flash, redirect, url_for
 import datetime
+from buzzy_bee_db.question.question import add_question, get_question
 
 # Idea: Generate Question, (Need to figure out a RL alg to decide when to create new questions and when to find closest match in database)
 # Add to database if needed, 
@@ -21,16 +22,25 @@ def create_question(qtype, rating):
         raise Exception
 
     if qtype == "All":
-        response = random.choice(list(MATH_QUESTIONS_FUNCTIONS.values()))(rating)    
+        qtype = random.choice(list(MATH_QUESTIONS_FUNCTIONS.keys()))
     response = MATH_QUESTIONS_FUNCTIONS[qtype](rating)
-    add_question(response)
+    create_new_question(response, qtype)
     return response
 
 
-def add_question(question):
+def create_new_question(response, qtype):
+    question_id = response.get("question_id")
+    if get_question(question_id).success == True:
+        return
     #Check if question hash exists
     #If not, post it
-    pass
+    question_id = response.get("question_id")
+    question = response.get("question")
+    answer = response.get("answer")
+    category = qtype
+    difficulty = response.get("rating")
+    add_question(question_id, question, answer, category, difficulty)
+    return
 
 def get_best_fit_question(subject, rating):
     # Pull questions that fit and ones that are in the user's history
@@ -59,8 +69,15 @@ def user_response(request, qtype):
 
     seconds_taken = round((end_dt - start_dt).total_seconds(), 2)
 
-    answer = get_answer(question_id)
-    answer = 1
+    try:
+        user_answer = float(user_answer)
+    except:
+        flash("Please enter a number")
+        return redirect(url_for("math.math_questions", _method="GET", qtype=qtype))
+
+    answer = get_question(question_id).question_id
+    answer = answer.get("answer")
+
     if user_answer == answer:
         flash("Correct")
     else:
@@ -78,5 +95,6 @@ def update_ratings(question_id, response_information):
     # (Try and keep track of summary statistics?)
     # If it took the user a much less amount of time to answer the question than they typically needed, bigger increase
     # Consider streakiness (If more people have gotten it right recently it's easier, more wrong, harder). If you've gotten more right, it's easier, etc.
-    account_id = session.get("account_id")
-    sub_account_id = session.get("sub_account_id")
+    # account_id = session.get("account_id")
+    # sub_account_id = session.get("sub_account_id")
+    pass

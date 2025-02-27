@@ -1,6 +1,6 @@
 """ import subprocess
 
-# subprocess.run("pip install --upgrade ./buzzy_bee_db".split(" "))
+subprocess.run("pip install --upgrade ./buzzy_bee_db".split(" "))
 from flask import Flask, request, redirect
 subprocess.run("pip install --upgrade pymongo".split(" "))
 import os

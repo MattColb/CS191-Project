@@ -87,9 +87,8 @@ class LoginRegisterHandler:
         if sub_account_name == None:
             flash("Please enter all fields")
             return redirect(url_for("login_register.account", _method="GET"))
-        response = update_sub_account(user_id, sub_account_id, sub_account_name)
+        # response = update_sub_account(user_id, sub_account_id, sub_account_name)
 
-        if response.success == False:
-            print("NO MATCHING")
-            flash(response.message)
+        # if response.success == False:
+        #     flash(response.message)
         return redirect(url_for("login_register.account", _method="GET"))
