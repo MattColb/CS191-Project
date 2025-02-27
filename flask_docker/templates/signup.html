@@ -11,18 +11,18 @@
     <nav class="navbar">
         <h1 class="logo">🐝 BuzzyBee</h1>
         <div class="button">
-            <a href="{{ url_for('index') }}" class="btn login">Home</a>
+            <a href="{{ url_for('login_register.index') }}" class="btn login">Home</a>
         </div>
     </nav>
     <section class="auth-container">
         <h2>Create a BuzzyBee Account</h2>
-        <form class="auth-form">
-            <input type="text" placeholder="Full Name" required>
-            <input type="email" placeholder="Email" required>
-            <input type="password" placeholder="Password" required>
+        <form class="auth-form" target="{{url_for('login_register.register')}}" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
             <button type="submit" class="btn signup">Sign Up</button>
         </form>
-        <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+        <p>Already have an account? <a href="{{ url_for('login_register.login') }}">Login</a></p>
     </section>
 </body>
 </html>

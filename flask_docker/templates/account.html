@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script>
         function logout() {
-            window.location.href = "{{ url_for('index') }}";
+            window.location.href = "{{ url_for('login_register.logout') }}";
         }
 
         function goToSubAccount(profileName) {
             localStorage.setItem("selectedProfile", profileName);
-            window.location.href = "{{ url_for('sub_account') }}";
+            window.location.href = "{{ url_for('login_register.sub_account') }}";
         }
     </script>
 </head>
@@ -45,6 +45,22 @@
                 <p>Add Kid</p>
             </div>
         </div>
+        
+
+        <!-- 
+        
+        Use these as guides for adding this functionality to this page
+
+        <form method="POST" target="{{url_for('login_register.account')}}">
+            <input name="sub_account_name">
+        </form>
+
+        {% for user in sub_accounts %}
+            {{user}}
+        {% endfor %}
+        
+        
+        -->
         <button class="manage-btn">Manage Profiles</button>
     </div>
 </body>

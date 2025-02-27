@@ -54,7 +54,7 @@ def login():
 @check_user_id_exists
 def register():
     if request.method == 'GET':
-        return render_template('register.html')
+        return render_template('signup.html')
     if request.method == "POST":
         return LoginRegisterHandler.register(request)
     
