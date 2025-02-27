@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!-- sub_account.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -30,3 +31,17 @@
     </div>
 </body>
 </html>
+=======
+{% extends "base.html" %}
+
+{% block content %}
+
+{{session.user_id}}<br>
+
+{{session.sub_account_id}}
+
+<a href="{{url_for('login_register.sub_account')}}">HOME</a>
+<a href="{{url_for('math.math_page')}}">MATH</a>
+
+{% endblock %}
+>>>>>>> 4ade809 (Very sloppy first attempt at a couple of different types of questions)
