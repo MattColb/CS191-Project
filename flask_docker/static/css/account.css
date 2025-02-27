@@ -31,7 +31,7 @@ body {
 .nav-right {
     display: flex;
     align-items: center;
-    margin-right: 30px; /* Prevents the icon from going offscreen */
+    margin-right: 35px; /* Prevents the icon from going offscreen */
 }
 
 .logout-icon {
