@@ -1,28 +1,51 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Accounts</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        function logout() {
+            window.location.href = "{{ url_for('index') }}";
+        }
 
-{% block content %}
-
-{{session.user_id}}<br>
-
-{% for account in sub_accounts  %}
-    {{account["sub_account_username"]}}
-    <form action="{{url_for('login_register.update_sub_account', sub_account_id=account['sub_account_id'])}}" method="GET">
-        <input type="submit" value="DELETE">
-    </form>
-
-    <form action="{{url_for('login_register.sub_account_login', sub_account_id=account['sub_account_id'])}}" method="GET">
-        <input type="submit" value="LOGIN">
-    </form>
-
-    <form action="{{url_for('login_register.update_sub_account', sub_account_id=account['sub_account_id'])}}" method="POST">
-        <input type="username" name="sub_account_name" placeholder="Username"><br>
-        <input type="submit" value="UPDATE">
-    </form>
-{% endfor %}
-
-<form action="/Subaccount" method="POST">
-    <input type="username" name="sub_account_name" placeholder="Username"><br>
-    <input type="submit" value="Create">
-</form>
-
-{% endblock %}
+        function goToSubAccount(profileName) {
+            localStorage.setItem("selectedProfile", profileName);
+            window.location.href = "{{ url_for('sub_account') }}";
+        }
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <h1 class="logo">🐝 BuzzyBee</h1>
+        <div class="button"> 
+        <div class="nav-right">
+            <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
+        </div>
+    </nav>
+    <div class="container">
+        <h1>Who's studying?</h1>
+        <div class="profiles">
+            <div class="profile" onclick="goToSubAccount('Emma')">
+                <img src="{{ url_for('static', filename='images/kid1.png') }}" alt="Kid 1">
+                <p>Emma</p>
+            </div>
+            <div class="profile" onclick="goToSubAccount('Oliver')">
+                <img src="{{ url_for('static', filename='images/kid2.png') }}" alt="Kid 2">
+                <p>Oliver</p>
+            </div>
+            <div class="profile" onclick="goToSubAccount('Sophia')">
+                <img src="{{ url_for('static', filename='images/kid3.png') }}" alt="Kid 3">
+                <p>Sophia</p>
+            </div>
+            <div class="profile add-profile">
+                <div class="add-icon">+</div>
+                <p>Add Kid</p>
+            </div>
+        </div>
+        <button class="manage-btn">Manage Profiles</button>
+    </div>
+</body>
+</html>

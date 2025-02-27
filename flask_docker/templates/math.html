@@ -1,11 +1,11 @@
-<!-- sub_account.html -->
+<!-- math.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sub Account</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sub_account.css') }}">
+    <title>Math Games</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/math.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script>
         function logout() {
@@ -21,11 +21,12 @@
         </div>
     </nav>
     <div class="container">
-        <h1>Choose a Subject</h1>
+        <h1>Choose a Math Game</h1>
         <div class="game-options">
-            <a href="{{ url_for('math') }}" class="game-card">Math</a>
-            <a href="#" class="game-card">Spelling</a>
-            <a href="#" class="game-card">Writing</a>
+            <a href="#" class="game-card">Addition</a>
+            <a href="#" class="game-card">Subtraction</a>
+            <a href="#" class="game-card">Multiplication</a>
+            <a href="#" class="game-card">Division</a>
         </div>
     </div>
 </body>
