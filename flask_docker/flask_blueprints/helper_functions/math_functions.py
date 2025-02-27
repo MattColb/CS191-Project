@@ -11,7 +11,12 @@ import datetime
 # add to person's question history (correct, time, question id)
 # Adjust question and person ratings (Big question mark)
 
+#DONE
 def create_question(qtype, rating):
+    """
+    Take in the question type and rating, create a question, add it to the db, and return it.
+    
+    """
     if qtype not in MATH_QUESTIONS_TYPES:
         raise Exception
 
@@ -20,6 +25,7 @@ def create_question(qtype, rating):
     response = MATH_QUESTIONS_FUNCTIONS[qtype](rating)
     add_question(response)
     return response
+
 
 def add_question(question):
     #Check if question hash exists
@@ -63,7 +69,7 @@ def user_response(request, qtype):
     return redirect(url_for("math.math_questions", _method="GET", qtype=qtype))
 
 def get_answer(question_id):
-    #Query tings
+    #Query things
     pass
 
 def update_ratings(question_id, response_information):
