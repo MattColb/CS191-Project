@@ -9,40 +9,41 @@ login_register = Blueprint('login_register', __name__,
 
 
 # Can adjust as needed
-def check_user_id_exists(func):
+def check_user_id_not_exists(func):
     @wraps(func)
     def check_id_exists(*kwargs, **args):
         if session.get("user_id") == None:
-            return redirect("/")
+            return redirect("/Login")
         return func(*kwargs, **args)
         
     return check_id_exists
 
-def check_user_id_not_exists(func):
+def check_user_id_exists(func):
     @wraps(func)
     def check_user_id_dne(*kwargs, **args):
         if session.get("user_id") != None:
-            return redirect("/")
+            return redirect("/Account")
         return func(*kwargs, **args)
     return check_user_id_dne
 
-def check_sub_account_exists(func):
+def check_sub_account_not_exists(func):
     @wraps(func)
     def check_sub_exists(*kwargs, **args):
         if session.get("sub_account_id") == None:
-            return redirect("/")
+            return redirect("/Account")
         return func(*kwargs, **args)
     return check_sub_exists
 
-def check_sub_account_not_exists(func):
+def check_sub_account_exists(func):
     @wraps(func)
     def check_sub_not_exists(*kwagrs, **args):
         if session.get("sub_account_id") != None:
-            return redirect("/")
+            return redirect("/Subaccount")
         return func(*kwargs, **args)
 
 
 @login_register.route('/Login', methods=["GET", "POST"])
+@check_user_id_exists
 def login():
     if request.method == "GET":
         return render_template('login.html')
@@ -50,6 +51,7 @@ def login():
         return LoginRegisterHandler.login(request)
 
 @login_register.route('/Register', methods=["GET", "POST"])
+@check_user_id_exists
 def register():
     if request.method == 'GET':
         return render_template('register.html')
@@ -57,6 +59,7 @@ def register():
         return LoginRegisterHandler.register(request)
     
 @login_register.route("/Logout", methods=["GET"])
+@check_user_id_not_exists
 def logout():
     if request.method == "GET":
         return LoginRegisterHandler.logout(request)
@@ -67,7 +70,7 @@ def index():
         return render_template("index.html")
 
 @login_register.route("/Account", methods=["GET", "POST"])
-@check_user_id_exists
+@check_user_id_not_exists
 def account():
     if request.method == "GET":
         sub_accounts=get_sub_accounts(session.get("user_id")).sub_accounts
@@ -76,7 +79,7 @@ def account():
         return LoginRegisterHandler.post_sub_account(request)
 
 @login_register.route("/Subaccount/<sub_account_id>", methods=["POST", "GET"])
-@check_user_id_exists
+@check_user_id_not_exists
 def update_sub_account(sub_account_id):
     #UPDATE
     if request.method == "POST":
@@ -86,7 +89,7 @@ def update_sub_account(sub_account_id):
         return LoginRegisterHandler.del_sub_account(sub_account_id)
 
 @login_register.route("/Subaccount/Login/<sub_account_id>", methods=["GET"])
-@check_user_id_exists
+@check_user_id_not_exists
 def sub_account_login(sub_account_id):
     if request.method == "GET":
         session["sub_account_id"] = sub_account_id
@@ -94,6 +97,7 @@ def sub_account_login(sub_account_id):
         
 
 @login_register.route("/Subaccount", methods=["GET"])
+@check_user_id_not_exists
 def sub_account():
     if request.method == "GET":
         return render_template("sub_account.html")

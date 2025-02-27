@@ -27,7 +27,7 @@ def create_addition(rating):
 
     question_id = hashlib.sha256(str.encode(hash_question)).hexdigest()
 
-    f = {"operands":operands, "question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
 
     return f
 
@@ -54,7 +54,7 @@ def create_multiplication(rating):
 
     question_id = hashlib.sha256(str.encode(hash_question)).hexdigest()
 
-    f = {"operands":operands, "question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
 
     return f
 
@@ -71,7 +71,7 @@ def create_subtraction(rating):
 
     question_id = hashlib.sha256(str.encode(question)).hexdigest()
 
-    f = {"operands":operands, "question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
 
     return f
 
@@ -87,7 +87,7 @@ def create_division(rating):
 
     question_id = hashlib.sha256(str.encode(question)).hexdigest()
 
-    f = {"operands":operands, "question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
     
     return f
 
