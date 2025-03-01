@@ -156,3 +156,55 @@ h1 {
     box-shadow: inset 0 1px 0 #FFE5C4, inset 0 -3px 0 #ebd58d;
 }
 
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+ }
+ 
+ .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+ }
+ 
+ .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+ }
+ 
+ #sub-account-name {
+    width: 80%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+ }
+ 
+ #add-subaccount {
+    background-color: #f0e0ad;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+ }
+ 
+ #add-subaccount:hover {
+    background-color: #ebd58d;
+ }
+ 

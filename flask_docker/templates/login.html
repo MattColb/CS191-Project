@@ -6,12 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-    <script>
-        // Redirect to account.html when the login button is clicked
-        function redirectToAccount(event) {
-            window.location.href = "{{ url_for('login_register.account') }}"; // Redirect to account page
-        }
-    </script>
+
 </head>
 <body>
     <nav class="navbar">
@@ -25,7 +20,7 @@
         <form class="auth-form" method="POST" target="{{url_for('login_register.login')}}">
             <input type="text" placeholder="Username" name="username"required>
             <input type="password" placeholder="Password" name="password" required>
-            <button type="submit" class="btn signup" onclick="redirectToAccount(event)">Login</button>
+            <button type="submit" class="btn signup">Login</button>
         </form>
         <p>Don't have an account? <a href="{{ url_for('login_register.register') }}">Sign Up</a></p>
     </section>
