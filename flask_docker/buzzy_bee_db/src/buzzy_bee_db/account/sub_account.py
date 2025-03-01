@@ -1,4 +1,4 @@
-from .sub_account_response import GetSubAccounts, CreateSubAccount
+from .sub_account_response import GetSubAccounts, CreateSubAccount, GetSubAccountResponses, RecordSubAccountResponse
 from ..db_response import DBResponse
 import os
 from dotenv import load_dotenv
@@ -13,10 +13,11 @@ def get_sub_accounts(user_id):
     with MongoClient(connection) as client:
         database = client["buzzy_bee_db"]
         collection = database["Users"]
-        query = collection.find({"user_id":user_id})
-        list_query = query.to_list()
-        sub_accounts = list_query[0]["sub_accounts"]
-        return GetSubAccounts(success=True, sub_accounts=sub_accounts)
+        user_doc = collection.find_one({"user_id": user_id})
+
+        if user_doc and "sub_accounts" in user_doc:
+            return GetSubAccounts(success=True, sub_accounts=user_doc["sub_accounts"])
+        return GetSubAccounts(success=False, message="User not found or no sub-accounts")
 
 def create_sub_account(user_id, username):
     connection = os.getenv("MONGODB_CONN_STRING")
@@ -33,25 +34,29 @@ def create_sub_account(user_id, username):
             "math_questions_answered": []
         }
 
-        collection.update_one(
+        result = collection.update_one(
             {"user_id": user_id},
             {"$push": {"sub_accounts": new_sub_account}}
         )
-        return CreateSubAccount(sub_account_id=sub_account_id, success=True)
+
+        if result.matched_count > 0:
+            return CreateSubAccount(sub_account_id=sub_account_id, success=True)
+        return CreateSubAccount(success=False, message="User not found")
 
 def delete_sub_account(user_id, sub_account_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client["buzzy_bee_db"]
         collection = database["Users"]
-        collection.update_one(
-            {"user_id":user_id},
-            {"$pull":{"sub_accounts":{"sub_account_id":sub_account_id}}}
+        result = collection.update_one(
+            {"user_id": user_id},
+            {"$pull": {"sub_accounts": {"sub_account_id": sub_account_id}}}
         )
-        return DBResponse(success=True)
 
-"""
-# Update subaccount info
+        if result.modified_count > 0:
+            return DBResponse(success=True)
+        return DBResponse(success=False, message="Sub-account not found")
+
 def update_sub_account(user_id, sub_account_id, name=None, score_in_math=None):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
@@ -65,39 +70,11 @@ def update_sub_account(user_id, sub_account_id, name=None, score_in_math=None):
             update_fields["sub_accounts.$.score_in_math"] = score_in_math
 
         result = collection.update_one(
-            {"user_id": user_id},
-            {"$set": update_fields},
-            array_filters=[{"elem.sub_account_id": sub_account_id}]
+            {"user_id": user_id, "sub_accounts.sub_account_id": sub_account_id},
+            {"$set": update_fields}
         )
 
-        print(result)
         if result.matched_count > 0:
             return DBResponse(success=True)
         return DBResponse(success=False, message="Sub-account not found")
 
-# Add a question answered buy subaccount user
-def add_question_answered(user_id, sub_account_id, question_id, time_taken, correct):
-    connection = os.getenv("MONGODB_CONN_STRING")
-    with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
-        collection = database["Users"]
-
-        question_data = {
-            "question_id": question_id,
-            "time_taken": time_taken,
-            "correct": correct
-        }
-
-        result = collection.update_one(
-            {"user_id": user_id, "sub_accounts.sub_account_id": sub_account_id},
-            {"$push": {"sub_accounts.$.math_questions_answered": question_data}}
-        )
-
-        if result.matched_count > 0:
-            return DBResponse(success=True)
-        return DBResponse(success=False, message="Sub-account or question not found")
-
-# Adjust Math Score
-def adjust_score(user_id, sub_account_id, score):
-
-"""
