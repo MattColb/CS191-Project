@@ -7,9 +7,13 @@ from buzzy_bee_db.question.question import add_question, get_question, update_di
 from buzzy_bee_db.account.sub_account import update_sub_account
 from buzzy_bee_db.question_user.question_user import get_question_responses, record_question_response, get_sub_account_responses
 
-def get_best_fit_question(subject, rating):
-    # Pull questions that fit and ones that are in the user's history
-    # If there are some that they missed recently, try and feed them back until they get them
+def get_best_question(subject, rating):
+    #Better way to do this
+    #Can't get around refreshing for an easier question
+    #And if there is a good fit for a question, use it, if not, generate
+    if session.get("current_question") != None:
+        response = session.get("current_question")
+        return response
     rng = random.random()
     response = None
     if rng <= .25:
@@ -35,6 +39,30 @@ def get_best_fit_question(subject, rating):
     return response
 
 
+#DONE
+def create_question(qtype, rating):
+    if qtype not in MATH_QUESTIONS_TYPES:
+        raise Exception
+
+    response = MATH_QUESTIONS_FUNCTIONS[qtype](rating)
+    response[""]
+    question_id = response.get("question_id")
+    if get_question(question_id).success == False:
+        add_question(question_id, response.get("question"), response.get("answer"), qtype, response.get("rating"))
+    return response
+
+
+def get_percentile(question_id, user_time):
+    response = get_question_responses(question_id)
+    question_responses = response.responses
+    time_taken = [q["time_taken"] for q in question_responses]
+    if len(time_taken) == 0:
+        return 100
+    time_taken.sort()
+    count = sum(1 for x in time_taken if x <= user_time)
+    percentile = round((count/ len(time_taken))*100, 2)
+    return percentile
+
 def update_ratings(question_id, percentile, answered_correctly):
     # If question is answered wrong, the question rating always goes up
     # If question is answered right, get the amount of time that it took them
@@ -55,40 +83,6 @@ def update_ratings(question_id, percentile, answered_correctly):
     update_difficulty(question_id, new_question_difficulty)
 
     return new_user_difficulty, new_question_difficulty
-
-def get_best_question(subject, rating):
-    #Better way to do this
-    #Can't get around refreshing for an easier question
-    #And if there is a good fit for a question, use it, if not, generate
-    if session.get("current_question") != None:
-        response = session.get("current_question")
-        return response
-    return get_best_fit_question(subject, rating)
-
-#DONE
-def create_question(qtype, rating):
-    if qtype not in MATH_QUESTIONS_TYPES:
-        raise Exception
-
-    if qtype == "All":
-        qtype = random.choice(list(MATH_QUESTIONS_FUNCTIONS.keys()))
-    response = MATH_QUESTIONS_FUNCTIONS[qtype](rating)
-    question_id = response.get("question_id")
-    if get_question(question_id).success == False:
-        add_question(question_id, response.get("question"), response.get("answer"), qtype, response.get("rating"))
-    return response
-
-
-def get_percentile(question_id, user_time):
-    response = get_question_responses(question_id)
-    question_responses = response.responses
-    time_taken = [q["time_taken"] for q in question_responses]
-    if len(time_taken) == 0:
-        return 100
-    time_taken.sort()
-    count = sum(1 for x in time_taken if x <= user_time)
-    percentile = round((count/ len(time_taken))*100, 2)
-    return percentile
 
 def user_response(request, qtype):
     user_answer = request.form.get("user_answer")
