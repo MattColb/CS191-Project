@@ -1,0 +1,135 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f6f6f6;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar */
+.navbar {
+    background: #f0e0ad;
+    padding: 5px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.button{
+    position:relative;
+    display:inline-flex;
+    gap: 20px;
+    margin:7px;
+  }
+
+.button a{
+    text-decoration: none;
+    padding: 7px 30px;
+    font-size: 16px;
+    display:block;
+    position:relative;
+
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  text-shadow: 0px 1px 0px #000;
+  filter: dropshadow(color=#000, offx=0px, offy=1px);
+  
+  -webkit-box-shadow:inset 0 1px 0 #FFE5C4, 0 10px 0 #cfb14e;
+  -moz-box-shadow:inset 0 1px 0 #FFE5C4, 0 10px 0 #cfb14e;
+  box-shadow:inset 0 1px 0 #FFE5C4, 0 10px 0 #cfb14e;
+  
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.button a:active{
+    top:10px;
+    background-color:#fcd862;
+    
+    -webkit-box-shadow:inset 0 1px 0 #FFE5C4, inset 0 -3px 0 #fcd862;
+    -moz-box-shadow:inset 0 1px 0 #FFE5C4, inset 0 -3pxpx 0 #cfb14e;
+    box-shadow:inset 0 1px 0 #FFE5C4, inset 0 -3px 0 #cfb14e;
+  }
+  
+  .button:after{
+    content:"";
+    height:100%;
+    width:100%;
+    padding:4px;
+    position: absolute;
+    bottom:-15px;
+    left:-4px;
+    z-index:-1;
+    background-color:#2B1800;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+  }
+
+.login {
+    background: white;
+    color: black;
+}
+
+.signup {
+    background: #ebd564;
+    color: white;
+}
+
+/* Hero Section */
+.hero {
+    padding: 40px;
+}
+
+.hero h2 {
+    font-size: 32px;
+    color: black;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #555;
+}
+
+.hero img {
+    width: 200px;
+    margin-top: 10px;
+}
+
+/* Features Section */
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px;
+}
+
+.feature {
+    background: #f8f3db;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 250px;
+}
+
+.feature img {
+    width: 100px;
+}
+
+.feature h3 {
+    margin-top: 10px;
+}
+
+/* Footer */
+.footer {
+    background: #f0e0ad;
+    padding: 5px;
+    margin-top: 110px;
+}
