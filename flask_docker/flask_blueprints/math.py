@@ -18,4 +18,19 @@ def math_questions(qtype):
         start_dt = datetime.datetime.utcnow().isoformat()
         return render_template("math_questions.html", question=question, start_dt=start_dt, qtype=qtype)
     if request.method == "POST":
-        return user_response(request, qtype)
+        user_answer = request.form.get("user_answer")
+        question_id = request.args.get("question_id")
+        start_dt = datetime.datetime.fromisoformat(request.args.get("start_dt"))
+        answer = request.args.get("answer")
+
+        end_dt = datetime.datetime.now()
+
+        print((end_dt - start_dt).total_seconds())
+
+        if user_answer == answer:
+            flash("Correct")
+        else:
+            flash(f"Wrong, the correct answer was: {answer}")
+
+        
+        return redirect(url_for("math.math_questions", _method="GET"))

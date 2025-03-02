@@ -1,0 +1,210 @@
+body {
+    background-color: #ffffff;
+    color: rgb(4, 3, 3);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Navbar */
+.navbar {
+    background: #f0e0ad;
+    padding: 5px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed; /* Fix the navbar to the top */
+    top: 0;
+    left: 0;
+    width: 100%; /* Ensure it spans across the full width */
+    z-index: 1000; /* Ensures navbar is above other content */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Align the logout icon properly */
+.nav-right {
+    display: flex;
+    align-items: center;
+    margin-right: 30px; /* Prevents the icon from going offscreen */
+}
+
+.logout-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #000;
+    transition: color 0.3s ease-in-out;
+    margin-left: auto; /* Ensures it stays aligned to the right */
+}
+
+.logout-icon:hover {
+    color: #fbfbfb;
+}
+
+/* Main content area */
+.container {
+    text-align: center;
+    margin-top: 160px; /* Adjusted space to prevent content from being hidden behind the navbar */
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.profiles {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 20px; /* To add some space between profiles and the button */
+}
+
+.profile {
+    text-align: center;
+    cursor: pointer;
+    display: flex; /* Use flex for better alignment */
+    flex-direction: column;
+    align-items: center; /* Center the content horizontally */
+}
+
+.profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 5px; /* Changed from circle to square with rounded corners */
+    border: 3px solid transparent;
+    transition: 0.3s;
+}
+
+.profile:hover img {
+    border-color: #f0e0ad;
+}
+
+.profile p {
+    margin-top: 10px;
+    font-size: 1rem;
+}
+
+.add-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Aligns the content vertically */
+}
+
+.add-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #f0e0ad;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.add-icon:hover {
+    background-color: white;
+    color: #f0e0ad;
+    border: 2px solid #f0e0ad;
+}
+
+.manage-btn {
+    text-decoration: none;
+    padding: 7px 30px;
+    font-size: 16px;
+    display: block;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    font-weight: lighter;
+    
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    text-shadow: 0px 1px 0px #000;
+    filter: dropshadow(color=#000, offx=0px, offy=1px);
+    
+    -webkit-box-shadow: inset 0 1px 0 #FFE5C4, 0 10px 0 #ebd58d;
+    -moz-box-shadow: inset 0 1px 0 #FFE5C4, 0 10px 0 #ebd58d;
+    box-shadow: inset 0 1px 0 #FFE5C4, 0 10px 0 #ebd58d;
+    
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+
+    background: #ffffff;
+    color: black;
+    margin-top: 20px; /* Added to space it below the profiles */
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.manage-btn:active {
+    top: 10px;
+    background-color: #f0e0ad;
+    -webkit-box-shadow: inset 0 1px 0 #FFE5C4, inset 0 -3px 0 #ebd58d;
+    -moz-box-shadow: inset 0 1px 0 #FFE5C4, inset 0 -3px 0 #ebd58d;
+    box-shadow: inset 0 1px 0 #FFE5C4, inset 0 -3px 0 #ebd58d;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+ }
+ 
+ .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+ }
+ 
+ .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+ }
+ 
+ #sub-account-name {
+    width: 80%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+ }
+ 
+ #add-subaccount {
+    background-color: #f0e0ad;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+ }
+ 
+ #add-subaccount:hover {
+    background-color: #ebd58d;
+ }
+ 

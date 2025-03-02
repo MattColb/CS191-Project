@@ -16,7 +16,6 @@ def add_question(question_id, question, answer, category, difficulty):
         # Check if the question already exists
         query = collection.find({"question_id": question_id})
         if len(query.to_list()) > 0:
-
             return QuestionResponse(success=False, message="This question already exists")
 
         # Insert the question into the database
@@ -60,4 +59,3 @@ def get_question(question_hash):
             return QuestionResponse(success=False, message="The Question Doesn't Exist or exists more than once")
     
         return QuestionResponse(question_id=query[0], success=True, message="Got Question")
-

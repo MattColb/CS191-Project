@@ -1,5 +1,58 @@
-{% extends "base.html" %}
-{% block content %}
-Index
-{{session.user_id}}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuzzyBee – Fun Learning!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h1 class="logo">🐝 BuzzyBee</h1>
+        <div class="button">
+            <a href="{{ url_for('login_register.login') }}" class="btn login">Login</a>
+            <a href="{{ url_for('login_register.register') }}" class="btn signup">Sign Up</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <h2>Buzzing with Fun Learning! 🐝</h2>
+        <img src="{{ url_for('static', filename='images/bee_reading.png') }}" alt="Bee Studying">
+    </header>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/bee_studying.png') }}" alt="Bee Reward">
+            <h3>Track Your Progress</h3>
+            <p>Students can log in and see their achievements.</p>
+        </div>
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/bee_math.png') }}" alt="Bee Doing Math">
+            <h3>Math Games</h3>
+            <p>Master math games with engaging activities and rewards!</p>
+        </div>
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/bee_math.png') }}" alt="Bee Reading">
+            <h3>Spelling Games</h3>
+            <p>Master spelling games with engaging activities and rewards!</p>
+        </div>
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/bee_teacher.png') }}" alt="Bee Teaching">
+            <h3>Parent & Teacher Insights</h3>
+            <p>Monitor student progress easily.</p>
+        </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 BuzzyBee. Keep Learning, Keep Buzzing! 🐝</p>
+        <p>Terms & Conditions | Privacy Policy | Customer Care | Accessibility Statement</p>
+    </footer>
+ 
+</body>
+</html>
