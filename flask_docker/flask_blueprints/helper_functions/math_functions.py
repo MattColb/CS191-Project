@@ -3,25 +3,39 @@ import hashlib
 from .math_question_generator import *
 from flask import flash, redirect, url_for, session
 import datetime
-from buzzy_bee_db.question.question import add_question, get_question, update_difficulty
+from buzzy_bee_db.question.question import add_question, get_question, update_difficulty, get_closest_questions
 from buzzy_bee_db.account.sub_account import update_sub_account
-from buzzy_bee_db.question_user.question_user import get_question_responses, record_question_response
-
-# Idea: Generate Question, (Need to figure out a RL alg to decide when to create new questions and when to find closest match in database)
-# Add to database if needed, 
-# make person answer it, 
-# use question id to get answer and compare, 
-# add to person's question history (correct, time, question id)
-# Adjust question and person ratings (Big question mark)
-
+from buzzy_bee_db.question_user.question_user import get_question_responses, record_question_response, get_sub_account_responses
 
 def get_best_fit_question(subject, rating):
     # Pull questions that fit and ones that are in the user's history
     # If there are some that they missed recently, try and feed them back until they get them
-    # 
-    return False, dict()
+    rng = random.random()
+    response = None
+    if rng <= .25:
+        #Try and select a question that they've missed
+        previous_questions = get_sub_account_responses(session.get("sub_account_id")).responses
+        sorted_questions = sorted(previous_questions, key=lambda d: d["timestamp_utc"])
+        correct_set = set()
+        for (i, question) in enumerate(sorted_questions):
+            if i == 100:
+                response = create_question(subject, rating)
+            if question["answered_correctly"] == True:
+                correct_set.add(question["question_id"])
+                continue
+            if question["question_id"] in correct_set:
+                continue
+            question_response = get_question(question["question_id"]).question_id
+            response = question_response
+    elif rng <= .75:
+        response = get_closest_questions(rating, subject)
+    if response == None:
+        response = create_question(subject, rating)
+    session["current_question"] = response
+    return response
 
-def update_ratings():
+
+def update_ratings(question_id, percentile, answered_correctly):
     # If question is answered wrong, the question rating always goes up
     # If question is answered right, get the amount of time that it took them
     # (Try and keep track of summary statistics?)
@@ -30,12 +44,16 @@ def update_ratings():
     account_id = session.get("account_id")
     sub_account_id = session.get("sub_account_id")
 
-    new_user_difficulty = 0
-    # update_sub_account(account_id, sub_account_id, score_in_math=new_user_difficulty)
+    new_question_difficulty = -1 if answered_correctly else 1
+    new_user_difficulty = -5*new_question_difficulty
 
-    new_question_difficulty = 0
-    # update_difficulty(question_id, new_question_difficulty)
-    pass
+    sub_account = session.get("sub_account_information")
+    sub_account["score_in_math"] = sub_account.get("score_in_math") + new_user_difficulty
+    session["sub_account_information"] = sub_account
+
+    update_sub_account(account_id, sub_account_id, score_in_math=new_user_difficulty)
+    update_difficulty(question_id, new_question_difficulty)
+
     return new_user_difficulty, new_question_difficulty
 
 def get_best_question(subject, rating):
@@ -45,10 +63,7 @@ def get_best_question(subject, rating):
     if session.get("current_question") != None:
         response = session.get("current_question")
         return response
-    success, response = get_best_fit_question(subject, rating)
-    if not success:
-        return create_question(subject, rating)
-    return response 
+    return get_best_fit_question(subject, rating)
 
 #DONE
 def create_question(qtype, rating):
@@ -61,7 +76,6 @@ def create_question(qtype, rating):
     question_id = response.get("question_id")
     if get_question(question_id).success == False:
         add_question(question_id, response.get("question"), response.get("answer"), qtype, response.get("rating"))
-    session["current_question"] = response
     return response
 
 
@@ -102,7 +116,7 @@ def user_response(request, qtype):
         flash(f"Wrong, the correct answer was: {answer}")
         answered_correctly = False
     
-    user_rating_change, question_rating_change = update_ratings()
+    user_rating_change, question_rating_change = update_ratings(question_id, percentile, answered_correctly)
 
     record_question_response(session.get("sub_account_id"), question_id, seconds_taken, percentile, question_rating_change, user_rating_change, answered_correctly)
 

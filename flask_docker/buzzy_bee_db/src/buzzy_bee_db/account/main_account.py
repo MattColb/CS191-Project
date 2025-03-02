@@ -37,7 +37,8 @@ def register(username, password, email):
             "username":username,
             "password":password,
             "email":email,
-            "sub_accounts":[]
+            "sub_accounts":[],
+            "math_rating":0
         })
         return MainAccountResponse(success=True, user_id =user_id)
 

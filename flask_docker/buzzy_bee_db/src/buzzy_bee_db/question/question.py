@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from uuid import uuid4
 from .question_response import QuestionResponse
+import random
 
 curr_dir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(curr_dir, "../../../../.env"))
@@ -54,10 +55,22 @@ def get_question(question_hash):
         collection = database["Questions"]
         
         # Check if the question already exists
-        query = collection.find({"question_id": question_hash})
+        query = collection.find({"question_id": question_hash}, {"_id": 0})
         query = query.to_list()
         if len(query) != 1:
             return QuestionResponse(success=False, message="The Question Doesn't Exist or exists more than once")
     
         return QuestionResponse(question_id=query[0], success=True, message="Got Question")
 
+def get_closest_questions(rating, subject):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client["buzzy_bee_db"]
+        collection = database["Questions"]
+
+        query = {
+            "category": subject,
+            "difficulty": {"$gte": rating - 100, "$lte": rating + 100}
+        }
+        questions = list(collection.find(query, {"_id": 0}))
+        return random.choice(questions)

@@ -2,7 +2,6 @@ import random
 import hashlib
 
 def create_addition(rating):
-    rating = 0
     operands = []
     if rating < 50:
         operands = [random.randint(0,10), random.randint(0,10)]

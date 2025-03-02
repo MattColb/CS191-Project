@@ -19,3 +19,8 @@ class RecordSubAccountResponse(DBResponse):
     def __init__(self, response_id=None, message=None, success=None):
         super().__init__(success, message)
         self.response_id = response_id
+
+class GetSubAccount(DBResponse):
+    def __init__(self, sub_account=None, message=None, success=None):
+        super().__init__(success, message)
+        self.sub_account = sub_account
