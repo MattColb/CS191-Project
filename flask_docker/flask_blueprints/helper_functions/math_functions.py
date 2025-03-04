@@ -45,7 +45,6 @@ def create_question(qtype, rating):
         raise Exception
 
     response = MATH_QUESTIONS_FUNCTIONS[qtype](rating)
-    response[""]
     question_id = response.get("question_id")
     if get_question(question_id).success == False:
         add_question(question_id, response.get("question"), response.get("answer"), qtype, response.get("rating"))
