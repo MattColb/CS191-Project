@@ -14,7 +14,8 @@ def math_page():
 @math.route("/MathQuestions/<qtype>", methods=["GET", "POST"])
 def math_questions(qtype):
     if request.method == "GET":
-        question = get_best_question(qtype, 250)
+        sub_account_info = session.get("sub_account_information")
+        question = get_best_question(qtype, sub_account_info.get("score_in_math"))
         start_dt = datetime.datetime.utcnow().isoformat()
         return render_template("math_questions.html", question=question, start_dt=start_dt, qtype=qtype)
     if request.method == "POST":

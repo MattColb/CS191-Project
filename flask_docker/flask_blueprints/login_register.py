@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, request, redirect, url_for, render_template, session
 from jinja2 import TemplateNotFound
 from .helper_functions.login_register import LoginRegisterHandler
-from buzzy_bee_db.account.sub_account import get_sub_accounts
+from buzzy_bee_db.account.sub_account import get_sub_accounts, get_sub_account
 from functools import wraps
 
 login_register = Blueprint('login_register', __name__,
@@ -93,6 +93,8 @@ def update_sub_account(sub_account_id):
 def sub_account_login(sub_account_id):
     if request.method == "GET":
         session["sub_account_id"] = sub_account_id
+        sacct = get_sub_account(session.get("user_id"), sub_account_id).sub_account
+        session["sub_account_information"] = sacct
         return redirect(url_for("login_register.sub_account"))
         
 

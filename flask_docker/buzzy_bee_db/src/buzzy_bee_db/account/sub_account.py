@@ -1,4 +1,4 @@
-from .sub_account_response import GetSubAccounts, CreateSubAccount, GetSubAccountResponses, RecordSubAccountResponse
+from .sub_account_response import GetSubAccounts, CreateSubAccount, GetSubAccountResponses, RecordSubAccountResponse, GetSubAccount
 from ..db_response import DBResponse
 import os
 from dotenv import load_dotenv
@@ -78,3 +78,17 @@ def update_sub_account(user_id, sub_account_id, name=None, score_in_math=None):
             return DBResponse(success=True)
         return DBResponse(success=False, message="Sub-account not found")
 
+def get_sub_account(user_id, sub_account_id):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client["buzzy_bee_db"]
+        collection = database["Users"]
+
+        user_doc = collection.find_one(
+            {"user_id": user_id, "sub_accounts": {"$elemMatch": {"sub_account_id": sub_account_id}}},
+            {"sub_accounts.$": 1}
+        )
+
+        if not user_doc or "sub_accounts" not in user_doc or len(user_doc["sub_accounts"]) != 1:
+            return GetSubAccount(success=False, message="Not exactly one sub account")
+        return GetSubAccount(success=True, sub_account=user_doc["sub_accounts"][0])
