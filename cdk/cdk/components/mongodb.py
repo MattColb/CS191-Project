@@ -32,12 +32,6 @@ def mongo_db_creation(scope:Construct, vpc):
         description="Allow MongoDB access from within the VPC"
     )
 
-    security_group.add_ingress_rule(
-        peer=aws_ec2.Peer.any_ipv4(),
-        connection=aws_ec2.Port.tcp(22),
-        description="Add SSH Access"
-    )
-
     role = aws_iam.Role(
         scope, "MongoDBRole",
         assumed_by=aws_iam.ServicePrincipal("ec2.amazonaws.com")
@@ -51,8 +45,7 @@ def mongo_db_creation(scope:Construct, vpc):
         security_group=security_group,
         instance_type=aws_ec2.InstanceType("t2.micro"),
         machine_image=aws_ec2.MachineImage.latest_amazon_linux2023(),
-        vpc_subnets=aws_ec2.SubnetSelection(subnet_type=aws_ec2.SubnetType.PUBLIC),
-        associate_public_ip_address=True,
+        vpc_subnets=aws_ec2.SubnetSelection(subnet_type=aws_ec2.SubnetType.PRIVATE_ISOLATED)
     )
 
     ssmPolicyDoc = aws_iam.PolicyDocument(
@@ -82,7 +75,7 @@ def mongo_db_creation(scope:Construct, vpc):
     username = os.getenv("MONGODB_USER")
     password = os.getenv("MONGODB_PASS")
     #Copy it to remove the circular dependency?
-    public_ip = ec2.instance_public_ip[:]
+    private_ip = ec2.instance_private_ip
 
     # User Data to install MongoDB
     #https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-amazon/
@@ -124,7 +117,7 @@ EOF
     "sudo systemctl restart mongod",
     )
 
-    mongo_connection = f"mongodb://{username}:{password}@{public_ip}/buzzy_bee_db"
+    mongo_connection = f"mongodb://{username}:{password}@{private_ip}/buzzy_bee_db"
 
     CfnOutput(scope, "MongoDBConnString", value=mongo_connection)
 

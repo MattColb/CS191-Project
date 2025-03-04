@@ -16,7 +16,6 @@ def login(username, password):
         list_query = query.to_list()
         if len(list_query) != 1:
             return MainAccountResponse(success=False, message="Please enter a valid account username")
-        print(list_query)
         if password != list_query[0].get("password"):
             return MainAccountResponse(success=False, message="Incorrect password")
         user_id = list_query[0].get("user_id")
@@ -38,7 +37,8 @@ def register(username, password, email):
             "username":username,
             "password":password,
             "email":email,
-            "sub_accounts":[]
+            "sub_accounts":[],
+            "math_rating":0
         })
         return MainAccountResponse(success=True, user_id =user_id)
 
