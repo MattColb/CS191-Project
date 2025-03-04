@@ -7,16 +7,6 @@
 </head>
 <body>
   
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
 <a href="{{url_for('math.math_page')}}">MATH</a>
 <a href="{{url_for('login_register.sub_account')}}">HOME</a>
 

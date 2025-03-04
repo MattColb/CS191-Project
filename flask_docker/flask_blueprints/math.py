@@ -22,6 +22,12 @@ def math_questions(qtype):
         sub_account_info = session.get("sub_account_information")
         question = get_best_question(qtype, sub_account_info.get("score_in_math"))
         start_dt = datetime.datetime.utcnow().isoformat()
-        return render_template("math_questions.html", question=question, start_dt=start_dt, qtype=qtype)
+        if qtype == "Addition":
+            return render_template("math_questions.html", question=question, start_dt=start_dt, qtype=qtype)
+        
     if request.method == "POST":
         return user_response(request, qtype)
+
+@math.route("/Middle/<qtype>", methods=["GET"])
+def render_middle(qtype):
+    return render_template("middle.html")

@@ -95,7 +95,7 @@ def user_response(request, qtype):
         user_answer = float(user_answer)
     except:
         flash("Please enter a number")
-        return redirect(url_for("math.math_questions", _method="GET", qtype=qtype))
+        return redirect(url_for("math.render_middle", _method="GET", qtype=qtype))
 
     answer = response.get("answer")
     question_id = response.get("question_id")
@@ -115,4 +115,4 @@ def user_response(request, qtype):
 
     session.pop("current_question")
 
-    return redirect(url_for("math.math_questions", _method="GET", qtype=qtype))
+    return redirect(url_for("math.render_middle", _method="GET", qtype=qtype))
