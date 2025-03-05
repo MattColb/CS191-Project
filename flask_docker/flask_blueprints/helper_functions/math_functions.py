@@ -11,9 +11,6 @@ def get_best_question(subject, rating):
     #Better way to do this
     #Can't get around refreshing for an easier question
     #And if there is a good fit for a question, use it, if not, generate
-    if session.get("current_question") != None:
-        response = session.get("current_question")
-        return response
     rng = random.random()
     response = None
     if rng <= .25:
