@@ -1,14 +1,19 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
 
-{% block content %}
     <h1>Addition Question</h1>
     
     <p>Solve the following addition problem:</p>
     
-    <form method="POST" action="{{ url_for('math.math_questions', qtype='Addition') }}">
+    <form method="POST" action="{{ url_for('math.math_questions', qtype=qtype, start_dt=start_dt) }}">
         <p>{{ question.question }}</p>
-        <input type="hidden" name="question_id" value="{{ question.question_id }}">
-        <input type="hidden" name="start_dt" value="{{ start_dt }}">
         <input type="text" name="user_answer" required>
         <button type="submit">Submit</button>
     </form>
@@ -22,4 +27,6 @@
             </ul>
         {% endif %}
     {% endwith %}
-{% endblock %}
+
+</body>
+</html>
