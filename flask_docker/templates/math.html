@@ -25,10 +25,11 @@
     <div class="container">
         <h1>Choose a Math Game</h1>
         <div class="game-options">
-            <a href="#" class="game-card">Addition</a>
-            <a href="#" class="game-card">Subtraction</a>
-            <a href="#" class="game-card">Multiplication</a>
-            <a href="#" class="game-card">Division</a>
+            <!-- Links for each math operation (Addition, Subtraction, etc.) -->
+            <a href="{{ url_for('math.math_questions', qtype='Addition') }}" class="game-card">Addition</a>
+            <a href="{{ url_for('math.math_questions', qtype='Subtraction') }}" class="game-card">Subtraction</a>
+            <a href="{{ url_for('math.math_questions', qtype='Multiplication') }}" class="game-card">Multiplication</a>
+            <a href="{{ url_for('math.math_questions', qtype='Division') }}" class="game-card">Division</a>
         </div>
     </div>
 </body>
