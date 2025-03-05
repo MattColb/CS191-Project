@@ -39,7 +39,7 @@ def get_sub_account_responses(sub_account_id):
         responses = list(collection.find({"sub_account_id": sub_account_id}, {"_id": 0})) # Excludes the MongoDB _id field from the result
         return QuestionUserResponse(success=True, responses=responses, message="Responses retrieved successfully")
 
-# Retreives a single response for a given sub_account_id and question_id
+# Retrieves a single response for a given sub_account_id and question_id
 def get_question_response(sub_account_id, question_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
