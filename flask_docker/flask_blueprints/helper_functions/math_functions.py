@@ -89,13 +89,19 @@ def user_response(request, qtype):
     end_dt = datetime.datetime.utcnow()
     response = session.get("current_question")
 
+    # Debugging to check if current_question is available
+    if response is None:
+        flash("Error: No current question available.")
+        print("DEBUG: current_question is not available in session.")
+        return redirect(url_for("math.math_questions", qtype=qtype))
+
     seconds_taken = round((end_dt - start_dt).total_seconds(), 2)
 
     try:
         user_answer = float(user_answer)
     except:
         flash("Please enter a number")
-        return redirect(url_for("math.math_questions", _method="GET", qtype=qtype))
+        return redirect(url_for("math.math_questions", qtype=qtype))
 
     answer = response.get("answer")
     question_id = response.get("question_id")
@@ -113,6 +119,7 @@ def user_response(request, qtype):
 
     record_question_response(session.get("sub_account_id"), question_id, seconds_taken, percentile, question_rating_change, user_rating_change, answered_correctly)
 
+    # Only pop the current question after processing the answer
     session.pop("current_question")
 
-    return redirect(url_for("math.math_questions", _method="GET", qtype=qtype))
+    return redirect(url_for("math.math_questions", qtype=qtype))

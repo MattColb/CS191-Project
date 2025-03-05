@@ -1,33 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ qtype.capitalize() }} Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/math_questions.css') }}">
+    <!-- FontAwesome CDN for the logout icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script>
+        // Function to hide the flash message after 3 seconds
+        function hideFlashMessage() {
+            setTimeout(function() {
+                const flashMessage = document.getElementById('flash-message');
+                if (flashMessage) {
+                    flashMessage.style.display = 'none';
+                }
+            }, 2000); // Hide after 2 seconds
+        }
+
+        // Function to check for flash messages and set appropriate styling
+        function showFlashMessage(message) {
+            const flashMessage = document.getElementById('flash-message');
+            if (message.includes('Correct')) {
+                flashMessage.style.backgroundColor = '#d2edd8'; // Green for correct
+                flashMessage.style.color = 'white';
+            } else if (message.includes('Wrong')) {
+                flashMessage.style.backgroundColor = '#efd5d7'; // Red for wrong
+                flashMessage.style.color = 'white';
+            }
+            flashMessage.innerHTML = message;
+            flashMessage.style.display = 'block';
+            hideFlashMessage(); // Hide after 2 seconds
+        }
+    </script>
 </head>
 <body>
-  
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+    <nav class="navbar">
+        <h1 class="logo">🐝 BuzzyBee</h1>
+        <div class="nav-right">
+            <!-- Logout icon with FontAwesome -->
+            <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1>{{ qtype.capitalize() }} Game</h1>
 
-<a href="{{url_for('math.math_page')}}">MATH</a>
-<a href="{{url_for('login_register.sub_account')}}">HOME</a>
+        <div class="game-frame-container">
+            <div class="game-frame">
+                <!-- Flash Message Display inside the form -->
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div id="flash-message" class="flash-message" style="display:none;"></div>
+                        <script>
+                            // Pass the flash message from backend to the frontend
+                            const message = '{{ messages[0] }}'; // Assuming only one message is flashed at a time
+                            showFlashMessage(message);
+                        </script>
+                    {% endif %}
+                {% endwith %}
 
-{{question["question"]}}
+                <!-- Dynamically render the question based on qtype -->
+                <p class="question-text">{{ question }}</p>
 
-<form action="{{url_for('math.math_questions', start_dt=start_dt, qtype=qtype)}}" method="POST">
-    <label name="question">{{question["question"]}}</label>
-    <input type="text" name="user_answer">
-    <input type="submit" value="ANSWER">
-</form>
+                <!-- Form for the user to input answer -->
+                <form action="{{ url_for('math.math_questions', start_dt=start_dt, qtype=qtype) }}" method="POST">
+                    <input type="text" name="user_answer" id="user_answer" required>
+                    <button type="submit">Answer</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // Function to handle logout redirection
+        function logout() {
+            window.location.href = "{{ url_for('login_register.logout') }}";
+        }
+    </script>
 </body>
 </html>
+
+
 
