@@ -4,8 +4,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const addProfile = document.getElementById("add-profile");
     const modal = document.getElementById("add-modal");
     const closeModal = document.querySelector(".close");
-    const addButton = document.getElementById("add-subaccount");
-    const profilesContainer = document.getElementById("profiles-container");
  
     // Show modal when add profile is clicked
     addProfile.addEventListener("click", function() {
@@ -31,33 +29,30 @@ document.addEventListener("DOMContentLoaded", function() {
     }
  
     // Function to add new subaccount
-    addButton.addEventListener("click", function() {
-        const nameInput = document.getElementById("sub-account-name");
-        const name = nameInput.value.trim();
+    // addButton.addEventListener("click", function() {
+    //     const nameInput = document.getElementById("sub-account-name");
+    //     const name = nameInput.value.trim();
  
-        if (name !== "") {
-            const newProfile = document.createElement("div");
-            newProfile.classList.add("profile");
-            newProfile.onclick = function() { goToSubAccount(name); };
+    //     if (name !== "") {
+    //         const newProfile = document.createElement("div");
+    //         newProfile.classList.add("profile");
+    //         newProfile.onclick = function() { goToSubAccount(name); };
  
-            const img = document.createElement("img");
-            img.src = getRandomProfileImage();
-            img.alt = name;
+    //         const img = document.createElement("img");
+    //         img.src = getRandomProfileImage();
+    //         img.alt = name;
  
-            const p = document.createElement("p");
-            p.textContent = name;
+    //         const p = document.createElement("p");
+    //         p.textContent = name;
  
-            newProfile.appendChild(img);
-            newProfile.appendChild(p);
-            profilesContainer.insertBefore(newProfile, addProfile);
- 
-            // Clear input and close modal
-            nameInput.value = "";
-            modal.style.display = "none";
-        } else {
-            alert("Please enter a name.");
-        }
-    });
+    //         newProfile.appendChild(img);
+    //         newProfile.appendChild(p);
+    //         profilesContainer.insertBefore(newProfile, addProfile);
+    
+    //     } else {
+    //         alert("Please enter a name.");
+    //     }
+    // });
  
     // Logout function
     function logout() {

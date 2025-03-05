@@ -27,3 +27,8 @@ def math_questions(qtype):
         return render_template("math_questions.html", question=question, start_dt=start_dt, qtype=qtype)
     if request.method == "POST":
         return user_response(request, qtype)
+    
+@math.route("/MathResult/<qtype>", methods=["GET"])
+def math_question_result(qtype):
+    if request.method == "GET":
+        return render_template("math_question_result.html", qtype=qtype)

@@ -9,6 +9,25 @@
    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
 <body>
+   <script>
+    function logout() {
+        window.location.href = "{{ url_for('login_register.logout') }}";
+    }
+ 
+    // Navigate to subaccount function
+    function goToSubAccount(subAccountId) {
+        // Store selected profile in localStorage
+        localStorage.setItem("selectedProfile", subAccountId);
+
+        // Debugging: Check if subAccountId is captured correctly
+        console.log("Navigating to subaccount for:", subAccountId);
+
+        // Redirect to the correct subaccount login route
+        window.location.href = `/Subaccount/Login/${encodeURIComponent(subAccountId)}`;
+    }
+   </script>
+
+   
    <nav class="navbar">
        <h1 class="logo">🐝 BuzzyBee</h1>
        <div class="nav-right">
@@ -17,26 +36,34 @@
    </nav>
 
    <div class="container">
-       <h1>Who's studying?</h1>
-       <div class="profiles" id="profiles-container">
-           <div class="profile add-profile" id="add-profile">
-               <div class="add-icon">+</div>
-               <p>Add Kid</p>
-           </div>
-       </div>
+    <h1>Who's studying?</h1>
+    <div class="profiles" id="profiles-container">
+        {% for sub_account in sub_accounts %}
+        <div class="profile" onclick="goToSubAccount('{{ sub_account.sub_account_id }}')">
+            <img src="{{ url_for('static', filename='images/kid1.png') }}" alt="{{ sub_account.sub_account_username }}">
+            <p>{{ sub_account.sub_account_username }}</p>
+        </div>
+        {% endfor %}
+        <div class="profile add-profile" id="add-profile">
+            <div class="add-icon">+</div>
+            <p>Add Kid</p>
+        </div>
+    </div>
 
-       <button class="manage-btn">Manage Profiles</button>
-   </div>
+    <button class="manage-btn">Manage Profiles</button>
+</div>
 
 
    <!-- Popup Modal for Adding a New Subaccount -->
    <div id="add-modal" class="modal">
+        <form target="{{url_for('login_register.account')}}" method="POST">
        <div class="modal-content">
            <span class="close">&times;</span>
            <h2>Add New Profile</h2>
-           <input type="text" id="sub-account-name" placeholder="Enter kid's name">
-           <button id="add-subaccount">Add</button>
+           <input type="text" name="sub_account_name" id="sub-account-name" placeholder="Enter kid's name">
+           <button type="submit" id="add-subaccount">Add</button>
        </div>
+        </form>
    </div>
 </body>
 </html>

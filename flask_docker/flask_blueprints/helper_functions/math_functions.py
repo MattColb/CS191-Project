@@ -115,4 +115,4 @@ def user_response(request, qtype):
 
     session.pop("current_question")
 
-    return redirect(url_for("math.math_questions", _method="GET", qtype=qtype))
+    return redirect(url_for("math.math_question_result", _method="GET", qtype=qtype))
