@@ -11,10 +11,7 @@
         function logout() {
             window.location.href = "{{ url_for('login_register.logout') }}";
         }
-
-        function loadGame(gameType) {
-            document.getElementById("game-frame").src = "{{ url_for('math.math_questions', qtype='') }}" + gameType;
-        }
+        
     </script>
 </head>
 <body>
@@ -28,15 +25,10 @@
     <div class="container">
         <h1>Choose a Math Game</h1>
         <div class="game-options">
-            <a href="#" class="game-card" onclick="loadGame('addition')">Addition</a>
-            <a href="#" class="game-card" onclick="loadGame('subtraction')">Subtraction</a>
-            <a href="#" class="game-card" onclick="loadGame('multiplication')">Multiplication</a>
-            <a href="#" class="game-card" onclick="loadGame('division')">Division</a>
-        </div>
-        
-        <!-- Game Display Frame -->
-        <div class="game-frame-container">
-            <iframe id="game-frame" src="" frameborder="0"></iframe>
+            <a href="#" class="game-card">Addition</a>
+            <a href="#" class="game-card">Subtraction</a>
+            <a href="#" class="game-card">Multiplication</a>
+            <a href="#" class="game-card">Division</a>
         </div>
     </div>
 </body>
