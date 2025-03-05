@@ -1,0 +1,158 @@
+/* Navbar */
+.navbar {
+    background: #f0e0ad;
+    padding: 5px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed; /* Fix the navbar to the top */
+    top: 0;
+    left: 0;
+    width: 100%; /* Ensure it spans across the full width */
+    z-index: 1000; /* Ensures navbar is above other content */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Align the logout icon properly */
+.nav-right {
+    display: flex;
+    align-items: center;
+    margin-right: 30px; /* Prevents the icon from going offscreen */
+}
+
+.logout-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #000;
+    transition: color 0.3s ease-in-out;
+    margin-left: auto; /* Ensures it stays aligned to the right */
+}
+
+.logout-icon:hover {
+    color: #fbfbfb;
+}
+
+/* Main content area */
+.container {
+    text-align: center;
+    margin-top: 100px; /* Adjusted to prevent overlap with navbar */
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* Game Frame Container */
+.game-frame-container {
+    width: 80%;
+    margin: 30px auto;
+    border: 2px solid #f0e0ad;
+    border-radius: 10px;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* Game Frame Content */
+.game-frame {
+    text-align: center; /* Center the question */
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+p.question-text {
+    font-size: 2.5rem; /* Larger text */
+    color: #f0d681; /* Bright color for fun */
+    font-family: 'Comic Sans MS', sans-serif; /* Fun, child-friendly font */
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+    animation: bounce 1s ease-in-out infinite; /* Increased duration for more visible bounce */
+}
+
+/* Animation for bouncing effect */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 1.2rem; /* Slightly larger input */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #e4d39d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #a49151;
+}
+
+/* Flash Message Styling */
+.flash-message {
+    display: none; /* Initially hidden */
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+    top: 10px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 999;
+    font-weight: bold;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Success Message (Green) */
+.flash-message.success {
+    background-color: #75c987; /* Correct answer */
+}
+
+/* Error Message (Red) */
+.flash-message.error {
+    background-color: #d48188; /* Incorrect answer */
+}
