@@ -8,6 +8,7 @@ from aws_cdk import (
 from constructs import Construct
 from cdk.components.mongodb import mongo_db_creation
 from cdk.components.fargate import fargate_creation
+from cdk.components.fargate_mongo import create_fargate_mongo
 
 
 class CdkStack(Stack):
@@ -26,15 +27,13 @@ class CdkStack(Stack):
                 aws_ec2.SubnetConfiguration(
                     name="Public",
                     subnet_type=aws_ec2.SubnetType.PUBLIC
-                ),
-                aws_ec2.SubnetConfiguration(
-                    name="Isolated",
-                    subnet_type=aws_ec2.SubnetType.PRIVATE_ISOLATED
                 )
             ]
         )
 
+        fargate, mongo_connection = create_fargate_mongo(self, vpc)
+
         #Creating the mongodb ec2
-        ec2, mongo_connection = mongo_db_creation(self, vpc)
+        # ec2, mongo_connection = mongo_db_creation(self, vpc)
 
         fargate_creation(self, vpc, mongo_connection)

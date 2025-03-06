@@ -11,6 +11,7 @@ COPY app.py requirements.txt ./
 COPY flask_blueprints flask_blueprints 
 COPY templates templates
 COPY buzzy_bee_db buzzy_bee_db 
+COPY static static
 
 RUN pip install --no-cache-dir -r requirements.txt
 
