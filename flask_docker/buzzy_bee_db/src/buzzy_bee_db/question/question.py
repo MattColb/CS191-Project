@@ -25,7 +25,9 @@ def add_question(question_id, question, answer, category, difficulty):
             "question": question,
             "answer": answer,
             "category": category,
-            "difficulty": difficulty
+            "difficulty": difficulty,
+            "attempts": 0,
+            "correct_attempts": 0
         })
         
         return QuestionResponse(success=True, question_id=question_id)
@@ -57,9 +59,25 @@ def get_question(question_hash):
         query = collection.find({"question_id": question_hash}, {"_id": 0})
         query = query.to_list()
         if len(query) != 1:
-            return QuestionResponse(success=False, message="The Question Doesn't Exist or exists more than once")
+            return QuestionResponse(success=False, message="The question doesn't exist or exists more than once")
     
-        return QuestionResponse(question_id=query[0], success=True, message="Got Question")
+        return QuestionResponse(question_id=query[0]["question_id"], success=True, message="Got Question")
+
+    
+"""
+def get_question(question_id):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client["buzzy_bee_db"]
+        collection = database["Questions"]
+        
+        # Retrieve the question
+        query = collection.find_one({"question_id": question_id}, {"_id": 0})
+        if not query:
+            return QuestionResponse(success=False, message="The question doesn't exist")
+
+        return QuestionResponse(success=True, question_id=question_id, message="Got Question")
+"""
 
 def get_closest_questions(rating, subject):
     connection = os.getenv("MONGODB_CONN_STRING")
@@ -72,4 +90,38 @@ def get_closest_questions(rating, subject):
             "difficulty": {"$gte": rating - 100, "$lte": rating + 100}
         }
         questions = list(collection.find(query, {"_id": 0}))
-        return random.choice(questions)
+        return random.choice(questions) if questions else None
+    
+# Returns the number of attempts for a given question
+def get_question_attempt_count(question_id):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client["buzzy_bee_db"]
+        collection = database["Questions"]
+        question = collection.find_one({"question_id": question_id})
+        return question.get("attempts", 0) if question else 0
+
+# Returns the number of correct attempts for a given question
+def get_question_correct_count(question_id):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client["buzzy_bee_db"]
+        collection = database["Questions"]
+        question = collection.find_one({"question_id": question_id})
+        return question.get("correct_attempts", 0) if question else 0
+
+# Adjusts the attempt count for a question
+def adjust_question_attempt_count(question_id, count):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client["buzzy_bee_db"]
+        collection = database["Questions"]
+        collection.update_one({"question_id": question_id}, {"$inc": {"attempts": count}}, upsert=True)
+
+# Adjusts the correct attempt count for a question
+def adjust_question_correct_count(question_id, count):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client["buzzy_bee_db"]
+        collection = database["Questions"]
+        collection.update_one({"question_id": question_id}, {"$inc": {"correct_attempts": count}}, upsert=True)
