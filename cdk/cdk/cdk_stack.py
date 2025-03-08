@@ -9,6 +9,8 @@ from constructs import Construct
 from cdk.components.mongodb import mongo_db_creation
 from cdk.components.fargate import fargate_creation
 from cdk.components.fargate_mongo import create_fargate_mongo
+from cdk.components.fargate_mongo_public import create_fargate_mongo_public
+
 
 
 class CdkStack(Stack):
@@ -27,13 +29,18 @@ class CdkStack(Stack):
                 aws_ec2.SubnetConfiguration(
                     name="Public",
                     subnet_type=aws_ec2.SubnetType.PUBLIC
+                ),
+                aws_ec2.SubnetConfiguration(
+                    name="Private",
+                    subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
                 )
             ]
         )
-
-        fargate, mongo_connection = create_fargate_mongo(self, vpc)
+        # create_fargate_mongo_public(self, vpc)
+        mongo_connection, mongo_security_group = create_fargate_mongo(self, vpc)
 
         #Creating the mongodb ec2
         # ec2, mongo_connection = mongo_db_creation(self, vpc)
 
-        fargate_creation(self, vpc, mongo_connection)
+        # mongo_connection = "mongodb://buzzy_bee:buzz@34.201.146.136/buzzy_bee_db"
+        fargate_creation(self, vpc, mongo_connection, mongo_security_group)
