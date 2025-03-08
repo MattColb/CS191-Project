@@ -1,73 +1,103 @@
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("BuzzyBee is ready to buzz! 🐝");
- 
-    const addProfile = document.getElementById("add-profile");
-    const modal = document.getElementById("add-modal");
-    const closeModal = document.querySelector(".close");
- 
-    // Show modal when add profile is clicked
-    addProfile.addEventListener("click", function() {
-        modal.style.display = "flex";
-    });
- 
-    // Close modal when 'X' is clicked
-    closeModal.addEventListener("click", function() {
-        modal.style.display = "none";
-    });
- 
-    // Close modal when clicking outside of the content
-    window.addEventListener("click", function(event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
+    // Add Profile Modal
+    const addModal = document.getElementById("add-modal");
+    const addProfileBtn = document.getElementById("add-profile");
+    const closeBtn = document.querySelector(".close");
+   
+    // Array of animal emojis
+    const animalEmojis = [
+        "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯",
+        "🦁", "🐮", "🐷", "🐸", "🐵", "🐔", "🐧", "🐦", "🦆", "🦅",
+        "🦉", "🦇", "🐺", "🐗", "🐴", "🦄", "🐝", "🐛", "🦋", "🐌",
+        "🐞", "🐜", "🦟", "🦗", "🕷️", "🦂", "🐢", "🐍", "🦎", "🦖",
+        "🦕", "🐙", "🦑", "🦐", "🦞", "🦀", "🐡", "🐠", "🐟", "🐬",
+        "🐳", "🐋", "🦈", "🐊", "🐅", "🐆", "🦓", "🦍", "🦧", "🐘",
+        "🦛", "🦏", "🐪", "🐫", "🦒", "🦘", "🐃", "🐂", "🐄", "🐎",
+        "🐖", "🐏", "🐑", "🦙", "🐐", "🦌", "🐕", "🐩", "🦮", "🐕‍🦺"
+    ];
+    
+    // Function to get an emoji based on sub-account ID
+    function getEmojiForAccount(subAccountId) {
+        // Convert the sub-account ID to a number for deterministic selection
+        let numericValue = 0;
+        for (let i = 0; i < subAccountId.length; i++) {
+            numericValue += subAccountId.charCodeAt(i);
+        }
+        
+        // Use the numeric value to select an emoji from the array
+        const index = numericValue % animalEmojis.length;
+        return animalEmojis[index];
+    }
+    
+    // Set emojis for all existing sub-accounts
+    const profileEmojis = document.querySelectorAll('.profile-emoji[data-account-id]');
+    profileEmojis.forEach(emoji => {
+        const accountId = emoji.getAttribute('data-account-id');
+        if (accountId) {
+            emoji.textContent = getEmojiForAccount(accountId);
         }
     });
- 
-    // Function to generate a random profile image
-    function getRandomProfileImage() {
-        const randomIndex = Math.floor(Math.random() * 5) + 1;
-        return `/static/images/kid${randomIndex}.png`;
-    }
- 
-    // Function to add new subaccount
-    // addButton.addEventListener("click", function() {
-    //     const nameInput = document.getElementById("sub-account-name");
-    //     const name = nameInput.value.trim();
- 
-    //     if (name !== "") {
-    //         const newProfile = document.createElement("div");
-    //         newProfile.classList.add("profile");
-    //         newProfile.onclick = function() { goToSubAccount(name); };
- 
-    //         const img = document.createElement("img");
-    //         img.src = getRandomProfileImage();
-    //         img.alt = name;
- 
-    //         const p = document.createElement("p");
-    //         p.textContent = name;
- 
-    //         newProfile.appendChild(img);
-    //         newProfile.appendChild(p);
-    //         profilesContainer.insertBefore(newProfile, addProfile);
     
-    //     } else {
-    //         alert("Please enter a name.");
-    //     }
-    // });
- 
-    // Logout function
-    function logout() {
-        window.location.href = "{{ url_for('login_register.logout') }}";
+    // Function to get a random animal emoji for new accounts
+    function getRandomAnimalEmoji() {
+        const randomIndex = Math.floor(Math.random() * animalEmojis.length);
+        return animalEmojis[randomIndex];
     }
- 
-    // Navigate to subaccount function
-    function goToSubAccount(subAccountId) {
-        // Store selected profile in localStorage
-        localStorage.setItem("selectedProfile", subAccountId);
-
-        // Debugging: Check if subAccountId is captured correctly
-        console.log("Navigating to subaccount for:", subAccountId);
-
-        // Redirect to the correct subaccount login route
-        window.location.href = `/Subaccount/Login/${encodeURIComponent(subAccountId)}`;
-    }
-});
+    
+    // Store selected emoji for form submission
+    let selectedEmoji = getRandomAnimalEmoji();
+    
+    // Open add profile modal when the add profile button is clicked
+    addProfileBtn.addEventListener("click", function() {
+        // Generate a new random emoji each time modal is opened
+        selectedEmoji = getRandomAnimalEmoji();
+        
+        // Update hidden emoji input field
+        const emojiInput = document.getElementById("selected-emoji");
+        if (emojiInput) {
+            emojiInput.value = selectedEmoji;
+        }
+        
+        // Preview the emoji in the modal
+        const emojiPreview = document.getElementById("emoji-preview");
+        if (emojiPreview) {
+            emojiPreview.textContent = selectedEmoji;
+        }
+        
+        addModal.style.display = "flex";
+    });
+    
+    // Close add profile modal when the close button is clicked
+    closeBtn.addEventListener("click", function() {
+        addModal.style.display = "none";
+    });
+    
+    // Close add profile modal when clicking outside the modal
+    window.addEventListener("click", function(event) {
+        if (event.target === addModal) {
+            addModal.style.display = "none";
+        }
+    });
+    
+    // Manage Profiles Modal
+    const manageModal = document.getElementById("manage-modal");
+    
+    // Close manage profiles modal when clicking outside the modal
+    window.addEventListener("click", function(event) {
+        if (event.target === manageModal) {
+            manageModal.style.display = "none";
+        }
+    });
+    
+    // Initialize tabs
+    const tabItems = document.querySelectorAll(".tab-item");
+    tabItems.forEach(tab => {
+        if (!tab.getAttribute("onclick")) {
+            tab.addEventListener("click", function() {
+                // For demonstration, we're only implementing "Delete a Profile"
+                // Other tabs would just stay on the same screen
+                alert("This feature is coming soon!");
+            });
+        }
+    });
+ });

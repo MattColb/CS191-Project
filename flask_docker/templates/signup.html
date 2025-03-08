@@ -1,28 +1,100 @@
-<!-- signup.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - BuzzyBee</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Sign Up - BuzzyBee</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar">
-        <h1 class="logo">🐝 BuzzyBee</h1>
-        <div class="button">
-            <a href="{{ url_for('login_register.index') }}" class="btn login">Home</a>
-        </div>
-    </nav>
-    <section class="auth-container">
-        <h2>Create a BuzzyBee Account</h2>
-        <form class="auth-form" target="{{url_for('login_register.register')}}" method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit" class="btn signup">Sign Up</button>
-        </form>
-        <p>Already have an account? <a href="{{ url_for('login_register.login') }}">Login</a></p>
-    </section>
+   <!-- Decorative Bee Elements -->
+   <div class="bee bee1"></div>
+   <div class="bee bee2"></div>
+   <div class="bee bee3"></div>
+   
+   <!-- Honeycomb Background Elements -->
+   <div class="honeycomb-bg"></div>
+   
+   <!-- Navigation Bar -->
+   <nav class="navbar">
+       <div class="logo-container">
+           <div class="logo-icon">🐝</div>
+           <h1 class="logo">BuzzyBee</h1>
+       </div>
+       <div class="button-container">
+           <a href="{{ url_for('login_register.index') }}" class="btn home">
+               <i class="fas fa-home"></i> Home
+           </a>
+       </div>
+   </nav>
+
+   <div class="auth-wrapper">
+       <section class="auth-container">
+           <div class="auth-header">
+               <div class="auth-icon">
+                   <i class="fas fa-user-plus"></i>
+               </div>
+               <h2>Join BuzzyBee Today!</h2>
+               <p class="auth-subtitle">Create your account and start learning</p>
+           </div>
+           
+           <form class="auth-form" method="POST" action="{{ url_for('login_register.register') }}">
+               <div class="form-group">
+                   <label for="username"><i class="fas fa-user"></i> Username</label>
+                   <input type="text" id="username" placeholder="Choose a username" name="username" required>
+               </div>
+               
+               <div class="form-group">
+                   <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                   <input type="email" id="email" placeholder="Enter your email" name="email" required>
+               </div>
+               
+               <div class="form-group">
+                   <label for="password"><i class="fas fa-lock"></i> Password</label>
+                   <input type="password" id="password" placeholder="Create a password" name="password" required>
+               </div>
+               
+               <div class="account-type">
+                   <p>I am a:</p>
+                   <div class="account-options">
+                       <div class="account-option">
+                           <input type="radio" id="student" name="account_type" value="student" checked>
+                           <label for="student">
+                               <i class="fas fa-graduation-cap"></i>
+                               <span>Student</span>
+                           </label>
+                       </div>
+                       <div class="account-option">
+                           <input type="radio" id="parent" name="account_type" value="parent">
+                           <label for="parent">
+                               <i class="fas fa-user-friends"></i>
+                               <span>Parent</span>
+                           </label>
+                       </div>
+                       <div class="account-option">
+                           <input type="radio" id="teacher" name="account_type" value="teacher">
+                           <label for="teacher">
+                               <i class="fas fa-chalkboard-teacher"></i>
+                               <span>Teacher</span>
+                           </label>
+                       </div>
+                   </div>
+               </div>
+               
+               <button type="submit" class="btn signup-btn">
+                   <span>Create Account</span>
+                   <i class="fas fa-arrow-right"></i>
+               </button>
+           </form>
+           
+           <div class="auth-footer">
+               <p>Already have an account? <a href="{{ url_for('login_register.login') }}">Login</a></p>
+           </div>
+           
+           <div class="honeycomb-decoration"></div>
+       </section>
+   </div>
 </body>
 </html>
