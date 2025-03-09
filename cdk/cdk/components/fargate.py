@@ -28,6 +28,11 @@ def fargate_creation(scope, vpc, connection_string, mongo_security_group):
         connection=aws_ec2.Port.tcp(27017)
     )
 
+    flask_security_group.add_egress_rule(
+        peer=mongo_security_group,
+        connection=aws_ec2.Port.tcp(27017)
+    )
+
     # Create a docker container from the flask_docker folder
     load_balanced_fargate_service = aws_ecs_patterns.ApplicationLoadBalancedFargateService(
         scope, 
