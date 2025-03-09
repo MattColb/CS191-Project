@@ -69,14 +69,16 @@ def update_ratings(question_id, percentile, answered_correctly, question):
     question_difficulty = question.get("difficulty") 
     user_score = sub_acct_info.get("score_in_math")
     
-    prob_of_correct = 1/(1+(10**((question_difficulty-user_score)/400)))
 
+    #Actual calculation of rating changes
+    prob_of_correct = 1/(1+(10**((question_difficulty-user_score)/400)))
     account_last_20 = get_last_20_questions(sub_account_id=sub_account_id)
     question_last_20 = get_last_20_questions(question_id=question_id)
-
     #The thing that needs to change
     new_question_difficulty_difference = (-1 if answered_correctly else 5)
     new_user_difficulty_difference = (1 if answered_correctly else -5)
+
+
     new_user_difficulty = new_user_difficulty_difference + user_score
     if new_user_difficulty <= 0:
         new_user_difficulty = user_score
@@ -85,7 +87,6 @@ def update_ratings(question_id, percentile, answered_correctly, question):
     if new_question_difficulty <= 0:
         new_question_difficulty = question_difficulty
         new_question_difficulty_difference = 0
-
 
     sub_account = session.get("sub_account_information")
     sub_account["score_in_math"] = new_user_difficulty
