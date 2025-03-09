@@ -54,10 +54,6 @@ def create_multiplication(rating):
     return f
 
 def create_subtraction(rating):
-    #Bigger number is always first
-    #Single digit/up to 20
-    #Larger and larger numbers
-    #Negative numbers
     operands = []
     if rating < 50:
         operands = [random.randint(0,9), random.randint(0,9)]
@@ -70,7 +66,7 @@ def create_subtraction(rating):
         operands = [random.randint(100,999), random.randint(100,999)]
         rating = 450
 
-    operands.sort()
+    operands = sorted(operands, reverse=True)
 
     operands = [str(o) for o in operands]
     question = "-".join(operands)
