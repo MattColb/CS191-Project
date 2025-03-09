@@ -71,12 +71,14 @@ def update_ratings(question_id, percentile, answered_correctly, question):
     
 
     #Actual calculation of rating changes
-    prob_of_correct = 1/(1+(10**((question_difficulty-user_score)/400)))
+    prob_correct = 1/(1+(10**((question_difficulty-user_score)/400))) #.75
+    prob_incorrect = 1 - prob_correct #.25
+    #Getting the last 20 answers for the question and user for later use
     account_last_20 = get_last_20_questions(sub_account_id=sub_account_id)
     question_last_20 = get_last_20_questions(question_id=question_id)
-    #The thing that needs to change
-    new_question_difficulty_difference = (-1 if answered_correctly else 5)
-    new_user_difficulty_difference = (1 if answered_correctly else -5)
+    #Making slight adjustments on a probability of correct
+    new_question_difficulty_difference = (-1 * prob_incorrect if answered_correctly else 5 * prob_correct)
+    new_user_difficulty_difference = (1 * prob_incorrect if answered_correctly else -5 * prob_correct)
 
 
     new_user_difficulty = new_user_difficulty_difference + user_score
