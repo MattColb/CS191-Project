@@ -61,7 +61,7 @@ def get_question(question_hash):
         if len(query) != 1:
             return QuestionResponse(success=False, message="The question doesn't exist or exists more than once")
     
-        return QuestionResponse(question_id=query[0]["question_id"], success=True, message="Got Question")
+        return QuestionResponse(question=query[0], success=True, message="Got Question")
 
     
 """

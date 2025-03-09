@@ -5,7 +5,7 @@ from flask import flash, redirect, url_for, session
 import datetime
 from buzzy_bee_db.question.question import add_question, get_question, update_difficulty, get_closest_questions
 from buzzy_bee_db.account.sub_account import update_sub_account
-from buzzy_bee_db.question_user.question_user import get_question_responses, record_question_response, get_sub_account_responses
+from buzzy_bee_db.question_user.question_user import get_question_responses, record_question_response, get_sub_account_responses, get_last_20_questions
 
 #Adjust as needed
 def get_best_question(subject, rating):
@@ -17,7 +17,7 @@ def get_best_question(subject, rating):
     if rng <= .25:
         #Try and select a question that they've missed
         previous_questions = get_sub_account_responses(session.get("sub_account_id")).responses
-        sorted_questions = sorted(previous_questions, key=lambda d: d["timestamp_utc"])
+        sorted_questions = sorted(previous_questions, key=lambda d: d["timestamp_utc"])[::-1]
         correct_set = set()
         for (i, question) in enumerate(sorted_questions):
             if i == 100:
@@ -61,21 +61,30 @@ def get_percentile(question_id, user_time):
     return percentile
 
 
-# https://chatgpt.com/share/67cc8779-7414-8013-8da8-362b5d61bb42 (Using ChatGPT to think up a little bit of a better alg)
+# https://chatgpt.com/share/67cc8779-7414-8013-8da8-362b5d61bb42 (Using ChatGPT to think up a little bit of a somewhat decent updating algorithm)
 def update_ratings(question_id, percentile, answered_correctly, question):
     account_id = session.get("user_id")
     sub_account_id = session.get("sub_account_id")
     sub_acct_info = session.get("sub_account_information")
+    question_difficulty = question.get("difficulty") 
+    user_score = sub_acct_info.get("score_in_math")
+    
+    prob_of_correct = 1/(1+(10**((question_difficulty-user_score)/400)))
 
-    print(question)
-
-    percentage_of_last_20 = 0
+    account_last_20 = get_last_20_questions(sub_account_id=sub_account_id)
+    question_last_20 = get_last_20_questions(question_id=question_id)
 
     #The thing that needs to change
-    new_question_difficulty = (-1 if answered_correctly else 5)
-    new_user_difficulty = (1 if answered_correctly else -5)
-    new_user_difficulty += sub_acct_info.get("score_in_math")
-    new_question_difficulty += question.get("difficulty") 
+    new_question_difficulty_difference = (-1 if answered_correctly else 5)
+    new_user_difficulty_difference = (1 if answered_correctly else -5)
+    new_user_difficulty = new_user_difficulty_difference + user_score
+    if new_user_difficulty <= 0:
+        new_user_difficulty = user_score
+        new_user_difficulty_difference = 0
+    new_question_difficulty = new_question_difficulty_difference + question_difficulty
+    if new_question_difficulty <= 0:
+        new_question_difficulty = question_difficulty
+        new_question_difficulty_difference = 0
 
 
     sub_account = session.get("sub_account_information")
@@ -85,7 +94,7 @@ def update_ratings(question_id, percentile, answered_correctly, question):
     update_sub_account(account_id, sub_account_id, score_in_math=new_user_difficulty)
     update_difficulty(question_id, new_question_difficulty)
 
-    return new_user_difficulty, new_question_difficulty
+    return new_user_difficulty_difference, new_question_difficulty_difference
 
 def user_response(request, qtype):
     user_answer = request.form.get("user_answer")

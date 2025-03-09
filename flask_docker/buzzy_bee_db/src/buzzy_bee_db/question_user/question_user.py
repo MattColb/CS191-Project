@@ -60,3 +60,15 @@ def get_question_responses(question_id):
         
         responses = list(collection.find({"question_id": question_id}, {"_id": 0})) # Excludes the MongoDB _id field from the result
         return QuestionUserResponse(success=True, responses=responses, message="Responses retrieved successfully")
+    
+def get_last_20_questions(question_id=None, sub_account_id=None):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client["buzzy_bee_db"]
+        collection = database["QuestionUser"]
+        if question_id != None:
+            responses = list(collection.find({"question_id": question_id}, {"_id": 0}).sort("timestamp_utc", -1).limit(20))
+
+        elif sub_account_id != None:
+            responses = list(collection.find({"sub_account_id": sub_account_id}, {"_id": 0}).sort("timestamp_utc", -1).limit(20))
+        return QuestionUserResponse(success=True, responses=responses, message="Responses retrieved successfully")
