@@ -7,6 +7,7 @@ from buzzy_bee_db.question.question import add_question, get_question, update_di
 from buzzy_bee_db.account.sub_account import update_sub_account
 from buzzy_bee_db.question_user.question_user import get_question_responses, record_question_response, get_sub_account_responses
 
+#Adjust as needed
 def get_best_question(subject, rating):
     #Better way to do this
     #Can't get around refreshing for an easier question
@@ -44,7 +45,7 @@ def create_question(qtype, rating):
     response = MATH_QUESTIONS_FUNCTIONS[qtype](rating)
     question_id = response.get("question_id")
     if get_question(question_id).success == False:
-        add_question(question_id, response.get("question"), response.get("answer"), qtype, response.get("rating"))
+        add_question(question_id, response.get("question"), response.get("answer"), qtype, response.get("difficulty"))
     return response
 
 
@@ -59,20 +60,26 @@ def get_percentile(question_id, user_time):
     percentile = round((count/ len(time_taken))*100, 2)
     return percentile
 
-def update_ratings(question_id, percentile, answered_correctly):
-    # If question is answered wrong, the question rating always goes up
-    # If question is answered right, get the amount of time that it took them
-    # (Try and keep track of summary statistics?)
-    # If it took the user a much less amount of time to answer the question than they typically needed, bigger increase
-    # Consider streakiness (If more people have gotten it right recently it's easier, more wrong, harder). If you've gotten more right, it's easier, etc.
-    account_id = session.get("account_id")
-    sub_account_id = session.get("sub_account_id")
 
-    new_question_difficulty = -1 if answered_correctly else 1
-    new_user_difficulty = -5*new_question_difficulty
+# https://chatgpt.com/share/67cc8779-7414-8013-8da8-362b5d61bb42 (Using ChatGPT to think up a little bit of a better alg)
+def update_ratings(question_id, percentile, answered_correctly, question):
+    account_id = session.get("user_id")
+    sub_account_id = session.get("sub_account_id")
+    sub_acct_info = session.get("sub_account_information")
+
+    print(question)
+
+    percentage_of_last_20 = 0
+
+    #The thing that needs to change
+    new_question_difficulty = (-1 if answered_correctly else 5)
+    new_user_difficulty = (1 if answered_correctly else -5)
+    new_user_difficulty += sub_acct_info.get("score_in_math")
+    new_question_difficulty += question.get("difficulty") 
+
 
     sub_account = session.get("sub_account_information")
-    sub_account["score_in_math"] = sub_account.get("score_in_math") + new_user_difficulty
+    sub_account["score_in_math"] = new_user_difficulty
     session["sub_account_information"] = sub_account
 
     update_sub_account(account_id, sub_account_id, score_in_math=new_user_difficulty)
@@ -84,10 +91,10 @@ def user_response(request, qtype):
     user_answer = request.form.get("user_answer")
     start_dt = datetime.datetime.fromisoformat(request.args.get("start_dt"))
     end_dt = datetime.datetime.utcnow()
-    response = session.get("current_question")
+    question = session.get("current_question")
 
     # Debugging to check if current_question is available
-    if response is None:
+    if question is None:
         flash("Error: No current question available.")
         print("DEBUG: current_question is not available in session.")
         return redirect(url_for("math.math_questions", qtype=qtype))
@@ -100,10 +107,11 @@ def user_response(request, qtype):
         flash("Please enter a number")
         return redirect(url_for("math.math_questions", qtype=qtype))
 
-    answer = response.get("answer")
-    question_id = response.get("question_id")
+    answer = question.get("answer")
+    question_id = question.get("question_id")
 
     percentile = get_percentile(question_id, seconds_taken)
+
     
     if user_answer == answer:
         flash("Correct")
@@ -112,7 +120,7 @@ def user_response(request, qtype):
         flash(f"Wrong, the correct answer was: {answer}")
         answered_correctly = False
     
-    user_rating_change, question_rating_change = update_ratings(question_id, percentile, answered_correctly)
+    user_rating_change, question_rating_change = update_ratings(question_id, percentile, answered_correctly, question)
 
     record_question_response(session.get("sub_account_id"), question_id, seconds_taken, percentile, question_rating_change, user_rating_change, answered_correctly)
 

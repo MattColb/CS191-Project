@@ -8,12 +8,12 @@ def create_addition(rating):
         rating = 10
     elif rating < 250:
         operands = [random.randint(0,1000000),random.randint(0,1000000)]
-        determined_rating = ((len(operands[0]) + len(operands[1])) /14)*200
+        determined_rating = ((len(str(operands[0])) + len(str(operands[1]))) /14)*200
         rating = 50 + determined_rating
     #Negative
     else:
         operands = [random.randint(-1000000,1000000), random.randint(-1000000,1000000)]
-        determined_rating = ((len(operands[0]) + len(operands[1])) /14)*750
+        determined_rating = ((len(str(operands[0])) + len(str(operands[1]))) /14)*750
         rating = 250+determined_rating
         pass
     #Multiple Operands
@@ -26,7 +26,7 @@ def create_addition(rating):
 
     question_id = hashlib.sha256(str.encode(hash_question)).hexdigest()
 
-    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
 
     return f
 
@@ -53,7 +53,7 @@ def create_multiplication(rating):
 
     question_id = hashlib.sha256(str.encode(hash_question)).hexdigest()
 
-    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
 
     return f
 
@@ -70,7 +70,7 @@ def create_subtraction(rating):
 
     question_id = hashlib.sha256(str.encode(question)).hexdigest()
 
-    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
 
     return f
 
@@ -86,7 +86,7 @@ def create_division(rating):
 
     question_id = hashlib.sha256(str.encode(question)).hexdigest()
 
-    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
     
     return f
 
