@@ -5,7 +5,6 @@ from flask import Flask, request, redirect
 import os
 from flask_blueprints.login_register import login_register
 from flask_blueprints.math import math
-from buzzy_bee_db.account.main_account import ping_db, conn_string
 
 app = Flask(__name__)
 app.secret_key="TestSecret"

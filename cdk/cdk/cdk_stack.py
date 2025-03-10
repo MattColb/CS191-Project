@@ -17,24 +17,24 @@ class CdkStack(Stack):
 
 
         # Create a VPC
-        vpc = aws_ec2.Vpc(
-            self,
-            "VPC",
-            max_azs=2,
-            nat_gateways=1,
-            subnet_configuration=[
-                aws_ec2.SubnetConfiguration(
-                    name="Public",
-                    subnet_type=aws_ec2.SubnetType.PUBLIC
-                ),
-                aws_ec2.SubnetConfiguration(
-                    name="Private",
-                    subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
-                )
-            ]
-        )
-        mongo_connection, lightsail_instance = create_mongo(self)
+        # vpc = aws_ec2.Vpc(
+        #     self,
+        #     "VPC",
+        #     max_azs=2,
+        #     nat_gateways=1,
+        #     subnet_configuration=[
+        #         aws_ec2.SubnetConfiguration(
+        #             name="Public",
+        #             subnet_type=aws_ec2.SubnetType.PUBLIC
+        #         ),
+        #         aws_ec2.SubnetConfiguration(
+        #             name="Private",
+        #             subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
+        #         )
+        #     ]
+        # )
+        # mongo_connection, lightsail_instance = create_mongo(self)
 
-        fargate_creation(self, vpc, mongo_connection, lightsail_instance)
+        # fargate_creation(self, vpc, mongo_connection, lightsail_instance)
 
-        # mongo_connection_public, lightsail_instance_public = create_mongo_public(self)
+        mongo_connection_public, lightsail_instance_public = create_mongo_public(self)

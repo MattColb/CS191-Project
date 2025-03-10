@@ -88,7 +88,7 @@ sudo systemctl restart mongod
     # instance.connections.allow_from(vpc, aws_ec2.Port.tcp(27017))
 
     #Print out connection string
-    connection_string = f"mongodb://{username}:{password}@{instance.attr_public_ip_address}/buzzy_bee_db_prod"
+    connection_string = f"mongodb://{username}:{password}@{instance.attr_public_ip_address}/buzzy_bee_db"
     CfnOutput(scope, "MongoDBConnectionString", value=connection_string)
 
     return connection_string, instance
