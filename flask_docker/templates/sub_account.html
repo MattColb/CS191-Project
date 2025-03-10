@@ -14,6 +14,7 @@
    </script>
 </head>
 <body>
+
    <!-- Background Elements -->
    <div class="honeycomb-bg"></div>
    
@@ -41,13 +42,13 @@
                </div>
                <p>Math</p>
            </a>
-           <a href="#" class="game-card">
+           <a href="{{ url_for('spelling.spelling_page') }}" class="game-card">
                <div class="game-card-icon">
                    <i class="fas fa-spell-check"></i>
                </div>
                <p>Spelling</p>
            </a>
-           <a href="#" class="game-card">
+           <a href="{{ url_for('writing.writing_page') }}" class="game-card">
                <div class="game-card-icon">
                    <i class="fas fa-pencil-alt"></i>
                </div>
