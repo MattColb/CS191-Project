@@ -11,7 +11,7 @@ load_dotenv(os.path.join(curr_dir, "../../../../.env"))
 def record_question_response(sub_account_id, question_id, time_taken, percentile_time, question_rating_change, user_rating_change, answered_correctly):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["QuestionUser"]
         
         response_data = {
@@ -33,7 +33,7 @@ def record_question_response(sub_account_id, question_id, time_taken, percentile
 def get_sub_account_responses(sub_account_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["QuestionUser"]
         
         responses = list(collection.find({"sub_account_id": sub_account_id}, {"_id": 0})) # Excludes the MongoDB _id field from the result
@@ -43,7 +43,7 @@ def get_sub_account_responses(sub_account_id):
 def get_question_response(sub_account_id, question_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["QuestionUser"]
         
         responses = list(collection.find({"sub_account_id": sub_account_id, "question_id": question_id}, {"_id": 0})) # Excludes the MongoDB _id field from the result
@@ -55,7 +55,7 @@ def get_question_response(sub_account_id, question_id):
 def get_question_responses(question_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["QuestionUser"]
         
         responses = list(collection.find({"question_id": question_id}, {"_id": 0})) # Excludes the MongoDB _id field from the result

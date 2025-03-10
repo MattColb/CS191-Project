@@ -10,7 +10,7 @@ load_dotenv(os.path.join(curr_dir, "../../../../.env"))
 def login(username, password):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Users"]
         query = collection.find({"username":username})
         list_query = query.to_list()
@@ -25,7 +25,7 @@ def login(username, password):
 def register(username, password, email):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Users"]
         query = collection.find({"username":username})
         query = query.to_list()

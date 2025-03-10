@@ -11,7 +11,7 @@ load_dotenv(os.path.join(curr_dir, "../../../../.env"))
 def get_sub_accounts(user_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Users"]
         user_doc = collection.find_one({"user_id": user_id})
 
@@ -22,7 +22,7 @@ def get_sub_accounts(user_id):
 def create_sub_account(user_id, username):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Users"]
         sub_account_id = str(uuid4())
 
@@ -46,7 +46,7 @@ def create_sub_account(user_id, username):
 def delete_sub_account(user_id, sub_account_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Users"]
         result = collection.update_one(
             {"user_id": user_id},
@@ -60,7 +60,7 @@ def delete_sub_account(user_id, sub_account_id):
 def update_sub_account(user_id, sub_account_id, name=None, score_in_math=None):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Users"]
 
         update_fields = {}
@@ -81,7 +81,7 @@ def update_sub_account(user_id, sub_account_id, name=None, score_in_math=None):
 def get_sub_account(user_id, sub_account_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Users"]
 
         user_doc = collection.find_one(

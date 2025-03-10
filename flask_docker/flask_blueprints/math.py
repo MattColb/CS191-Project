@@ -15,13 +15,12 @@ def math_page():
 def math_questions(qtype):
     if request.method == "GET":
         sub_account_info = session.get("sub_account_information")
-        # Use the corresponding function to generate the question
-        question_data = get_best_question(qtype, sub_account_info['score_in_math'])
+        question_data = get_best_question(qtype, sub_account_info.get("score_in_math"))
         start_dt = datetime.datetime.utcnow().isoformat()
-
+        
         # Make sure the question is set in the session before returning
         session["current_question"] = question_data
-        
+
         return render_template("math_questions.html", question=question_data['question'], start_dt=start_dt, qtype=qtype)
     
     if request.method == "POST":

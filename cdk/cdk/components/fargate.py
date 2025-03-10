@@ -1,13 +1,22 @@
-
 from aws_cdk import (
     aws_ecs_patterns,
     aws_ecs,
+    aws_ec2,
     CfnOutput
 )
 
 
-def fargate_creation(scope, vpc, connection_string):
+def fargate_creation(scope, vpc, connection_string, lightsail_instance):
     ecs_cluster = aws_ecs.Cluster(scope, "MyEcsCluster", vpc=vpc)
+
+    # Create a security group for the Flask service
+    flask_security_group = aws_ec2.SecurityGroup(
+        scope, 
+        "FlaskServiceSG",
+        vpc=vpc,
+        description="Allow MongoDB security group to access Flask service",
+        allow_all_outbound=True
+    )
 
     # Create a docker container from the flask_docker folder
     load_balanced_fargate_service = aws_ecs_patterns.ApplicationLoadBalancedFargateService(
@@ -19,10 +28,11 @@ def fargate_creation(scope, vpc, connection_string):
         task_image_options=aws_ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
             image=aws_ecs.ContainerImage.from_asset("flask_docker"),
             environment={
-                "MONGODB_CONN_STRING":connection_string
+                "MONGODB_CONN_STRING": connection_string
             }
         ),
-        public_load_balancer=True
+        public_load_balancer=True,
+        security_groups=[flask_security_group]
     )
 
     scalable_target = load_balanced_fargate_service.service.auto_scale_task_count(
