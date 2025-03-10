@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, session, flash
 import datetime
-from .helper_functions.math_functions import user_response, user_response, get_best_question
+from .helper_functions.math_functions import user_response, user_response,  get_best_question
 
 math = Blueprint('math', __name__,
                         template_folder='templates')
@@ -8,6 +8,7 @@ math = Blueprint('math', __name__,
 @math.route("/Math", methods=["GET"])
 def math_page():
     if request.method == "GET":
+        session.pop("current_question", None)
         return render_template("math.html")
 
 @math.route("/MathQuestions/<qtype>", methods=["GET", "POST"])
@@ -17,6 +18,9 @@ def math_questions(qtype):
         question_data = get_best_question(qtype, sub_account_info.get("score_in_math"))
         start_dt = datetime.datetime.utcnow().isoformat()
         
+        # Make sure the question is set in the session before returning
+        session["current_question"] = question_data
+
         return render_template("math_questions.html", question=question_data['question'], start_dt=start_dt, qtype=qtype)
     
     if request.method == "POST":

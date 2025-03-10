@@ -4,17 +4,15 @@ import hashlib
 def create_addition(rating):
     operands = []
     if rating < 50:
-        operands = [random.randint(0,10), random.randint(0,10)]
-        rating = 10
+        operands = [random.randint(0,9), random.randint(0,9)]
+        rating = 25
     elif rating < 250:
-        operands = [random.randint(0,1000000),random.randint(0,1000000)]
-        determined_rating = ((len(operands[0]) + len(operands[1])) /14)*200
-        rating = 50 + determined_rating
+        operands = [random.randint(10, 99),random.randint(10, 99)]
+        rating = 175
     #Negative
     else:
-        operands = [random.randint(-1000000,1000000), random.randint(-1000000,1000000)]
-        determined_rating = ((len(operands[0]) + len(operands[1])) /14)*750
-        rating = 250+determined_rating
+        operands = [random.randint(100,999), random.randint(100,999)]
+        rating = 450
         pass
     #Multiple Operands
     #Decimals
@@ -26,24 +24,22 @@ def create_addition(rating):
 
     question_id = hashlib.sha256(str.encode(hash_question)).hexdigest()
 
-    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
 
     return f
 
 def create_multiplication(rating):
     # Times Tables
-    rating = 0
     operands = []
     if rating < 250:
         operands = [random.randint(0,10), random.randint(0,10)]
         rating = 125
-    # Larger number * Smaller Number
+    elif rating < 550:    
+        operands = [random.randint(1,10), random.randint(10,20)]
     elif rating < 1000:
-        operands = [random.randint(0,10), random.randint(0,1000000)]
-    # Larger number * larger number
+        operands = [random.randint(10,99), random.randint(10,99)]
     else:
-        operands = [random.randint(0,1000000), random.randint(0,1000000)]
-    #Decimals
+        operands = [random.randint(10,99), random.randint(10,1000)]
 
     operands = [str(o) for o in operands]
     question = "*".join(operands)
@@ -53,40 +49,56 @@ def create_multiplication(rating):
 
     question_id = hashlib.sha256(str.encode(hash_question)).hexdigest()
 
-    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
 
     return f
 
 def create_subtraction(rating):
-    #Bigger number is always first
-    #Single digit/up to 20
-    #Larger and larger numbers
-    #Negative numbers
-    operands = [random.randint(0,10), random.randint(0,10)]
+    operands = []
+    if rating < 50:
+        operands = [random.randint(0,9), random.randint(0,9)]
+        rating = 10
+    elif rating < 250:
+        operands = [random.randint(10, 99),random.randint(10, 99)]
+        rating = 125
+    #Negative
+    else:
+        operands = [random.randint(100,999), random.randint(100,999)]
+        rating = 450
+
+    operands = sorted(operands, reverse=True)
 
     operands = [str(o) for o in operands]
     question = "-".join(operands)
-    answer = round(eval(question),2)
+    answer = eval(question)
 
     question_id = hashlib.sha256(str.encode(question)).hexdigest()
 
-    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
 
     return f
 
 def create_division(rating):
-    #Single Digit whole numbers
-    # Big divided by a single digit
-    # Remainders
-    operands = [random.randint(0,10), random.randint(0,10)]
-
-    operands = [str(o) for o in operands]
-    question = "/".join(operands)
-    answer = round(eval(question),2)
+    if rating < 350:
+        divisor = random.randint(1, 9)
+        quotient = random.randint(1, 9)
+        rating = 200
+    elif rating < 600:
+        divisor = random.randint(2, 9)
+        quotient = random.randint(10, 20)
+        rating = 450
+    else: 
+        divisor = random.randint(10, 20)
+        quotient = random.randint(10, 50)
+        rating = 750
+    
+    dividend = divisor * quotient 
+    question = f"{dividend}÷{divisor}"
+    answer = quotient
 
     question_id = hashlib.sha256(str.encode(question)).hexdigest()
 
-    f = {"question":question, "answer":answer, "rating":rating, "question_id":question_id}
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
     
     return f
 
@@ -96,8 +108,16 @@ def create_rounding(rating):
 def create_patterns(rating):
     pass
 
+def create_inequalities(rating):
+    pass
 
-MATH_QUESTIONS_TYPES = ["Addition", "Subtraction", "Multiplication", "Division", "Rounding", "Patterns", "All"]
+def create_fraction(rating):
+    pass
+
+
+
+
+MATH_QUESTIONS_TYPES = ["Addition", "Subtraction", "Multiplication", "Division", "Rounding", "Patterns", "Inequalities", "Fraction", "Clock"]
 
 MATH_QUESTIONS_FUNCTIONS = {
     "Addition":create_addition,
@@ -105,5 +125,6 @@ MATH_QUESTIONS_FUNCTIONS = {
     "Multiplication":create_multiplication,
     "Division":create_division,
     # "Rounding":create_rounding,
-    # "Patterns":create_patterns
+    # "Patterns":create_patterns,
+    # "Inequalities":create_inequalities,
 }
