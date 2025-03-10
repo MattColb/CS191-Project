@@ -31,6 +31,8 @@ def create_mongo(scope):
                 ),
                 aws_lightsail.CfnInstance.PortProperty(
                     from_port=27017,
+                    access_type="Public",
+                    access_from="0.0.0.0/0",
                     to_port=27017,
                     protocol="tcp"
                 )
