@@ -11,7 +11,7 @@ load_dotenv(os.path.join(curr_dir, "../../../../.env"))
 def add_question(question_id, question, answer, category, difficulty):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Questions"]
         
         # Check if the question already exists
@@ -35,7 +35,7 @@ def add_question(question_id, question, answer, category, difficulty):
 def update_difficulty(question_id, difficulty):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Questions"]
         
         # Update the difficulty of the question
@@ -52,7 +52,7 @@ def update_difficulty(question_id, difficulty):
 def get_question(question_hash):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Questions"]
         
         # Check if the question already exists
@@ -68,7 +68,7 @@ def get_question(question_hash):
 def get_question(question_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Questions"]
         
         # Retrieve the question
@@ -82,7 +82,7 @@ def get_question(question_id):
 def get_closest_questions(rating, subject):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Questions"]
 
         query = {
@@ -96,7 +96,7 @@ def get_closest_questions(rating, subject):
 def get_question_attempt_count(question_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Questions"]
         question = collection.find_one({"question_id": question_id})
         return question.get("attempts", 0) if question else 0
@@ -105,7 +105,7 @@ def get_question_attempt_count(question_id):
 def get_question_correct_count(question_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Questions"]
         question = collection.find_one({"question_id": question_id})
         return question.get("correct_attempts", 0) if question else 0
@@ -114,7 +114,7 @@ def get_question_correct_count(question_id):
 def adjust_question_attempt_count(question_id, count):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Questions"]
         collection.update_one({"question_id": question_id}, {"$inc": {"attempts": count}}, upsert=True)
 
@@ -122,6 +122,6 @@ def adjust_question_attempt_count(question_id, count):
 def adjust_question_correct_count(question_id, count):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Questions"]
         collection.update_one({"question_id": question_id}, {"$inc": {"correct_attempts": count}}, upsert=True)

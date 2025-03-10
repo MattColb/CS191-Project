@@ -10,7 +10,7 @@ load_dotenv(os.path.join(curr_dir, "../../../../.env"))
 def analyze_question_difficulty(question_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         question_collection = database["Questions"]
         response_collection = database["QuestionUser"]
 

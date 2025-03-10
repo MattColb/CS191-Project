@@ -7,20 +7,10 @@ from .main_account_response import MainAccountResponse
 curr_dir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(curr_dir, "../../../../.env"))
 
-# Add a function to return the result of pining the DB
-def ping_db():
-    connection = os.getenv("MONGODB_CONN_STRING")
-    print(connection)
-    with MongoClient(connection) as client:
-        return client.server_info()
-
-def conn_string():
-    return os.getenv("MONGODB_CONN_STRING")
-
 def login(username, password):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Users"]
         query = collection.find({"username":username})
         list_query = query.to_list()
@@ -35,7 +25,7 @@ def login(username, password):
 def register(username, password, email):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
-        database = client["buzzy_bee_db"]
+        database = client.get_default_database()
         collection = database["Users"]
         query = collection.find({"username":username})
         query = query.to_list()

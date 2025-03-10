@@ -6,13 +6,8 @@ from aws_cdk import (
 )
 
 
-def fargate_creation(scope, vpc, connection_string, mongo_security_group):
+def fargate_creation(scope, vpc, connection_string, lightsail_instance):
     ecs_cluster = aws_ecs.Cluster(scope, "MyEcsCluster", vpc=vpc)
-
-    mongo_security_group.add_ingress_rule(
-        peer=aws_ec2.Peer.ipv4(vpc.vpc_cidr_block),
-        connection=aws_ec2.Port.tcp(27017)
-    )
 
     # Create a security group for the Flask service
     flask_security_group = aws_ec2.SecurityGroup(
@@ -21,16 +16,6 @@ def fargate_creation(scope, vpc, connection_string, mongo_security_group):
         vpc=vpc,
         description="Allow MongoDB security group to access Flask service",
         allow_all_outbound=True
-    )
-
-    mongo_security_group.add_ingress_rule(
-        peer=flask_security_group,
-        connection=aws_ec2.Port.tcp(27017)
-    )
-
-    flask_security_group.add_egress_rule(
-        peer=mongo_security_group,
-        connection=aws_ec2.Port.tcp(27017)
     )
 
     # Create a docker container from the flask_docker folder
