@@ -1,69 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Kids Accounts</title>
-   <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-   <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids Accounts</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
 <body>
-   <script>
-    function logout() {
-        window.location.href = "{{ url_for('login_register.logout') }}";
-    }
- 
-    // Navigate to subaccount function
-    function goToSubAccount(subAccountId) {
-        // Store selected profile in localStorage
-        localStorage.setItem("selectedProfile", subAccountId);
+  <div class="honeycomb-bg"></div>
+  <div class="bee bee1"></div>
+  <div class="bee bee2"></div>
+  <div class="bee bee3"></div>
 
-        // Debugging: Check if subAccountId is captured correctly
-        console.log("Navigating to subaccount for:", subAccountId);
+  <nav class="navbar">
+      <div class="logo-container">
+          <span class="logo-icon">🐝</span>
+          <h1 class="logo">BuzzyBee</h1>
+      </div>
+      <div class="nav-right">
+          <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
+      </div>
+  </nav>
 
-        // Redirect to the correct subaccount login route
-        window.location.href = `/Subaccount/Login/${encodeURIComponent(subAccountId)}`;
-    }
-   </script>
+  <div class="container">
+      <h1>Who's studying?</h1>
+      <div class="profiles" id="profiles-container">
+          {% for sub_account in sub_accounts %}
+          <div class="profile" onclick="goToSubAccount('{{ sub_account.sub_account_id }}')">
+              <div class="profile-img-container">
+                  <span class="profile-emoji" data-account-id="{{ sub_account.sub_account_id }}">⏳</span>
+              </div>
+              <p>{{ sub_account.sub_account_username }}</p>
+          </div>
+          {% endfor %}
+          <div class="profile add-profile" id="add-profile">
+              <div class="add-icon">+</div>
+              <p>Add Kid</p>
+          </div>
+      </div>
 
-   
-   <nav class="navbar">
-       <h1 class="logo">🐝 BuzzyBee</h1>
-       <div class="nav-right">
-           <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
-       </div>
-   </nav>
+      <button class="manage-btn" onclick="openManageModal()">Manage Profiles</button>
+  </div>
+  
+  <!-- Popup Modal for Adding a New Subaccount -->
+  <div id="add-modal" class="modal">
+      <form action="{{url_for('login_register.account')}}" method="POST">
+          <div class="modal-content">
+              <span class="close">&times;</span>
+              <h2>Add New Profile</h2>
+              <div class="emoji-preview-container">
+                  <span id="emoji-preview" class="emoji-preview"></span>
+              </div>
+              <input type="hidden" name="emoji" id="selected-emoji" value="">
+              <input type="text" name="sub_account_name" id="sub-account-name" placeholder="Enter kid's name">
+              <button type="submit" id="add-subaccount" class="cta-btn">Add</button>
+          </div>
+      </form>
+  </div>
 
-   <div class="container">
-    <h1>Who's studying?</h1>
-    <div class="profiles" id="profiles-container">
-        {% for sub_account in sub_accounts %}
-        <div class="profile" onclick="goToSubAccount('{{ sub_account.sub_account_id }}')">
-            <img src="{{ url_for('static', filename='images/kid1.png') }}" alt="{{ sub_account.sub_account_username }}">
-            <p>{{ sub_account.sub_account_username }}</p>
-        </div>
-        {% endfor %}
-        <div class="profile add-profile" id="add-profile">
-            <div class="add-icon">+</div>
-            <p>Add Kid</p>
-        </div>
-    </div>
+  <!-- Popup Modal for Managing Profiles with Tabs -->
+  <div id="manage-modal" class="modal">
+      <div class="modal-content manage-profiles-modal">
+          <span class="close" onclick="closeManageModal()">&times;</span>
+          <h2>Manage Profiles</h2>
+        
+          <!-- Tab Menu -->
+          <div id="tab-menu" class="tab-content">
+              <div class="tabs-container">
+                  <div class="tab-item" onclick="showTabContent('delete-profile-tab')">
+                      <i class="fas fa-trash"></i>
+                      <span>Delete a Profile</span>
+                  </div>
+                  <div class="tab-item">
+                      <i class="fas fa-envelope"></i>
+                      <span>Contact Us</span>
+                  </div>
+                  <div class="tab-item">
+                      <i class="fas fa-crown"></i>
+                      <span>Plans</span>
+                  </div>
+                  <div class="tab-item">
+                      <i class="fas fa-cog"></i>
+                      <span>Settings</span>
+                  </div>
+                  <div class="tab-item">
+                      <i class="fas fa-ellipsis-h"></i>
+                      <span>Other</span>
+                  </div>
+              </div>
+              <button class="close-btn" onclick="closeManageModal()">Close</button>
+          </div>
+        
+          <!-- Delete Profile Tab Content -->
+          <div id="delete-profile-tab" class="tab-content" style="display: none;">
+              <h3>Delete a Profile</h3>
+              <div class="profile-list">
+                  {% for sub_account in sub_accounts %}
+                  <div class="profile-item">
+                      <div class="profile-info">
+                          <span class="profile-small-emoji" data-account-id="{{ sub_account.sub_account_id }}">⏳</span>
+                          <span>{{ sub_account.sub_account_username }}</span>
+                      </div>
+                      <button class="delete-btn" onclick="deleteSubAccount('{{ sub_account.sub_account_id }}', event)">
+                          <i class="fas fa-trash"></i> Delete
+                      </button>
+                  </div>
+                  {% endfor %}
+              </div>
+              <button class="back-btn" onclick="goBackToTabs()">Go Back</button>
+          </div>
+      </div>
+  </div>
 
-    <button class="manage-btn">Manage Profiles</button>
-</div>
+  <script>
+      function logout() {
+          window.location.href = "{{ url_for('login_register.logout') }}";
+      }
+    
+      // Navigate to subaccount function
+      function goToSubAccount(subAccountId) {
+          // Store selected profile in localStorage
+          localStorage.setItem("selectedProfile", subAccountId);
 
+          // Debugging: Check if subAccountId is captured correctly
+          console.log("Navigating to subaccount for:", subAccountId);
 
-   <!-- Popup Modal for Adding a New Subaccount -->
-   <div id="add-modal" class="modal">
-        <form target="{{url_for('login_register.account')}}" method="POST">
-       <div class="modal-content">
-           <span class="close">&times;</span>
-           <h2>Add New Profile</h2>
-           <input type="text" name="sub_account_name" id="sub-account-name" placeholder="Enter kid's name">
-           <button type="submit" id="add-subaccount">Add</button>
-       </div>
-        </form>
-   </div>
+          // Redirect to the correct subaccount login route
+          window.location.href = `/Subaccount/Login/${encodeURIComponent(subAccountId)}`;
+      }
+    
+      // Delete subaccount function
+      function deleteSubAccount(subAccountId, event) {
+          // Prevent the click from propagating to parent elements
+          event.stopPropagation();
+        
+          if (confirm("Are you sure you want to delete this profile?")) {
+              // Call the delete endpoint
+              window.location.href = `/Subaccount/${encodeURIComponent(subAccountId)}`;
+          }
+      }
+    
+      // Open manage profiles modal
+      function openManageModal() {
+          document.getElementById("manage-modal").style.display = "flex";
+          showTabContent('tab-menu'); // Show the main tab menu by default
+      }
+    
+      // Close manage profiles modal
+      function closeManageModal() {
+          document.getElementById("manage-modal").style.display = "none";
+      }
+    
+      // Show specific tab content
+      function showTabContent(tabId) {
+          // Hide all tab contents
+          const tabContents = document.getElementsByClassName("tab-content");
+          for (let i = 0; i < tabContents.length; i++) {
+              tabContents[i].style.display = "none";
+          }
+        
+          // Show the selected tab content
+          document.getElementById(tabId).style.display = "block";
+      }
+    
+      // Go back to main tab menu
+      function goBackToTabs() {
+          showTabContent('tab-menu');
+      }
+  </script>
 </body>
 </html>

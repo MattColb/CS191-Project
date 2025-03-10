@@ -2,31 +2,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sub Account</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sub_account.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script>
-        function logout() {
-            window.location.href = "{{ url_for('login_register.logout') }}";
-        }
-    </script>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Sub Account</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/sub_account.css') }}">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   <script>
+       function logout() {
+           window.location.href = "{{ url_for('login_register.logout') }}";
+       }
+   </script>
 </head>
 <body>
-    <nav class="navbar">
-        <h1 class="logo">🐝 BuzzyBee</h1>
-        <div class="nav-right">
-            <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
-        </div>
-    </nav>
-    <div class="container">
-        <h1>Choose a Subject</h1>
-        <div class="game-options">
-            <a href="{{ url_for('math.math_page') }}" class="game-card">Math</a>
-            <a href="#" class="game-card">Spelling</a>
-            <a href="#" class="game-card">Writing</a>
-        </div>
-    </div>
+   <!-- Background Elements -->
+   <div class="honeycomb-bg"></div>
+   
+   <!-- Decorative Bee Elements -->
+   <div class="bee bee1"></div>
+   <div class="bee bee2"></div>
+   <div class="bee bee3"></div>
+
+   <nav class="navbar">
+       <div class="logo-container">
+           <span class="logo-icon">🐝</span>
+           <h1 class="logo">BuzzyBee</h1>
+       </div>
+       <div class="nav-right">
+           <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
+       </div>
+   </nav>
+
+   <div class="container">
+       <h1>Choose a Subject</h1>
+       <div class="game-options">
+           <a href="{{ url_for('math.math_page') }}" class="game-card">
+               <div class="game-card-icon">
+                   <i class="fas fa-calculator"></i>
+               </div>
+               <p>Math</p>
+           </a>
+           <a href="#" class="game-card">
+               <div class="game-card-icon">
+                   <i class="fas fa-spell-check"></i>
+               </div>
+               <p>Spelling</p>
+           </a>
+           <a href="#" class="game-card">
+               <div class="game-card-icon">
+                   <i class="fas fa-pencil-alt"></i>
+               </div>
+               <p>Writing</p>
+           </a>
+       </div>
+   </div>
 </body>
 </html>
