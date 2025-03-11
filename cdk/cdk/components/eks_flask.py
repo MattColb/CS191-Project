@@ -1,80 +1,43 @@
-import aws_cdk as cdk
-from constructs import Construct
-import aws_cdk.aws_ec2 as ec2
-import aws_cdk.aws_iam as iam
-import aws_cdk.custom_resources as cr
-import aws_cdk.aws_ecr_assets as ecr_assets
+from aws_cdk import (
+    aws_elasticbeanstalk as eb,
+    aws_iam as iam,
+    aws_ec2 as ec2,
+    aws_ecr_assets as ecr_assets
+)
 
-# Help from: https://claude.site/artifacts/e89e294f-5610-4aa5-a7a1-051bd6854628
 
 def flask_light_sail(scope, connection_string):
-    # Custom resource to create and deploy the Lightsail container service
-    lightsail_container = cr.AwsCustomResource(scope, "LightsailContainer",
-        on_create={
-            "service": "lightsail",
-            "action": "createContainerService",
-            "parameters": {
-                "serviceName": "flask-app",
-                "power": "micro",
-                "scale": 1
-            },
-            "physical_resource_id": cr.PhysicalResourceId.from_response("containerService.containerServiceName")
-        },
-        policy=cr.AwsCustomResourcePolicy.from_sdk_calls(resources=cr.AwsCustomResourcePolicy.ANY_RESOURCE)
-    )
+    docker_image = ecr_assets.DockerImageAsset(scope, "FlaskDockerImage",
+                                                   directory="./app")  
+    # Define Elastic Beanstalk application
+    app = eb.CfnApplication(scope, "FlaskApp",
+                            application_name="FlaskApp")
 
-    image = ecr_assets.DockerImageAsset(scope, "FlaskDockerImage",
-        directory="flask_docker" 
-    )
+    # Define IAM role for Elastic Beanstalk
+    role = iam.Role(scope, "ElasticBeanstalkRole",
+                    assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"))
 
-    # Custom resource to deploy the container
-    lightsail_deployment = cr.AwsCustomResource(scope, "LightsailDeployment",
-        on_create={
-            "service": "lightsail",
-            "action": "createContainerServiceDeployment",
-            "parameters": {
-                "serviceName": "flask-app",
-                "containers": {
-                    "flask": {
-                        "image": f"{image.image_uri}:latest",
-                        "environment": {
-                            "MONGODB_CONN_STRING": connection_string
-                        },
-                        "ports": {
-                            "80": "HTTP"
-                        }
-                    }
-                },
-                "publicEndpoint": {
-                    "containerName": "flask",
-                    "containerPort": 80
-                }
-            },
-            "physical_resource_id": cr.PhysicalResourceId.of("flask-app-deployment")
-        },
-        policy=cr.AwsCustomResourcePolicy.from_sdk_calls(resources=cr.AwsCustomResourcePolicy.ANY_RESOURCE)
-    )
+    role.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name(
+        "AWSElasticBeanstalkWebTier"))
 
-    # Deployment depends on container service
-    lightsail_deployment.node.add_dependency(lightsail_container)
+    # Elastic Beanstalk instance profile
+    instance_profile = iam.CfnInstanceProfile(scope, "InstanceProfile",
+                                                roles=[role.role_name])
 
-    # Get the URL of the service
-    get_service_url = cr.AwsCustomResource(scope, "GetServiceUrl",
-        on_create={
-            "service": "lightsail",
-            "action": "getContainerServices",
-            "parameters": {
-                "serviceName": "flask-app"
-            },
-            "physical_resource_id": cr.PhysicalResourceId.of("flask-app-url")
-        },
-        policy=cr.AwsCustomResourcePolicy.from_sdk_calls(resources=cr.AwsCustomResourcePolicy.ANY_RESOURCE)
-    )
-    get_service_url.node.add_dependency(lightsail_deployment)
+    # Define environment variables
+    environment_vars = [
+        {"name": "MONGO_URI", "value": connection_string}
+    ]
 
-    # Output the public URL
-    url = get_service_url.get_response_field("containerServices.0.url")
-    cdk.CfnOutput(scope, "ServiceUrl",
-        value=f"https://{url}",
-        description="URL of the Flask application"
-    )
+    # Elastic Beanstalk Environment
+    env = eb.CfnEnvironment(scope, "FlaskAppEnv",
+                            application_name=app.application_name,
+                            environment_name="FlaskAppEnv",
+                            solution_stack_name="64bit Amazon Linux 2 v5.8.1 running Docker",
+                            option_settings=[
+                                {"namespace": "aws:elasticbeanstalk:application:environment",
+                                    "option_name": var["name"],
+                                    "value": var["value"]
+                                    } for var in environment_vars
+                            ],
+                            instance_profile=instance_profile.instance_profile_name)
