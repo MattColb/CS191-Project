@@ -2,6 +2,7 @@ from aws_cdk import (
     aws_ecs_patterns,
     aws_ecs,
     aws_ec2,
+    aws_lightsail,
     CfnOutput
 )
 
@@ -17,6 +18,17 @@ def fargate_creation(scope, vpc, connection_string, lightsail_instance):
         description="Allow MongoDB security group to access Flask service",
         allow_all_outbound=True
     )
+
+    flask_security_group.add_ingress_rule(
+        peer=aws_ec2.Peer.any_ipv4(),
+        connection=aws_ec2.Port.tcp(27017)
+    )
+
+    flask_security_group.add_egress_rule(
+        peer=aws_ec2.Peer.any_ipv4(),
+        connection=aws_ec2.Port.tcp(27017)
+    )
+
 
     # Create a docker container from the flask_docker folder
     load_balanced_fargate_service = aws_ecs_patterns.ApplicationLoadBalancedFargateService(

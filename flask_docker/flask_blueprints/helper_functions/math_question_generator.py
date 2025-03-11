@@ -1,5 +1,9 @@
 import random
 import hashlib
+import fractions
+from .generate_clock import draw_clock
+
+# Used this chat to help with generating questions: https://chatgpt.com/share/67cc8779-7414-8013-8da8-362b5d61bb42
 
 def create_addition(rating):
     operands = []
@@ -103,19 +107,102 @@ def create_division(rating):
     return f
 
 def create_rounding(rating):
-    pass
+    rating = 500
+    number_to_round = round(random.random() * 10000,4)
+    place_values = [1, 10, 100, 1000, 10000, .01, .1, .001, .0001]
+    place_value = random.choice(place_values)
+    rounded_number = round(number_to_round / place_value) * place_value
+    question = f"Round {number_to_round} to the nearest {place_value}"
+    answer = rounded_number
+
+    question_id = hashlib.sha256(str.encode(question)).hexdigest()
+
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
+
+    return f
 
 def create_patterns(rating):
-    pass
+    """Generates a number pattern and asks for the next number."""
+    start = random.randint(1, 50)  # Random starting number
+    step = random.randint(0, 20)  # Common pattern steps
+    length = random.randint(4, 6)  # Number of terms to display
+
+    rating = step*25
+
+    pattern = [start + i * step for i in range(length)]
+    question = f"Complete the pattern: {', '.join(map(str, pattern[:-1]))}, ?"
+    answer = pattern[-1]  # The next number in the pattern
+
+    question_id = hashlib.sha256(str.encode(question)).hexdigest()
+
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
+
+    return f
 
 def create_inequalities(rating):
-    pass
+    num1 = random.randint(1, 1000)
+    num2 = random.randint(1, 1000)
 
-def create_fraction(rating):
-    pass
+    rating = 300
 
+    question = f"Which inequality symbol makes this statement true? {num1} _ {num2}"
+    answer = ">" if num1 > num2 else "<" if num1 < num2 else "="
 
+    question_id = hashlib.sha256(str.encode(question)).hexdigest()
 
+    f = {"question":question, "answer":answer, "difficulty":rating, "question_id":question_id}
+
+    return f
+
+def generate_fraction_problem(rating):
+    """Generates a random fraction question covering different fraction concepts."""
+    question_type = random.choice(["simplify", "compare", "add_subtract", "multiply_divide", "convert"])
+
+    # Generate random fractions
+    num1, denom1 = random.randint(1, 9), random.randint(2, 10)
+    num2, denom2 = random.randint(1, 9), random.randint(2, 10)
+    fraction1 = fractions.Fraction(num1, denom1)
+    fraction2 = fractions.Fraction(num2, denom2)
+
+    if question_type == "simplify":
+        # Simplify a fraction
+        unsimplified = fraction1.numerator * random.randint(2, 5), fraction1.denominator * random.randint(2, 5)
+        question = f"Simplify the fraction: {unsimplified[0]}/{unsimplified[1]}"
+        answer = str(fractions.Fraction(unsimplified[0], unsimplified[1]))
+
+    elif question_type == "compare":
+        # Compare two fractions
+        question = f"Which symbol makes this true? {fraction1} _ {fraction2}"
+        answer = ">" if fraction1 > fraction2 else "<" if fraction1 < fraction2 else "="
+
+    elif question_type == "add_subtract":
+        # Addition or subtraction
+        operation = random.choice(["+", "-"])
+        question = f"{fraction1} {operation} {fraction2} = ?"
+        answer = str(fraction1 + fraction2) if operation == "+" else str(fraction1 - fraction2)
+
+    elif question_type == "multiply_divide":
+        # Multiplication or division
+        operation = random.choice(["*", "÷"])
+        question = f"{fraction1} {operation} {fraction2} = ?"
+        answer = str(fraction1 * fraction2) if operation == "*" else str(fraction1 / fraction2)
+
+    else:  # Convert fraction to decimal
+        question = f"Convert {fraction1} to a decimal."
+        answer = round(float(fraction1), 2)
+
+    question_id = hashlib.sha256(str.encode(question)).hexdigest()
+
+    return {"question": question, "answer": answer, "difficulty": 750, "question_id": question_id}
+
+def generate_clock_problem(rating):
+    hour = random.randint(1, 12)
+    minute = random.randint(0, 11) * 5
+    question = f"What time is shown on the clock?"
+    answer = f"{hour}:{minute:02d}"
+    question_id = hashlib.sha256(str.encode(question)).hexdigest()
+
+    return {"question": question, "answer": answer, "difficulty": 350, "question_id": question_id}
 
 MATH_QUESTIONS_TYPES = ["Addition", "Subtraction", "Multiplication", "Division", "Rounding", "Patterns", "Inequalities", "Fraction", "Clock"]
 
@@ -124,7 +211,9 @@ MATH_QUESTIONS_FUNCTIONS = {
     "Subtraction":create_subtraction,
     "Multiplication":create_multiplication,
     "Division":create_division,
-    # "Rounding":create_rounding,
-    # "Patterns":create_patterns,
-    # "Inequalities":create_inequalities,
+    "Rounding":create_rounding,
+    "Patterns":create_patterns,
+    "Inequalities":create_inequalities,
+    "Fraction":generate_fraction_problem,
+    "Clock":generate_clock_problem
 }

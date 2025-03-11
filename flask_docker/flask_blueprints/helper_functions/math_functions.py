@@ -3,6 +3,7 @@ import hashlib
 from .math_question_generator import *
 from flask import flash, redirect, url_for, session
 import datetime
+import numbers
 from buzzy_bee_db.question.question import add_question, get_question, update_difficulty, get_closest_questions
 from buzzy_bee_db.account.sub_account import update_sub_account
 from buzzy_bee_db.question_user.question_user import get_question_responses, record_question_response, get_sub_account_responses, get_last_20_questions
@@ -113,13 +114,15 @@ def user_response(request, qtype):
 
     seconds_taken = round((end_dt - start_dt).total_seconds(), 2)
 
-    try:
-        user_answer = float(user_answer)
-    except:
-        flash("Please enter a number")
-        return redirect(url_for("math.math_questions", qtype=qtype))
 
     answer = question.get("answer")
+    if isinstance(answer, numbers.Number):
+        answer = round(answer, 2)
+        try:
+            user_answer = round(float(user_answer), 2)
+        except ValueError:
+            flash("Invalid answer format. Please enter a number.")
+            return redirect(url_for("math.math_questions", qtype=qtype))
     question_id = question.get("question_id")
 
     percentile = get_percentile(question_id, seconds_taken)
