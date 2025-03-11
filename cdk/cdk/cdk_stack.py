@@ -6,35 +6,16 @@ from aws_cdk import (
     # aws_sqs as sqs,
 )
 from constructs import Construct
-from cdk.components.fargate import fargate_creation
 from cdk.components.lightsail_mongo import create_mongo
-from cdk.components.lightsail_mongo_public import create_mongo_public
+from cdk.components.eks_flask import flask_light_sail
 
 class CdkStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-
-        # Create a VPC
-        vpc = aws_ec2.Vpc(
-            self,
-            "VPC",
-            max_azs=2,
-            nat_gateways=1,
-            subnet_configuration=[
-                aws_ec2.SubnetConfiguration(
-                    name="Public",
-                    subnet_type=aws_ec2.SubnetType.PUBLIC
-                ),
-                aws_ec2.SubnetConfiguration(
-                    name="Private",
-                    subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
-                )
-            ]
-        )
         mongo_connection, lightsail_instance = create_mongo(self)
 
-        fargate_creation(self, vpc, mongo_connection, lightsail_instance)
+        flask_light_sail(self, mongo_connection)
 
         # mongo_connection_public, lightsail_instance_public = create_mongo_public(self)

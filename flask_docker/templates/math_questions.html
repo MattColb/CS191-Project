@@ -79,7 +79,7 @@
                <!-- Dynamically render the question based on qtype -->
                <p class="question-text">{{ question }}</p>
                {% if qtype == "Clock" %}
-               <img src="{{ url_for('math.serve_clock', time=time) }}">
+               <img style="width: 400px;" src="{{ url_for('math.serve_clock', time=time) }}">
                {% endif %}
 
                <!-- Form for the user to input answer -->
