@@ -9,7 +9,7 @@ import os
 load_dotenv()
 
 
-def create_mongo(scope):
+def create_mongo(scope, vpc):
 
     username = os.getenv("MONGODB_USER")
     password = os.getenv("MONGODB_PASS")
@@ -84,11 +84,8 @@ sudo systemctl restart mongod
         attached_to=instance.ref
     )
 
-    # Secure the MongoDB instance to only be accessed from the VPC
-    # instance.connections.allow_from(vpc, aws_ec2.Port.tcp(27017))
-
     #Print out connection string
-    connection_string = f"mongodb://{username}:{password}@{instance.attr_public_ip_address}/buzzy_bee_db"
+    connection_string = f"mongodb://{username}:{password}@{static_ip.attr_ip_address}/buzzy_bee_db"
     CfnOutput(scope, "MongoDBConnectionString", value=connection_string)
 
-    return connection_string, instance
+    return connection_string, static_ip

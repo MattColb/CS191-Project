@@ -7,7 +7,7 @@ from aws_cdk import (
 )
 
 
-def fargate_creation(scope, vpc, connection_string, lightsail_instance):
+def fargate_creation(scope, connection_string, static_ip, vpc):
     ecs_cluster = aws_ecs.Cluster(scope, "MyEcsCluster", vpc=vpc)
 
     # Create a security group for the Flask service
@@ -19,16 +19,11 @@ def fargate_creation(scope, vpc, connection_string, lightsail_instance):
         allow_all_outbound=True
     )
 
+    #If this breaks, change it back to any ipv4
     flask_security_group.add_ingress_rule(
-        peer=aws_ec2.Peer.any_ipv4(),
+        peer=aws_ec2.Peer.ipv4(f"{static_ip.attr_ip_address}/32"),
         connection=aws_ec2.Port.tcp(27017)
     )
-
-    flask_security_group.add_egress_rule(
-        peer=aws_ec2.Peer.any_ipv4(),
-        connection=aws_ec2.Port.tcp(27017)
-    )
-
 
     # Create a docker container from the flask_docker folder
     load_balanced_fargate_service = aws_ecs_patterns.ApplicationLoadBalancedFargateService(
