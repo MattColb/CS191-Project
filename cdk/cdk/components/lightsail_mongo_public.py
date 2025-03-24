@@ -1,7 +1,6 @@
 from aws_cdk import (
     aws_lightsail,
     CfnOutput,
-    aws_ec2
 )
 from dotenv import load_dotenv
 import os
@@ -84,11 +83,8 @@ sudo systemctl restart mongod
         attached_to=instance.ref
     )
 
-    # Secure the MongoDB instance to only be accessed from the VPC
-    # instance.connections.allow_from(vpc, aws_ec2.Port.tcp(27017))
-
     #Print out connection string
-    connection_string = f"mongodb://{username}:{password}@{instance.attr_public_ip_address}/buzzy_bee_db"
-    CfnOutput(scope, "MongoDBConnectionString", value=connection_string)
+    connection_string = f"mongodb://{username}:{password}@{static_ip.attr_ip_address}/buzzy_bee_db"
+    CfnOutput(scope, "MongoDBConnectionStringPublic", value=connection_string)
 
     return connection_string, instance
