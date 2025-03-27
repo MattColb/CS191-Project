@@ -21,6 +21,7 @@ def handler(event, context):
         user_id = verification_info.get("UserID")
         email = verification_info.get("email")
         verification_url = verification_endpoint + f"?user_id={user_id}"
+        #Should have access to anything we want from buzzy bee
         response = ses.send_email(
             Source=SENDER,
             Destination={"ToAddresses": [email]},

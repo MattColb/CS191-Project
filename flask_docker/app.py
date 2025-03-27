@@ -7,7 +7,7 @@ from flask_blueprints.login_register import login_register
 from flask_blueprints.math import math
 from flask_blueprints.spelling import spelling
 from flask_blueprints.writing import writing
-from flask_blueprints.verifcation import verification
+from flask_blueprints.verification import verification
 
 app = Flask(__name__)
 app.secret_key="TestSecret"
