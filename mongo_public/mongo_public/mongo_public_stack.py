@@ -2,7 +2,7 @@ from aws_cdk import (
     Stack,
 )
 from constructs import Construct
-from .components import create_mongo_public
+from .components.lightsail_mongo_public import create_mongo_public
 
 class MongoPublicStack(Stack):
 
