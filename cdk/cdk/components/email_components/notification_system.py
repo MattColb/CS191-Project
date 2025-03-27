@@ -2,6 +2,7 @@ from aws_cdk import (
     aws_sqs,
     aws_lambda,
     Duration,
+    aws_iam as iam,
     aws_events as events,
     aws_events_targets as targets,
     aws_lambda_event_sources as event_sources
@@ -40,7 +41,7 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
     sender_email = os.getenv("SENDER_EMAIL")
 
     lambda_role = iam.Role(
-        self, "EmailLambdaRole",
+        scope, "EmailLambdaRole",
         assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
         managed_policies=[
             iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AWSLambdaBasicExecutionRole")
