@@ -40,6 +40,7 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
     load_dotenv(os.path.join(os.path.dirname(__file__), '../../../../.env'))
 
     sender_email = os.getenv("SENDER_EMAIL")
+    email_api_key = os.getenv("EMAIL_API_KEY")
 
     lambda_role = iam.Role(
         scope, "EmailLambdaRole",
@@ -57,6 +58,8 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         )
     )
 
+    lambda_layer = create_lambda_layer(scope)
+
     verification_lambda = aws_lambda.Function(
         scope, "BBVerificationLambda",
         runtime= aws_lambda.Runtime.PYTHON_3_10,
@@ -64,9 +67,11 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         code = aws_lambda.Code.from_asset(os.path.join(os.path.dirname(__file__), '../../../../lambdas')),
         environment = {
             "VERIFICATION_ENDPOINT":verification_endpoint+"/verify",
-            "SENDER_EMAIL":sender_email
+            "SENDER_EMAIL":sender_email,
+            "EMAIL_API_KEY":email_api_key,
         },
         timeout=Duration.seconds(25),
+        layers=[lambda_layer],
         role=lambda_role
     )
 
@@ -76,8 +81,6 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
     verification_lambda.add_event_source(verification_event_source)
 
     email_queue = aws_sqs.Queue(scope, "BuzzyBee")
-
-    lambda_layer = create_lambda_layer(scope)
 
     email_init_lambda = aws_lambda.Function(
         scope, "BBEmailInitLambda",
@@ -97,7 +100,7 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
 
     rule = events.Rule(
         scope, "WeeklyEmailRule",
-        schedule=events.Schedule.expression("rate(7 days)"),
+        schedule=events.Schedule.cron(minute="0", hour="17", week_day="FRI")
     )
     rule.add_target(targets.LambdaFunction(email_init_lambda))
 
@@ -108,7 +111,8 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         code = aws_lambda.Code.from_asset(os.path.join(os.path.dirname(__file__), '../../../../lambdas')),
         environment = {
             "MONGO_CONNECTION_STRING": mongo_connection_string,
-            "SENDER_EMAIL":sender_email
+            "SENDER_EMAIL":sender_email,
+            "EMAIL_API_KEY":email_api_key
         },
         timeout=Duration.seconds(25),
         layers=[lambda_layer],
@@ -123,8 +127,3 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
     email_system_cdk_objects = cdk_object(verification_queue, verification_lambda, email_init_lambda, email_queue, email_processing_lambda)
 
     return email_system_cdk_objects
-
-
-
-# CURRENT TODO:
-# Code for each of the lambdas

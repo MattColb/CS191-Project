@@ -10,17 +10,27 @@ def get_users_to_email():
     with MongoClient(connection) as client:
         database = client.get_default_database()
         collection = database["Users"]
-        email_users = collection.find({"verified":True, "weekly_updates":True}, {"user_id": 1, "email": 1})
-        return list(email_users)
+        #Get all user ids and emails where verified is True and weekly_updates is True
+        users = collection.find({"verified": True, "weekly_updates": True})
+        # Extract user_id and email from the cursor
+        email_users = []
+        for user in users:
+            user_id = user.get("user_id")
+            email = user.get("email")
+            if user_id and email:
+                email_users.append({"user_id": user_id, "email": email})
+        # Return a list of dictionaries containing user_id and email
+        return email_users
     
 def update_verification_and_weekly_updates(user_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
         collection = database["Users"]
+        # Update the user document to set verified and weekly_updates to True
         result = collection.update_one(
             {"user_id": user_id},
-            {"verified":True, "weekly_updates":True}
+            {"$set": {"verified": True, "weekly_updates": True}}
         )
 
         return result
