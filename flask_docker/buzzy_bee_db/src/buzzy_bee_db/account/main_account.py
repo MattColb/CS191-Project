@@ -37,6 +37,8 @@ def register(username, password, email):
             "username":username,
             "password":password,
             "email":email,
+            "verified":False,
+            "weekly_updates":False,
             "sub_accounts":[],
             "math_rating":0
         })

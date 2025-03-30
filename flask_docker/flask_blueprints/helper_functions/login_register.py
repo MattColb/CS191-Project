@@ -2,6 +2,11 @@ from flask import request, session, url_for, flash, redirect
 from buzzy_bee_db.account.main_account import register, login
 from buzzy_bee_db.account.sub_account import create_sub_account, delete_sub_account #, update_sub_account
 from hashlib import sha256
+import os
+from dotenv import load_dotenv
+import json
+
+load_dotenv(os.path.join(os.path.dirname(__file__), '../../.env'))
 
 def hash_password(password):
     new_password = ""
@@ -43,6 +48,15 @@ class LoginRegisterHandler:
             flash(response.message)
             return redirect(url_for("login_register.register", _method="GET"))
         session["user_id"] = response.user_id
+
+        # Add the user to a queue to send them a verification email
+        if os.getenv("SQS_QUEUE_URL"):
+            import boto3
+            queue_url = os.getenv("SQS_QUEUE_URL")
+            sqs = boto3.client("sqs")
+            message = json.dumps({"UserID": response.user_id, "email":email})
+            sqs.send_message(QueueUrl=queue_url, MessageBody=message)
+
         return redirect(url_for("login_register.account", _method="GET"))
 
     @staticmethod
