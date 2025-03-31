@@ -8,7 +8,8 @@ from .question_user_response import QuestionUserResponse
 curr_dir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(curr_dir, "../../../../.env"))
 
-def record_question_response(sub_account_id, question_id, time_taken, percentile_time, question_rating_change, user_rating_change, answered_correctly):
+# Records the response for a student account
+def record_question_response(student_account_id, question_id, time_taken, percentile_time, question_rating_change, user_rating_change, answered_correctly):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
@@ -16,7 +17,7 @@ def record_question_response(sub_account_id, question_id, time_taken, percentile
         
         response_data = {
             "response_id": str(uuid4()),
-            "sub_account_id": sub_account_id,
+            "student_account_id": student_account_id,  # Changed from sub_account_id to student_account_id
             "question_id": question_id,
             "time_taken": time_taken,
             "percentile_time": percentile_time,
@@ -29,46 +30,49 @@ def record_question_response(sub_account_id, question_id, time_taken, percentile
         collection.insert_one(response_data)
         return QuestionUserResponse(success=True, response_id=response_data["response_id"], message="Response recorded successfully")
 
-# Retrieves all question responses for a given sub_account_id
-def get_sub_account_responses(sub_account_id):
+# Retrieves all question responses for a given student_account_id
+def get_student_account_responses(student_account_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
         collection = database["QuestionUser"]
         
-        responses = list(collection.find({"sub_account_id": sub_account_id}, {"_id": 0})) # Excludes the MongoDB _id field from the result
+        responses = list(collection.find({"student_account_id": student_account_id}, {"_id": 0}))  # Excludes the MongoDB _id field from the result
         return QuestionUserResponse(success=True, responses=responses, message="Responses retrieved successfully")
 
-# Retrieves a single response for a given sub_account_id and question_id
-def get_question_response(sub_account_id, question_id):
+# Retrieves a single response for a given student_account_id and question_id
+def get_question_response(student_account_id, question_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
         collection = database["QuestionUser"]
         
-        responses = list(collection.find({"sub_account_id": sub_account_id, "question_id": question_id}, {"_id": 0})) # Excludes the MongoDB _id field from the result
+        responses = list(collection.find({"student_account_id": student_account_id, "question_id": question_id}, {"_id": 0}))  # Excludes the MongoDB _id field from the result
         if not responses:
             return QuestionUserResponse(success=False, message="Response not found")
         
         return QuestionUserResponse(success=True, responses=responses, message="Response retrieved successfully")
     
+# Retrieves all responses for a specific question_id
 def get_question_responses(question_id):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
         collection = database["QuestionUser"]
         
-        responses = list(collection.find({"question_id": question_id}, {"_id": 0})) # Excludes the MongoDB _id field from the result
+        responses = list(collection.find({"question_id": question_id}, {"_id": 0}))  # Excludes the MongoDB _id field from the result
         return QuestionUserResponse(success=True, responses=responses, message="Responses retrieved successfully")
-    
-def get_last_20_questions(question_id=None, sub_account_id=None):
+
+# Retrieves the last 20 responses for a given question or student_account
+def get_last_20_questions(question_id=None, student_account_id=None):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client["buzzy_bee_db"]
         collection = database["QuestionUser"]
-        if question_id != None:
+        
+        if question_id is not None:
             responses = list(collection.find({"question_id": question_id}, {"_id": 0}).sort("timestamp_utc", -1).limit(20))
-
-        elif sub_account_id != None:
-            responses = list(collection.find({"sub_account_id": sub_account_id}, {"_id": 0}).sort("timestamp_utc", -1).limit(20))
+        elif student_account_id is not None:
+            responses = list(collection.find({"student_account_id": student_account_id}, {"_id": 0}).sort("timestamp_utc", -1).limit(20))
+        
         return QuestionUserResponse(success=True, responses=responses, message="Responses retrieved successfully")
