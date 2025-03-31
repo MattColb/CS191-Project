@@ -44,6 +44,8 @@ def register(username, password, email):
             "password": password,
             "email": email,
             "students": []  # Store assigned student IDs here
+            "verified":False,
+            "weekly_updates":False,
         })
 
         return MainAccountResponse(success=True, user_id=user_id, students=[])

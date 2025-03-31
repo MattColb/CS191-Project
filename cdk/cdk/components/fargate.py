@@ -2,12 +2,12 @@ from aws_cdk import (
     aws_ecs_patterns,
     aws_ecs,
     aws_ec2,
-    aws_lightsail,
+    aws_iam,
     CfnOutput
 )
 
 
-def fargate_creation(scope, connection_string, static_ip, vpc):
+def fargate_creation(scope, connection_string, static_ip, vpc, verification_queue):
     ecs_cluster = aws_ecs.Cluster(scope, "MyEcsCluster", vpc=vpc)
 
     # Create a security group for the Flask service
@@ -35,11 +35,20 @@ def fargate_creation(scope, connection_string, static_ip, vpc):
         task_image_options=aws_ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
             image=aws_ecs.ContainerImage.from_asset("flask_docker"),
             environment={
-                "MONGODB_CONN_STRING": connection_string
+                "MONGODB_CONN_STRING": connection_string,
+                "SQS_QUEUE_URL":verification_queue.queue_url
             }
         ),
         public_load_balancer=True,
         security_groups=[flask_security_group]
+    )
+
+    #Questionable, but could work
+    load_balanced_fargate_service.task_definition.add_to_task_role_policy(
+        aws_iam.PolicyStatement(
+            actions=["sqs:SendMessage"],
+            resources=[verification_queue.queue_arn]
+        )
     )
 
     scalable_target = load_balanced_fargate_service.service.auto_scale_task_count(
@@ -59,3 +68,5 @@ def fargate_creation(scope, connection_string, static_ip, vpc):
     output = load_balanced_fargate_service.load_balancer.load_balancer_dns_name
 
     CfnOutput(scope, "LoadBalancerDNS", value=output)
+
+    return output
