@@ -4,10 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buzzy Bee Verification</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #FFF8E1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid #FFD54F;
+        }
+        
+        .logo {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #F57F17;
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+        
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .success-icon {
+            font-size: 60px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        
+        .return-btn {
+            display: inline-block;
+            background-color: #F57F17;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid #F57F17;
+        }
+        
+        .return-btn:hover {
+            background-color: white;
+            color: #F57F17;
+        }
+        
+        .honey-drop {
+            position: absolute;
+            background-color: #FFD54F;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            opacity: 0.2;
+            z-index: -1;
+        }
+    </style>
 </head>
 <body>
-    Thank you for verifying your email!
-
-    <a href="{{ url_for('login_register.index') }}">Return to Buzzy Bee Here</a>
+    <!-- Decorative honey drops in background -->
+    <div class="honey-drop" style="width: 100px; height: 120px; top: 10%; left: 10%;"></div>
+    <div class="honey-drop" style="width: 70px; height: 85px; top: 20%; right: 15%;"></div>
+    <div class="honey-drop" style="width: 120px; height: 140px; bottom: 15%; left: 15%;"></div>
+    
+    <div class="container">
+        <!-- Bee logo - replace with actual logo src when available -->
+        <svg class="logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="32" cy="33" rx="22" ry="18" fill="#FFC107" />
+            <ellipse cx="32" cy="33" rx="18" ry="14" fill="#FFC107" />
+            <path d="M32 15 C32 15 18 22 18 33 C18 44 32 51 32 51" stroke="#212121" stroke-width="2" fill="none" />
+            <path d="M32 15 C32 15 46 22 46 33 C46 44 32 51 32 51" stroke="#212121" stroke-width="2" fill="none" />
+            <rect x="28" y="29" width="8" height="8" fill="#212121" rx="2" />
+            <circle cx="24" cy="24" r="3" fill="#212121" />
+            <circle cx="40" cy="24" r="3" fill="#212121" />
+            <path d="M26 40 C26 40 30 42 32 42 C34 42 38 40 38 40" stroke="#212121" stroke-width="1.5" fill="none" />
+            <path d="M32 51 L32 55" stroke="#212121" stroke-width="2" />
+            <path d="M28 54 L36 54" stroke="#212121" stroke-width="2" />
+            <path d="M24 13 L20 9" stroke="#212121" stroke-width="1.5" />
+            <path d="M40 13 L44 9" stroke="#212121" stroke-width="1.5" />
+            <path d="M32 15 L32 11" stroke="#212121" stroke-width="1.5" />
+        </svg>
+        
+        <!-- Success checkmark icon -->
+        <div class="success-icon">✓</div>
+        
+        <h1>Verification Complete!</h1>
+        
+        <p>
+            Great news! Your email has been successfully verified. 
+            You're now ready to explore all the sweet features Buzzy Bee has to offer. 
+            Thank you for joining our hive!
+        </p>
+        
+        <a href="{{ url_for('account.html') }}" class="return-btn">Return to Buzzy Bee</a>
+    </div>
 </body>
 </html>
