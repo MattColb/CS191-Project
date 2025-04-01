@@ -28,11 +28,11 @@
       <h1>Who's studying?</h1>
       <div class="profiles" id="profiles-container">
           {% for sub_account in sub_accounts %}
-          <div class="profile" onclick="goToSubAccount('{{ sub_account.sub_account_id }}')">
+          <div class="profile" onclick="goToSubAccount('{{ sub_account.student_id }}')">
               <div class="profile-img-container">
-                  <span class="profile-emoji" data-account-id="{{ sub_account.sub_account_id }}">⏳</span>
+                  <span class="profile-emoji" data-account-id="{{ sub_account.student_id }}">⏳</span>
               </div>
-              <p>{{ sub_account.sub_account_username }}</p>
+              <p>{{ sub_account.stu_username }}</p>
           </div>
           {% endfor %}
           <div class="profile add-profile" id="add-profile">
@@ -100,10 +100,10 @@
                   {% for sub_account in sub_accounts %}
                   <div class="profile-item">
                       <div class="profile-info">
-                          <span class="profile-small-emoji" data-account-id="{{ sub_account.sub_account_id }}">⏳</span>
-                          <span>{{ sub_account.sub_account_username }}</span>
+                          <span class="profile-small-emoji" data-account-id="{{ sub_account.student_id }}">⏳</span>
+                          <span>{{ sub_account.stu_username }}</span>
                       </div>
-                      <button class="delete-btn" onclick="deleteSubAccount('{{ sub_account.sub_account_id }}', event)">
+                      <button class="delete-btn" onclick="deleteSubAccount('{{ sub_account.student_id }}', event)">
                           <i class="fas fa-trash"></i> Delete
                       </button>
                   </div>

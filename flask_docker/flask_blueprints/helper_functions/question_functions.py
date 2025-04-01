@@ -1,33 +1,20 @@
 import random
-from .math.math_question_generator import MATH_QUESTIONS_FUNCTIONS, MATH_QUESTIONS_TYPES
-from flask import flash, redirect, url_for, session
+from flask import flash, session
 import datetime
-import numbers
-from buzzy_bee_db.question.question import add_question, get_question, update_difficulty, get_closest_questions
-from buzzy_bee_db.account.sub_account import update_sub_account
-from buzzy_bee_db.question_user.question_user import get_question_responses, record_question_response, get_sub_account_responses, get_last_20_questions
+from buzzy_bee_db.question.question import get_question, update_difficulty
+from buzzy_bee_db.question_user.question_user import get_question_responses, record_question_response, get_student_account_responses, get_last_20_questions
 from .subject_class import SubjectClass
 
-#Put subject dependent functions into their own class and file
-#Move the independent question picker/generator/updater into its own file
-#Ensure consistent structure across different question types
-#Look into what information we could cache in a session to prevent GET calls to a database
-#Same table for all question subjects, add a subject field and decrease. Allows for buzzy bee to be all of the same
-#Modify Buzzy Bee DB to make the same across all
-
-# Add Question, get closest questions need subject
-# All question users need subject
+# Update ratings needs to change
+# user response needs to change
 
 #Adjust as needed
 def get_best_question(subject_class:SubjectClass):
-    #Better way to do this
-    #Can't get around refreshing for an easier question
-    #And if there is a good fit for a question, use it, if not, generate
     rng = random.random()
     response = None
     if rng <= .25:
         #Try and select a question that they've missed
-        previous_questions = get_sub_account_responses(session.get("sub_account_id")).responses
+        previous_questions = get_student_account_responses(session.get("sub_account_id"), subject_class.subject).responses
         sorted_questions = sorted(previous_questions, key=lambda d: d["timestamp_utc"])[::-1]
         correct_set = set()
         for (i, question) in enumerate(sorted_questions):
@@ -41,22 +28,10 @@ def get_best_question(subject_class:SubjectClass):
             question_response = get_question(question["question_id"]).question_id
             response = question_response
     elif rng <= .75:
-        response = get_closest_questions(subject_class.rating, subject_class.qtype)
+        response = subject_class.get_closest_questions()
     if response == None:
         response = subject_class.create_question()
     session["current_question"] = response
-    return response
-
-
-#DONE
-def create_question(qtype, rating):
-    if qtype not in MATH_QUESTIONS_TYPES:
-        raise Exception
-
-    response = MATH_QUESTIONS_FUNCTIONS[qtype](rating)
-    question_id = response.get("question_id")
-    if get_question(question_id).success == False:
-        add_question(question_id, response.get("question"), response.get("answer"), qtype, response.get("difficulty"))
     return response
 
 
@@ -73,20 +48,23 @@ def get_percentile(question_id, user_time):
 
 
 # https://chatgpt.com/share/67cc8779-7414-8013-8da8-362b5d61bb42 (Using ChatGPT to think up a little bit of a somewhat decent updating algorithm)
-def update_ratings(question_id, percentile, answered_correctly, question):
+def update_ratings(question_id, percentile, answered_correctly, question, subject_class):
     account_id = session.get("user_id")
     sub_account_id = session.get("sub_account_id")
     sub_acct_info = session.get("sub_account_information")
-    question_difficulty = question.get("difficulty") 
-    user_score = sub_acct_info.get("score_in_math")
-    
+    question_difficulty = question.get("difficulty")
+    user_score = sub_acct_info.get(subject_class.db_name)
 
     #Actual calculation of rating changes
     prob_correct = 1/(1+(10**((question_difficulty-user_score)/400))) #.75
     prob_incorrect = 1 - prob_correct #.25
+
+    #ISSUE
     #Getting the last 20 answers for the question and user for later use
-    account_last_20 = get_last_20_questions(sub_account_id=sub_account_id)
+    account_last_20 = get_last_20_questions(student_account_id=sub_account_id)
     question_last_20 = get_last_20_questions(question_id=question_id)
+
+
     #Making slight adjustments on a probability of correct
     new_question_difficulty_difference = (-1 * prob_incorrect if answered_correctly else 5 * prob_correct)
     new_user_difficulty_difference = (1 * prob_incorrect if answered_correctly else -5 * prob_correct)
@@ -102,15 +80,16 @@ def update_ratings(question_id, percentile, answered_correctly, question):
         new_question_difficulty_difference = 0
 
     sub_account = session.get("sub_account_information")
-    sub_account["score_in_math"] = new_user_difficulty
+    sub_account[subject_class.db_name] = new_user_difficulty
     session["sub_account_information"] = sub_account
+    
+    subject_class.update_rating(account_id, sub_account_id, new_user_difficulty)
 
-    update_sub_account(account_id, sub_account_id, score_in_math=new_user_difficulty)
     update_difficulty(question_id, new_question_difficulty)
 
     return new_user_difficulty_difference, new_question_difficulty_difference
 
-def user_response(request, qtype):
+def user_response(request, subject_class):
     user_answer = request.form.get("user_answer")
     start_dt = datetime.datetime.fromisoformat(request.args.get("start_dt"))
     end_dt = datetime.datetime.utcnow()
@@ -120,36 +99,21 @@ def user_response(request, qtype):
     if question is None:
         flash("Error: No current question available.")
         print("DEBUG: current_question is not available in session.")
-        return redirect(url_for("math.math_questions", qtype=qtype))
+        return subject_class.redirect()
 
     seconds_taken = round((end_dt - start_dt).total_seconds(), 2)
 
-
     answer = question.get("answer")
-    if isinstance(answer, numbers.Number):
-        answer = round(answer, 2)
-        try:
-            user_answer = round(float(user_answer), 2)
-        except ValueError:
-            flash("Invalid answer format. Please enter a number.")
-            return redirect(url_for("math.math_questions", qtype=qtype))
     question_id = question.get("question_id")
-
     percentile = get_percentile(question_id, seconds_taken)
-
     
-    if user_answer == answer:
-        flash("Correct")
-        answered_correctly = True
-    else:
-        flash(f"Wrong, the correct answer was: {answer}")
-        answered_correctly = False
-    
-    user_rating_change, question_rating_change = update_ratings(question_id, percentile, answered_correctly, question)
+    #Redirect if it is not None since that means something went wrong
+    answered_correctly, redirect = subject_class.check_answer(user_answer, answer)
+    if redirect != None:
+        return subject_class.redirect()
 
-    record_question_response(session.get("sub_account_id"), question_id, seconds_taken, percentile, question_rating_change, user_rating_change, answered_correctly)
+    user_rating_change, question_rating_change = update_ratings(question_id, percentile, answered_correctly, question, subject_class)
 
-    # Only pop the current question after processing the answer
-    session.pop("current_question")
+    record_question_response(session.get("sub_account_id"), question_id, seconds_taken, percentile, question_rating_change, user_rating_change, answered_correctly, subject_class.subject)
 
-    return redirect(url_for("math.math_questions", qtype=qtype))
+    return subject_class.redirect()

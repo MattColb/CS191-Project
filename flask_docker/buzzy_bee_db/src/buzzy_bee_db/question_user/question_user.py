@@ -9,7 +9,7 @@ curr_dir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(curr_dir, "../../../../.env"))
 
 # Records the response for a student account
-def record_question_response(student_account_id, question_id, time_taken, percentile_time, question_rating_change, user_rating_change, answered_correctly):
+def record_question_response(student_account_id, question_id, time_taken, percentile_time, question_rating_change, user_rating_change, answered_correctly, subject):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
@@ -24,6 +24,7 @@ def record_question_response(student_account_id, question_id, time_taken, percen
             "answered_correctly": answered_correctly,
             "question_rating_change": question_rating_change,
             "user_rating_change": user_rating_change,
+            "subject":subject,
             "timestamp_utc": datetime.utcnow()
         }
         
@@ -31,13 +32,13 @@ def record_question_response(student_account_id, question_id, time_taken, percen
         return QuestionUserResponse(success=True, response_id=response_data["response_id"], message="Response recorded successfully")
 
 # Retrieves all question responses for a given student_account_id
-def get_student_account_responses(student_account_id):
+def get_student_account_responses(student_account_id, subject):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
         collection = database["QuestionUser"]
         
-        responses = list(collection.find({"student_account_id": student_account_id}, {"_id": 0}))  # Excludes the MongoDB _id field from the result
+        responses = list(collection.find({"student_account_id": student_account_id, "subject":subject}, {"_id": 0}))  # Excludes the MongoDB _id field from the result
         return QuestionUserResponse(success=True, responses=responses, message="Responses retrieved successfully")
 
 # Retrieves a single response for a given student_account_id and question_id
