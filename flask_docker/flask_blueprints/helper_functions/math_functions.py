@@ -1,15 +1,25 @@
 import random
-import hashlib
-from .math_question_generator import *
+from .math.math_question_generator import MATH_QUESTIONS_FUNCTIONS, MATH_QUESTIONS_TYPES
 from flask import flash, redirect, url_for, session
 import datetime
 import numbers
 from buzzy_bee_db.question.question import add_question, get_question, update_difficulty, get_closest_questions
 from buzzy_bee_db.account.sub_account import update_sub_account
 from buzzy_bee_db.question_user.question_user import get_question_responses, record_question_response, get_sub_account_responses, get_last_20_questions
+from .subject_class import SubjectClass
+
+#Put subject dependent functions into their own class and file
+#Move the independent question picker/generator/updater into its own file
+#Ensure consistent structure across different question types
+#Look into what information we could cache in a session to prevent GET calls to a database
+#Same table for all question subjects, add a subject field and decrease. Allows for buzzy bee to be all of the same
+#Modify Buzzy Bee DB to make the same across all
+
+# Add Question, get closest questions need subject
+# All question users need subject
 
 #Adjust as needed
-def get_best_question(subject, rating):
+def get_best_question(subject_class:SubjectClass):
     #Better way to do this
     #Can't get around refreshing for an easier question
     #And if there is a good fit for a question, use it, if not, generate
@@ -22,7 +32,7 @@ def get_best_question(subject, rating):
         correct_set = set()
         for (i, question) in enumerate(sorted_questions):
             if i == 100:
-                response = create_question(subject, rating)
+                response = subject_class.create_question()
             if question["answered_correctly"] == True:
                 correct_set.add(question["question_id"])
                 continue
@@ -31,9 +41,9 @@ def get_best_question(subject, rating):
             question_response = get_question(question["question_id"]).question_id
             response = question_response
     elif rng <= .75:
-        response = get_closest_questions(rating, subject)
+        response = get_closest_questions(subject_class.rating, subject_class.qtype)
     if response == None:
-        response = create_question(subject, rating)
+        response = subject_class.create_question()
     session["current_question"] = response
     return response
 

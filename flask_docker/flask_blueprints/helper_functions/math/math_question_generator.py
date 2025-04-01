@@ -1,7 +1,7 @@
 import random
 import hashlib
 import fractions
-from .generate_clock import draw_clock
+from ..generate_clock import draw_clock
 
 # Used this chat to help with generating questions: https://chatgpt.com/share/67cc8779-7414-8013-8da8-362b5d61bb42
 

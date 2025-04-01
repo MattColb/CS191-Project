@@ -24,8 +24,8 @@ def spelling_page():
 
 
         #Render the correct template
-        
         return render_template("spelling_base.html", word=current_word)
+    
     if request.method == "POST":
         # Get the user's answer
         user_answer = request.form.get("user_answer")
@@ -33,9 +33,9 @@ def spelling_page():
 
         # Check if the answer is correct
         if user_answer.lower() == current_word.lower():
-            flash("Correct!", "success")
+            flash("Correct!")
         else:
-            flash(f"Incorrect! The correct spelling is {current_word}.", "danger")
+            flash(f"Incorrect! The correct spelling is {current_word}.")
 
 
 @spelling.route("/Spelling/Audio/<word>", methods=["GET"])

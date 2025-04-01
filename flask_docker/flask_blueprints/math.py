@@ -3,6 +3,7 @@ import datetime
 from .helper_functions.math_functions import user_response, user_response,  get_best_question
 from .login_register import check_sub_account_not_exists
 from .helper_functions.generate_clock import draw_clock
+from .helper_functions.math.math_functions import MathFunctions
 
 
 math = Blueprint('math', __name__,
@@ -20,7 +21,8 @@ def math_page():
 def math_questions(qtype):
     if request.method == "GET":
         sub_account_info = session.get("sub_account_information")
-        question_data = get_best_question(qtype, sub_account_info.get("score_in_math"))
+        math = MathFunctions(qtype, sub_account_info.get("score_in_math", 0))
+        question_data = get_best_question(math)
         start_dt = datetime.datetime.utcnow().isoformat()
         
         # Make sure the question is set in the session before returning
