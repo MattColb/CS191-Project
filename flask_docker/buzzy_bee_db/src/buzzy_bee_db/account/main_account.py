@@ -43,7 +43,7 @@ def register(username, password, email):
             "username": username,
             "password": password,
             "email": email,
-            "students": []  # Store assigned student IDs here
+            "students": [],
             "verified":False,
             "weekly_updates":False,
         })

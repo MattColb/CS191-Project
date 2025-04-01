@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, request, session, flash, send_file
+from flask import Blueprint, render_template, request, session, send_file
 import datetime
-from .helper_functions.math_functions import user_response, user_response,  get_best_question
+from .helper_functions.question_functions import user_response,  get_best_question
 from .login_register import check_sub_account_not_exists
-from .helper_functions.generate_clock import draw_clock
+from .helper_functions.math.generate_clock import draw_clock
+from .helper_functions.math.math_functions import MathFunctions
 
 
 math = Blueprint('math', __name__,
@@ -12,15 +13,16 @@ math = Blueprint('math', __name__,
 @check_sub_account_not_exists
 def math_page():
     if request.method == "GET":
-        session.pop("current_question", None)
         return render_template("math.html")
 
 @math.route("/MathQuestions/<qtype>", methods=["GET", "POST"])
 @check_sub_account_not_exists
 def math_questions(qtype):
     if request.method == "GET":
+        session.pop("current_question", None)
         sub_account_info = session.get("sub_account_information")
-        question_data = get_best_question(qtype, sub_account_info.get("score_in_math"))
+        math = MathFunctions(sub_account_info.get("score_in_math", 0), qtype)
+        question_data = get_best_question(math)
         start_dt = datetime.datetime.utcnow().isoformat()
         
         # Make sure the question is set in the session before returning
@@ -33,7 +35,9 @@ def math_questions(qtype):
     
     if request.method == "POST":
         # Handle user response (this part would remain as it is)
-        return user_response(request, qtype)
+        sub_account_info = session.get("sub_account_information")
+        math = MathFunctions(sub_account_info.get("score_in_math", 0), qtype)
+        return user_response(request, math)
 
 @math.route("/Clock/<time>")
 def serve_clock(time):

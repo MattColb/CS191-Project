@@ -8,7 +8,7 @@ import random
 curr_dir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(curr_dir, "../../../../.env"))
 
-def add_question(question_id, question, answer, category, difficulty):
+def add_question(question_id, question, answer, category, difficulty, subject):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
@@ -26,6 +26,7 @@ def add_question(question_id, question, answer, category, difficulty):
             "answer": answer,
             "category": category,
             "difficulty": difficulty,
+            "subject":subject,
             "attempts": 0,
             "correct_attempts": 0
         })
@@ -79,14 +80,15 @@ def get_question(question_id):
         return QuestionResponse(success=True, question_id=question_id, message="Got Question")
 """
 
-def get_closest_questions(rating, subject):
+def get_closest_questions(rating, qtype, subject):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
         collection = database["Questions"]
 
         query = {
-            "category": subject,
+            "category": qtype,
+            "subject": subject,
             "difficulty": {"$gte": rating - 100, "$lte": rating + 100}
         }
         questions = list(collection.find(query, {"_id": 0}))

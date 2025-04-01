@@ -16,11 +16,11 @@ def get_stu_accounts(user_id):
         database = client.get_default_database()
         collection = database["Students"]
 
-        student_accounts = list(collection.find({"main_user_id": main_user_id}, {"_id": 0}))
+        student_accounts = list(collection.find({"main_user_id": user_id}, {"_id": 0}))
 
         if student_accounts:
             return GetStuAccounts(success=True, stu_accounts=student_accounts)
-        return GetStuAccounts(success=False, message="No student accounts found for this main user")
+        return GetStuAccounts(success=False, message="No student accounts found for this main user", stu_accounts=student_accounts)
 
 def create_stu_account(main_user_id, stu_username):
     connection = os.getenv("MONGODB_CONN_STRING")
@@ -41,7 +41,7 @@ def create_stu_account(main_user_id, stu_username):
             "student_id": student_id,
             "main_user_id": main_user_id,  # Reference to the main account
             "stu_username": stu_username,
-            "name": "",
+            "name": stu_username, #For now
             "score_in_math": 0,
             "math_questions_answered": []
         })

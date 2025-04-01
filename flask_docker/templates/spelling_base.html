@@ -1,0 +1,14 @@
+<html>
+<head>
+</head>
+<body>
+
+<!-- Get and play the audio from the spelling audio endpoint -->
+<audio id="audio" controls>
+    <source src="{{ url_for('spelling.spelling_audio', word=word) }}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+<p>Word: {{ word }}</p>
+
+</body>
+</html>
