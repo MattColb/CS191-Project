@@ -1,6 +1,8 @@
 from buzzy_bee_db.question.question import get_question, add_question
 from flask import redirect, url_for
+from buzzy_bee_db.account.stu_account import update_stu_account
 from ..subject_class import SubjectClass
+from buzzy_bee_db.question.question import get_question, add_question, get_closest_questions
 from .spelling_question_generator import SPELLING_QUESTION_TYPES, SPELLING_QUESTIONS_FUNCTIONS
 import random
 
@@ -13,9 +15,21 @@ class SpellingFunctions(SubjectClass):
         self.redirect = redirect(url_for("spelling.spelling_page"))
 
     def create_question(self):
-        response = [self.qtype](self.rating)
+        response = SPELLING_QUESTIONS_FUNCTIONS[self.qtype](self.rating)
         question_id = response.get("question_id")
         if get_question(question_id).success == False:
             #Add subject here
-            add_question(question_id, response.get("question"), response.get("answer"), self.qtype, response.get("difficulty"))
+            add_question(question_id, response.get("question"), response.get("answer"), self.qtype, response.get("difficulty"), self.subject)
         return response
+
+    def check_answer(self, user_answer:str, answer:str):
+        return user_answer.lower().strip() == answer.lower().strip(), None
+
+    def get_closest_questions(self):
+        return get_closest_questions(self.rating, self.qtype, self.subject)
+    
+    def update_rating(self, parent_id, student_id, new_rating):
+        update_stu_account(parent_id, student_id, score_in_spelling=new_rating)
+
+    def redirect(self):
+        return redirect(url_for("spelling.spelling_page"))

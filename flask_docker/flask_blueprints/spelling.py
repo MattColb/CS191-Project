@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, session, flash, Response
 import datetime
-from .helper_functions.question_functions import user_response, user_response,  get_best_question
+from .helper_functions.question_functions import user_response,  get_best_question
 from .login_register import check_sub_account_not_exists
 import gtts
 from io import BytesIO
 import random
+from .helper_functions.spelling.spelling_functions import SpellingFunctions
 
 spelling = Blueprint('spelling', __name__,
                         template_folder='templates')
@@ -13,30 +14,26 @@ spelling = Blueprint('spelling', __name__,
 @check_sub_account_not_exists
 def spelling_page():
     if request.method == "GET":
-        # List of potential words:
-        words = ["apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew"]
-        current_word = random.choice(words)
-        
         #Remove previous question
         session.pop("current_question", None)
 
         #Get spelling question
+        user = session.get("sub_account_information")
+        spelling = SpellingFunctions(user.get("spelling_rating", 0))
+        question_data = get_best_question(spelling)
 
+        start_dt = datetime.datetime.utcnow().isoformat()
+        
+        # Make sure the question is set in the session before returning
+        session["current_question"] = question_data
 
         #Render the correct template
-        return render_template("spelling_base.html", word=current_word)
+        return render_template("spelling_base.html", question=question_data['question'], start_dt=start_dt)
     
     if request.method == "POST":
-        # Get the user's answer
-        user_answer = request.form.get("user_answer")
-        current_word = session.get("current_question")
-
-        # Check if the answer is correct
-        if user_answer.lower() == current_word.lower():
-            flash("Correct!")
-        else:
-            flash(f"Incorrect! The correct spelling is {current_word}.")
-
+        user = session.get("sub_account_information")
+        spelling = SpellingFunctions(user.get("spelling_rating", 0))
+        user_response(request, spelling)
 
 @spelling.route("/Spelling/Audio/<word>", methods=["GET"])
 @check_sub_account_not_exists
