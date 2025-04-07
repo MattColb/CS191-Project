@@ -49,7 +49,29 @@
                    <label for="password"><i class="fas fa-lock"></i> Password</label>
                    <input type="password" id="password" placeholder="Enter your password" name="password" required>
                </div>
+
+               <div class="account-type">
+                    <p>I am a:</p>
+                    <div class="account-options">
+                        <div class="account-option">
+                            <input type="radio" id="parent" name="account_type" value="parent" checked="checked">
+                            <label for="parent">
+                                <i class="fas fa-user-friends"></i>
+                                <span>Parent</span>
+                            </label>
+                        </div>
+                        <div class="account-option">
+                            <input type="radio" id="teacher" name="account_type" value="teacher">
+                            <label for="teacher">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                <span>Teacher</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
                
+                <br>
+
                <div class="form-footer">
                    <div class="remember-me">
                        <input type="checkbox" id="remember" name="remember">

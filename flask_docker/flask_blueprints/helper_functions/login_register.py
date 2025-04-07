@@ -1,6 +1,7 @@
 from flask import request, session, url_for, flash, redirect
-from buzzy_bee_db.account.main_account import register, login
+from buzzy_bee_db.account.main_account import register as parent_register, login as parent_login
 from buzzy_bee_db.account.stu_account import create_stu_account, delete_sub_account, update_stu_account
+from buzzy_bee_db.account.teacher_account import register as teacher_register, login as teacher_login
 from hashlib import sha256
 import os
 from dotenv import load_dotenv
@@ -20,11 +21,16 @@ class LoginRegisterHandler:
         password = request.form.get("password")
         password = hash_password(password)
 
+        account_type = request.form.get("account_type", "parent")
+
         if None in [username, password]:
             flash("Please enter all fields")
             return redirect(url_for("login_register.login", _method="GET"))
 
-        response = login(username=username, password=password)
+        if account_type == "teacher":
+            response = teacher_login(username=username, password=password)
+        else:
+            response = parent_login(username=username, password=password)
         if response.success == False:
             flash(response.message)
             return redirect(url_for("login_register.login", _method="GET"))
@@ -38,12 +44,17 @@ class LoginRegisterHandler:
         username = request.form.get("username")
         password = request.form.get("password")
         password = hash_password(password)
+
+        account_type = request.form.get("account_type", "parent")
         
         if None in [email, username, password]:
             flash("Please enter all fields")
             return redirect(url_for("login_register.register", _method="GET"))
 
-        response = register(username=username, email=email, password=password)
+        if account_type == "teacher":
+            response = teacher_register(username=username, email=email, password=password)
+        else:
+            response = parent_register(username=username, email=email, password=password)
         if response.success == False:
             flash(response.message)
             return redirect(url_for("login_register.register", _method="GET"))
