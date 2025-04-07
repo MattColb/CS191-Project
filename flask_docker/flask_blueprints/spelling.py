@@ -5,6 +5,7 @@ from .login_register import check_sub_account_not_exists
 import gtts
 from io import BytesIO
 import random
+from .helper_functions.spelling.spelling_functions import SpellingFunctions
 
 spelling = Blueprint('spelling', __name__,
                         template_folder='templates')
@@ -13,29 +14,23 @@ spelling = Blueprint('spelling', __name__,
 @check_sub_account_not_exists
 def spelling_page():
     if request.method == "GET":
-        # List of potential words:
-        words = ["apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew"]
-        current_word = random.choice(words)
-        
         #Remove previous question
         session.pop("current_question", None)
 
         #Get spelling question
-
+        sub_account_info = session.get("sub_account_information")
+        spelling_question = SpellingFunctions(sub_account_info.get("score_in_math", 0))
+        question_data = get_best_question(spelling_question)
+        start_dt = datetime.datetime.utcnow().isoformat()
 
         #Render the correct template
-        return render_template("spelling_base.html", word=current_word)
+        if spelling_question.qtype == "Audio":
+            return render_template("spelling_base.html", word=question_data["question"], start_dt=start_dt)
     
     if request.method == "POST":
-        # Get the user's answer
-        user_answer = request.form.get("user_answer")
-        current_word = session.get("current_question")
-
-        # Check if the answer is correct
-        if user_answer.lower() == current_word.lower():
-            flash("Correct!")
-        else:
-            flash(f"Incorrect! The correct spelling is {current_word}.")
+        sub_account_info = session.get("sub_account_information")
+        spelling_question = SpellingFunctions(sub_account_info.get("score_in_math", 0))
+        return user_response(request, spelling_question)
 
 
 @spelling.route("/Spelling/Audio/<word>", methods=["GET"])
