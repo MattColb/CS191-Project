@@ -16,7 +16,11 @@ def create_block_question(rating):
 def create_image_question(rating):
     pass
 
+def get_word(rating):
+    pass
 
+
+# TODO:
 # , "Block", "Image"
 SPELLING_QUESTION_TYPES = ["Audio"]
 SPELLING_QUESTIONS_FUNCTIONS = {
