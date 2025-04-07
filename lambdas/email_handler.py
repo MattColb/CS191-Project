@@ -1,10 +1,11 @@
 import json
-import boto3
 import os
 import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
 from buzzy_bee_db.account.stu_account import get_stu_accounts
 from buzzy_bee_db.question_user.question_user import get_student_account_responses
+import matplotlib.pyplot as plt
+from .email_html import create_html
 
 from dotenv import load_dotenv
 
@@ -51,7 +52,7 @@ def handler(event, context):
             #Get all snapshots
             snapshots = get_snapshots(student_id)
 
-            #Create graph (Matplotlib?)
+            #Create graph to save in snapshot_graph.png
             create_graph(snapshots)
 
             #Send Email with information
@@ -59,10 +60,10 @@ def handler(event, context):
         
 
 
-def send_email(email, test_information):
+def send_email(email, current_week_info):
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
-    email_content = str(test_information)
+    email_content = create_html(current_week_info)
 
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
         to=[{"email": email, "name": "User"}],
@@ -83,6 +84,7 @@ def create_db_snapshot(student_information, question_information):
     for key in from_student:
         question_information[key] = student_information.get(key)
     #snapshot
+    return question_information
 
 def get_question_information(student_id):
     subjects = ["MATH"]
@@ -99,7 +101,7 @@ def get_question_information(student_id):
         if subject_answered != 0:
             subject_percentage = round(subject_correct/subject_answered, 4) * 100
         else:
-            subject_percentage = 0 
+            subject_percentage = 0
 
         summary_information[f"{subject}_answered"] = subject_answered
         summary_information[f"{subject}_correct"] = subject_correct
@@ -108,7 +110,8 @@ def get_question_information(student_id):
     return summary_information
 
 def create_graph(snapshots):
-    pass
+    plt.show()
+    plt.savefig("./snapshot_graph.png")
 
 def get_snapshots(student_id):
     pass
