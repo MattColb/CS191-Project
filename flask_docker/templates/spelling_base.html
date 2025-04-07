@@ -8,7 +8,24 @@
     <source src="{{ url_for('spelling.spelling_audio', word=word) }}" type="audio/mpeg">
     Your browser does not support the audio element.
 </audio>
-<p>Word: {{ word }}</p>
+
+<!-- Flash Message Display inside the form -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div id="flash-message" class="flash-message" style="display:none;"></div>
+    <script>
+        // Pass the flash message from backend to the frontend
+        const message = '{{ messages[0] }}'; // Assuming only one message is flashed at a time
+        showFlashMessage(message);
+    </script>
+{% endif %}
+{% endwith %}
+
+<!-- Form for the user to input answer -->
+<form action="{{ url_for('spelling.spelling_page', start_dt=start_dt, qtype=qtype) }}" method="POST">
+    <input type="text" name="user_answer" id="user_answer" required>
+    <button type="submit">Answer</button>
+</form>
 
 </body>
 </html>
