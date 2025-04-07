@@ -85,7 +85,6 @@ def get_closest_questions(rating, qtype, subject):
     with MongoClient(connection) as client:
         database = client.get_default_database()
         collection = database["Questions"]
-
         query = {
             "category": qtype,
             "subject": subject,

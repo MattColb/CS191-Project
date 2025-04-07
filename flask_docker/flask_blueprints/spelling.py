@@ -5,6 +5,7 @@ from .login_register import check_sub_account_not_exists
 import gtts
 from io import BytesIO
 import random
+from .helper_functions.spelling.spelling_functions import SpellingFunctions
 
 spelling = Blueprint('spelling', __name__,
                         template_folder='templates')
@@ -13,15 +14,11 @@ spelling = Blueprint('spelling', __name__,
 @check_sub_account_not_exists
 def spelling_page():
     if request.method == "GET":
-        # List of potential words:
-        words = ["apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew"]
-        current_word = random.choice(words)
-        
         #Remove previous question
         session.pop("current_question", None)
 
         #Get spelling question
-
+        spelling_question = SpellingFunctions()
 
         #Render the correct template
         return render_template("spelling_base.html", word=current_word)
