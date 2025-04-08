@@ -18,22 +18,20 @@ def spelling_page():
         session.pop("current_question", None)
 
         #Get spelling question
-        user = session.get("sub_account_information")
-        spelling = SpellingFunctions(user.get("spelling_rating", 0))
-        question_data = get_best_question(spelling)
-
+        sub_account_info = session.get("sub_account_information")
+        spelling_question = SpellingFunctions(sub_account_info.get("score_in_math", 0))
+        question_data = get_best_question(spelling_question)
         start_dt = datetime.datetime.utcnow().isoformat()
-        
-        # Make sure the question is set in the session before returning
-        session["current_question"] = question_data
 
         #Render the correct template
-        return render_template("spelling_base.html", question=question_data['question'], start_dt=start_dt)
+        if spelling_question.qtype == "Audio":
+            return render_template("spelling_base.html", word=question_data["question"], start_dt=start_dt)
     
     if request.method == "POST":
-        user = session.get("sub_account_information")
-        spelling = SpellingFunctions(user.get("spelling_rating", 0))
-        user_response(request, spelling)
+        sub_account_info = session.get("sub_account_information")
+        spelling_question = SpellingFunctions(sub_account_info.get("score_in_math", 0))
+        return user_response(request, spelling_question)
+
 
 @spelling.route("/Spelling/Audio/<word>", methods=["GET"])
 @check_sub_account_not_exists

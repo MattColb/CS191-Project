@@ -43,6 +43,7 @@ def create_stu_account(main_user_id, stu_username):
             "stu_username": stu_username,
             "name": stu_username, #For now
             "score_in_math": 0,
+            "score_in_spelling": 0,
             "math_questions_answered": []
         })
 
@@ -74,7 +75,7 @@ def delete_sub_account(main_user_id, student_id):
             return DBResponse(success=True)
         return DBResponse(success=False, message="Student account not found")
 
-def update_stu_account(main_user_id, student_id, name=None, score_in_math=None):
+def update_stu_account(main_user_id, student_id, name=None, score_in_math=None, score_in_spelling=None):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
@@ -85,6 +86,8 @@ def update_stu_account(main_user_id, student_id, name=None, score_in_math=None):
             update_fields["name"] = name
         if score_in_math is not None:
             update_fields["score_in_math"] = score_in_math
+        if score_in_spelling is not None:
+            update_fields["score_in_spelling"] = score_in_spelling
 
         result = students_collection.update_one(
             {"student_id": student_id, "main_user_id": main_user_id},
