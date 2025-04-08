@@ -4,8 +4,12 @@ import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
 from buzzy_bee_db.account.stu_account import get_stu_accounts
 from buzzy_bee_db.question_user.question_user import get_student_account_responses
+from buzzy_bee_db.weekly_snapshot.weekly_snapshot import get_latest_snapshot, get_snapshots, record_snapshot
 import matplotlib.pyplot as plt
-from .email_html import create_html
+from datetime import datetime
+from email_html import create_html
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 from dotenv import load_dotenv
 
@@ -40,34 +44,40 @@ def handler(event, context):
 
         for student in student_accounts:
             student_id = student.get("student_id")
+            student_name = student.get("name")
+            print(student_name)
+
             #Get information (Mainly Question information)
+            previous_week_information = get_latest_snapshot(student_id)
+            previous_week_information = previous_week_information.response
 
             #Add in subject to question user
-            question_information = get_question_information(student_id)
-            print(question_information)
+            question_information = get_question_information(student_id, previous_week_information)
 
             #Snapshot their information
-            q_information = create_db_snapshot(student, question_information)
+            weeks_information = create_db_snapshot(student, question_information)
 
             #Get all snapshots
-            snapshots = get_snapshots(student_id)
+            snapshots_response = get_snapshots(student_id)
+            if snapshots_response.success == True:
+                snapshots = snapshots_response.responses
+            else:
+                continue
 
             #Create graph to save in snapshot_graph.png
             create_graph(snapshots)
 
             #Send Email with information
-            send_email(email, q_information)
-        
+            send_email(email, weeks_information, student_name)
 
-
-def send_email(email, current_week_info):
+def send_email(email, current_week_info, student_name):
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
-    email_content = create_html(current_week_info)
+    email_content = create_html(current_week_info, student_name)
 
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
         to=[{"email": email, "name": "User"}],
-        subject="Verify Your Email",
+        subject="Buzzy Bee Weekly Update",
         html_content=email_content,
         sender={"email": SENDER, "name": "Buzzy Bee"}
     )
@@ -80,13 +90,15 @@ def send_email(email, current_week_info):
     return
 
 def create_db_snapshot(student_information, question_information):
-    from_student = []
-    for key in from_student:
-        question_information[key] = student_information.get(key)
-    #snapshot
+    question_information["student_account_id"] = student_information.get("student_id")
+    question_information["timestamp_utc"] = datetime.isoformat(datetime.utcnow())
+    for key in student_information:
+        if key.startswith("score"):
+            question_information[key] = student_information.get(key)
+    record_snapshot(question_information)
     return question_information
 
-def get_question_information(student_id):
+def get_question_information(student_id, previous_snapshot):
     subjects = ["MATH"]
     summary_information = dict()
     db_response = get_student_account_responses(student_id)
@@ -94,6 +106,10 @@ def get_question_information(student_id):
         questions = db_response.responses
     else:
         return dict()
+    #Limit to just questions answered since the last snapshot
+    if previous_snapshot != None and len(previous_snapshot) != 0:
+        previous_snapshot = previous_snapshot[0]
+        questions = [question for question in questions if str(question.get("timestamp_utc")) > previous_snapshot.get("timestamp_utc")]
     for subject in subjects:
         subject_questions = [q for q in questions if q["subject"] == subject]
         subject_answered = len(subject_questions)
@@ -110,11 +126,33 @@ def get_question_information(student_id):
     return summary_information
 
 def create_graph(snapshots):
-    plt.show()
-    plt.savefig("./snapshot_graph.png")
+    # Create the plot
+    fig, ax = plt.subplots()
 
-def get_snapshots(student_id):
-    pass
+    dates = [datetime.fromisoformat(snapshot.get("timestamp_utc")) for snapshot in snapshots]
+    math = [snapshot.get("score_in_math", 0) for snapshot in snapshots]
+    spelling = [snapshot.get("score_in_spelling", 0) for snapshot in snapshots]
+
+    ax.plot(dates, math, label='Math')
+    ax.plot(dates, spelling, label='Spelling')
+
+    locator = mdates.AutoDateLocator()
+    formatter = mdates.ConciseDateFormatter(locator)
+    ax.xaxis.set_major_locator(locator)
+    ax.xaxis.set_major_formatter(formatter)
+
+    ax.set_title('Student Progress over Time')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Score Rating')
+
+    # Add a legend
+    ax.legend()
+
+    # Rotate date labels for better readability
+    plt.setp(ax.get_xticklabels(), rotation=45, ha='right')
+
+    # Show the plot
+    plt.savefig("./image.png")
 
 if __name__ == "__main__":
     event = {
