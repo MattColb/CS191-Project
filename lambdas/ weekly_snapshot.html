@@ -1,294 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BuzzyBee Weekly Snapshot</title>
-    <style>
-        body {
-            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #fcf8e3;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            border-radius: 15px;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 3px dashed #ffd54f;
-        }
-        .logo {
-            width: 80px;
-            height: 80px;
-            background-color: #ffd54f;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .logo-inner {
-            width: 70px;
-            height: 70px;
-            background-color: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #333;
-            position: relative;
-        }
-        .logo-bee {
-            font-size: 24px;
-            position: absolute;
-        }
-        .title {
-            font-size: 28px;
-            font-weight: bold;
-            color: #f9a825;
-            text-align: center;
-            flex-grow: 1;
-        }
-        .date {
-            font-weight: bold;
-            color: #666;
-        }
-        .student-name {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 15px;
-            color: #5d4037;
-        }
-        .snapshot-image {
-            width: 100%;
-            height: 300px;
-            margin: 20px 0;
-            background-color: #f5f5f5;
-            border: 3px solid #ffd54f;
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .subject-section {
-            background-color: #e8f5e9;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 10px;
-            border-left: 5px solid #81c784;
-        }
-        .subject-title {
-            font-weight: bold;
-            font-size: 20px;
-            color: #2e7d32;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-        .subject-icon {
-            margin-right: 10px;
-            font-size: 24px;
-        }
-        .subject-content {
-            padding-left: 15px;
-        }
-        .highlight {
-            background-color: #fff9c4;
-            padding: 2px 5px;
-            border-radius: 3px;
-        }
-        .recommendation {
-            background-color: #e3f2fd;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
-            border-left: 5px solid #64b5f6;
-        }
-        .recommendation-title {
-            font-weight: bold;
-            font-size: 22px;
-            color: #1565c0;
-            margin-bottom: 10px;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 10px;
-            border-top: 3px dashed #ffd54f;
-            font-size: 14px;
-            color: #666;
-        }
-        .bee-trail {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        .bee {
-            font-size: 18px;
-            margin: 0 5px;
-        }
-        .download-section {
-            text-align: center;
-            margin: 30px 0 10px;
-        }
-        .download-btn {
-            background-color: #ffd54f;
-            color: #5d4037;
-            border: none;
-            padding: 12px 25px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .download-btn:hover {
-            background-color: #ffb300;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 8px rgba(0,0,0,0.15);
-        }
-        .download-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
-        }
-        .download-icon {
-            margin-right: 8px;
-            font-size: 18px;
-        }
-        @media print {
-            body {
-                background-color: white;
-            }
-            .container {
-                box-shadow: none;
-                max-width: 100%;
-            }
-            .download-section {
-                display: none;
-            }
-        }
-    </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>BuzzyBee Weekly Snapshot</title>
+   <style>
+       body {
+           font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+           margin: 0;
+           padding: 0;
+           background-color: #fcf8e3;
+           color: #333;
+       }
+       .container {
+           max-width: 800px;
+           margin: 0 auto;
+           padding: 20px;
+           background-color: #fff;
+           box-shadow: 0 0 15px rgba(0,0,0,0.1);
+           border-radius: 15px;
+       }
+       .header {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           padding-bottom: 15px;
+           border-bottom: 3px dashed #ffd54f;
+       }
+       .logo {
+           width: 80px;
+           height: 80px;
+           background-color: #ffd54f;
+           border-radius: 50%;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           overflow: hidden;
+       }
+       .logo-inner {
+           width: 70px;
+           height: 70px;
+           background-color: #fff;
+           border-radius: 50%;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           font-weight: bold;
+           color: #333;
+           position: relative;
+       }
+       .logo-bee {
+           font-size: 24px;
+           position: absolute;
+       }
+       .title {
+           font-size: 28px;
+           font-weight: bold;
+           color: #f9a825;
+           text-align: center;
+           flex-grow: 1;
+       }
+       .date {
+           font-weight: bold;
+           color: #666;
+       }
+       .student-name {
+           font-size: 24px;
+           font-weight: bold;
+           margin-top: 15px;
+           color: #5d4037;
+       }
+       .snapshot-image {
+           width: 100%;
+           height: 300px;
+           margin: 20px 0;
+           background-color: #f5f5f5;
+           border: 3px solid #ffd54f;
+           border-radius: 10px;
+           overflow: hidden;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+       }
+       .subject-section {
+           background-color: #e8f5e9;
+           padding: 15px;
+           margin: 20px 0;
+           border-radius: 10px;
+           border-left: 5px solid #81c784;
+       }
+       .subject-title {
+           font-weight: bold;
+           font-size: 20px;
+           color: #2e7d32;
+           margin-bottom: 10px;
+           display: flex;
+           align-items: center;
+       }
+       .subject-icon {
+           margin-right: 10px;
+           font-size: 24px;
+       }
+       .subject-content {
+           padding-left: 15px;
+       }
+       .highlight {
+           background-color: #fff9c4;
+           padding: 2px 5px;
+           border-radius: 3px;
+       }
+       .recommendation {
+           background-color: #e3f2fd;
+           padding: 20px;
+           border-radius: 10px;
+           margin-top: 30px;
+           border-left: 5px solid #64b5f6;
+       }
+       .recommendation-title {
+           font-weight: bold;
+           font-size: 22px;
+           color: #1565c0;
+           margin-bottom: 10px;
+       }
+       .footer {
+           text-align: center;
+           margin-top: 30px;
+           padding-top: 10px;
+           border-top: 3px dashed #ffd54f;
+           font-size: 14px;
+           color: #666;
+       }
+       .bee-trail {
+           display: flex;
+           justify-content: center;
+           margin: 20px 0;
+       }
+       .bee {
+           font-size: 18px;
+           margin: 0 5px;
+       }
+       .download-section {
+           text-align: center;
+           margin: 30px 0 10px;
+       }
+       .download-btn {
+           background-color: #ffd54f;
+           color: #5d4037;
+           border: none;
+           padding: 12px 25px;
+           font-size: 16px;
+           font-weight: bold;
+           border-radius: 25px;
+           cursor: pointer;
+           transition: all 0.3s ease;
+           box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+           font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+           display: inline-flex;
+           align-items: center;
+           justify-content: center;
+       }
+       .download-btn:hover {
+           background-color: #ffb300;
+           transform: translateY(-2px);
+           box-shadow: 0 5px 8px rgba(0,0,0,0.15);
+       }
+       .download-btn:active {
+           transform: translateY(0);
+           box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+       }
+       .download-icon {
+           margin-right: 8px;
+           font-size: 18px;
+       }
+       .unsubscribe {
+           margin-top: 15px;
+           padding-top: 15px;
+           border-top: 1px solid #ddd;
+           font-size: 12px;
+           color: #999;
+           text-align: center;
+       }
+       .unsubscribe a {
+           color: #666;
+           text-decoration: underline;
+       }
+       @media print {
+           body {
+               background-color: white;
+           }
+           .container {
+               box-shadow: none;
+               max-width: 100%;
+           }
+           .download-section {
+               display: none;
+           }
+           .unsubscribe {
+               display: none;
+           }
+       }
+   </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <div class="logo-inner">
-                    <span class="logo-bee">🐝</span>
-                </div>
-            </div>
-            <div class="title">Weekly Learning Snapshot</div>
-            <div class="date">April 4, 2025</div>
-        </div>
-        
-        <div class="student-name">Emma Johnson</div>
-        
-        <div class="snapshot-image">
-            <img src="image.png" alt="Weekly learning activities snapshot">
-        </div>
-        
-        <div class="subject-section">
-            <div class="subject-title">
-                <span class="subject-icon">🔢</span>
-                Mathematics
-            </div>
-            <div class="subject-content">
-                <p>Emma showed great improvement in multiplication this week! She completed 25 problems with 92% accuracy, a 15% increase from last week.</p>
-                <p><strong>Accomplishments:</strong> Mastered multiplication tables up to 12 and demonstrated good understanding of division concepts.</p>
-                <p><strong>Hardest Question Solved:</strong> Successfully worked through a multi-step word problem involving fractions: <span class="highlight">"If 3/4 of the class of 24 students brought lunch, how many students didn't bring lunch?"</span></p>
-            </div>
-        </div>
-        
-        <div class="subject-section">
-            <div class="subject-title">
-                <span class="subject-icon">📝</span>
-                Spelling
-            </div>
-            <div class="subject-content">
-                <p>Emma scored 18/20 on this week's spelling test, showing particular improvement with compound words.</p>
-                <p><strong>Accomplishments:</strong> Correctly spelled all challenge words including "necessary," "recommend," and "competition."</p>
-                <p><strong>Most Challenging Word:</strong> <span class="highlight">"Believe"</span> - Emma initially had difficulty with the "i-e" rule but mastered it by the end of the week.</p>
-            </div>
-        </div>
-        
-        <div class="subject-section">
-            <div class="subject-title">
-                <span class="subject-icon">📚</span>
-                Grammar
-            </div>
-            <div class="subject-content">
-                <p>Emma demonstrated excellent command of punctuation rules and sentence structure this week.</p>
-                <p><strong>Accomplishments:</strong> Correctly identified and fixed run-on sentences with appropriate punctuation. Used quotation marks properly in dialogue writing.</p>
-                <p><strong>Challenging Concept:</strong> <span class="highlight">Subject-verb agreement</span> with collective nouns. Emma needed extra practice but showed improvement by week's end.</p>
-            </div>
-        </div>
-        
-        <div class="recommendation">
-            <div class="recommendation-title">Recommendations & Feedback</div>
-            <p>Emma has shown excellent progress across all subjects this week! To continue her growth, we recommend:</p>
-            <ul>
-                <li><strong>Focus Area:</strong> Practice with word problems involving fractions and decimals to build on her mathematical reasoning skills.</li>
-                <li><strong>Home Activity:</strong> Read together for 20 minutes daily, asking Emma to identify proper nouns and verbs to reinforce grammar concepts.</li>
-                <li><strong>Spelling Strategy:</strong> Continue using the visualization technique we practiced in class - having Emma close her eyes and mentally "see" challenging words before writing them.</li>
-            </ul>
-            <p>Emma's enthusiasm for learning continues to shine through in her daily participation. Keep up the great work!</p>
-        </div>
-        
-        <div class="download-section">
-            <button id="downloadPDF" class="download-btn" onclick="preparePrint()">
-                <span class="download-icon">📥</span> Save this report
-            </button>
-        </div>
-        
-        <div class="bee-trail">
-            <div class="bee">🐝</div>
-            <div class="bee">🐝</div>
-            <div class="bee">🐝</div>
-        </div>
-        
-        <div class="footer">
-            <p>BuzzyBee Learning - Helping children discover the joy of learning!</p>
-            <p>Questions? Contact us at <strong>teachers@buzzybee.com</strong></p>
-        </div>
-    </div>
+   <div class="container">
+       <div class="header">
+           <div class="logo">
+               <div class="logo-inner">
+                   <span class="logo-bee">🐝</span>
+               </div>
+           </div>
+           <div class="title">Weekly Learning Snapshot</div>
+           <div class="date">April 4, 2025</div>
+       </div>
+      
+       <div class="student-name">Emma Johnson</div>
+      
+       <div class="snapshot-image">
+           <img src="image.png" alt="Emma Johnson's weekly progress showing her classroom activities and achievements in mathematics, spelling and grammar">
+       </div>
+      
+       <div class="subject-section">
+           <div class="subject-title">
+               <span class="subject-icon">🔢</span>
+               Mathematics
+           </div>
+           <div class="subject-content">
+               <p>Emma showed great improvement in multiplication this week! She completed 25 problems with 92% accuracy, a 15% increase from last week.</p>
+               <p><strong>Accomplishments:</strong> Mastered multiplication tables up to 12 and demonstrated good understanding of division concepts.</p>
+               <p><strong>Hardest Question Solved:</strong> Successfully worked through a multi-step word problem involving fractions: <span class="highlight">"If 3/4 of the class of 24 students brought lunch, how many students didn't bring lunch?"</span></p>
+           </div>
+       </div>
+      
+       <div class="subject-section">
+           <div class="subject-title">
+               <span class="subject-icon">📝</span>
+               Spelling
+           </div>
+           <div class="subject-content">
+               <p>Emma scored 18/20 on this week's spelling test, showing particular improvement with compound words.</p>
+               <p><strong>Accomplishments:</strong> Correctly spelled all challenge words including "necessary," "recommend," and "competition."</p>
+               <p><strong>Most Challenging Word:</strong> <span class="highlight">"Believe"</span> - Emma initially had difficulty with the "i-e" rule but mastered it by the end of the week.</p>
+           </div>
+       </div>
+      
+       <div class="subject-section">
+           <div class="subject-title">
+               <span class="subject-icon">📚</span>
+               Grammar
+           </div>
+           <div class="subject-content">
+               <p>Emma demonstrated excellent command of punctuation rules and sentence structure this week.</p>
+               <p><strong>Accomplishments:</strong> Correctly identified and fixed run-on sentences with appropriate punctuation. Used quotation marks properly in dialogue writing.</p>
+               <p><strong>Challenging Concept:</strong> <span class="highlight">Subject-verb agreement</span> with collective nouns. Emma needed extra practice but showed improvement by week's end.</p>
+           </div>
+       </div>
+      
+       <div class="recommendation">
+           <div class="recommendation-title">Recommendations & Feedback</div>
+           <p>Emma has shown excellent progress across all subjects this week! To continue her growth, we recommend:</p>
+           <ul>
+               <li><strong>Focus Area:</strong> Practice with word problems involving fractions and decimals to build on her mathematical reasoning skills.</li>
+               <li><strong>Home Activity:</strong> Read together for 20 minutes daily, asking Emma to identify proper nouns and verbs to reinforce grammar concepts.</li>
+               <li><strong>Spelling Strategy:</strong> Continue using the visualization technique we practiced in class - having Emma close her eyes and mentally "see" challenging words before writing them.</li>
+           </ul>
+           <p>Emma's enthusiasm for learning continues to shine through in her daily participation. Keep up the great work!</p>
+       </div>
+      
+       <div class="download-section">
+           <button id="downloadPDF" class="download-btn" onclick="preparePrint()">
+               <span class="download-icon">📥</span> Save this report
+           </button>
+       </div>
+      
+       <div class="bee-trail">
+           <div class="bee">🐝</div>
+           <div class="bee">🐝</div>
+           <div class="bee">🐝</div>
+       </div>
+      
+       <div class="footer">
+           <p>BuzzyBee Learning - Helping children discover the joy of learning!</p>
+           <p>Questions? Contact us at <strong>teachers@buzzybee.com</strong></p>
+           
+           <div class="unsubscribe">
+               <p>You're receiving this email because you're registered with BuzzyBee Learning's weekly progress reports.</p>
+               <p><a href="#">Update your preferences</a> | <a href="#">Unsubscribe</a> | <a href="#">Privacy Policy</a></p>
+               <p>© 2025 BuzzyBee Learning. All rights reserved.</p>
+               <p>1806 Main Street, San Diego, CA 90845</p>
+           </div>
+       </div>
+   </div>
 
-    <script>
-        function preparePrint() {
-            // Add student name to filename
-            const studentName = document.querySelector('.student-name').innerText.trim();
-            const date = document.querySelector('.date').innerText.trim();
-            const sanitizedName = studentName.replace(/\s+/g, '_');
-            const sanitizedDate = date.replace(/,\s+/g, '_');
-            const filename = `BuzzyBee_Report_${sanitizedName}_${sanitizedDate}`;
-            
-            // Set a download attribute with the filename (for browsers that support HTML saving)
-            document.title = filename;
-            
-            // Use the print functionality which allows saving as PDF
-            window.print();
-        }
-        
-        // Downloading as HTML if needed
-        document.addEventListener('DOMContentLoaded', function() {
 
-        });
-    </script>
+   <script>
+       function preparePrint() {
+           // Add student name to filename
+           const studentName = document.querySelector('.student-name').innerText.trim();
+           const date = document.querySelector('.date').innerText.trim();
+           const sanitizedName = studentName.replace(/\s+/g, '_');
+           const sanitizedDate = date.replace(/,\s+/g, '_');
+           const filename = `BuzzyBee_Report_${sanitizedName}_${sanitizedDate}`;
+          
+           // Set a download attribute with the filename (for browsers that support HTML saving)
+           document.title = filename;
+          
+           // Use the print functionality which allows saving as PDF
+           window.print();
+       }
+      
+       // Downloading as HTML if needed
+       document.addEventListener('DOMContentLoaded', function() {
+
+
+       });
+   </script>
 </body>
 </html>
