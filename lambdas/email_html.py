@@ -5,6 +5,8 @@ import base64
 
 def create_image_bytes():
     image = Image.open("./image.png")
+    sizes = image.size
+    image = image.resize((int(sizes[0]*.6), int(sizes[1]*.6)))
     image_bytes = io.BytesIO()
     image.save(image_bytes, format="png")
     image_str = base64.b64encode(image_bytes.getvalue()).decode("utf-8")
