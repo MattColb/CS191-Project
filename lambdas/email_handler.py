@@ -10,6 +10,9 @@ from datetime import datetime
 from email_html import create_html
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from PIL import Image
+import io
+import base64
 
 from dotenv import load_dotenv
 
@@ -68,18 +71,34 @@ def handler(event, context):
             create_graph(snapshots)
 
             #Send Email with information
-            send_email(email, weeks_information, student_name)
+            send_email(email, weeks_information, student_name, previous_week_information)
 
-def send_email(email, current_week_info, student_name):
+def create_image_bytes():
+    image = Image.open("./image.png")
+    image_bytes = io.BytesIO()
+    image.save(image_bytes, format="png")
+    image_str = base64.b64encode(image_bytes.getvalue()).decode("utf-8")
+    return image_str
+    image_final = f"data:image/png;base64,{image_str}"
+    return image_final
+
+def send_email(email, current_week_info, student_name, previous_week_info):
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
-    email_content = create_html(current_week_info, student_name)
+    email_content = create_html(current_week_info, student_name, previous_week_info)
 
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
         to=[{"email": email, "name": "User"}],
         subject="Buzzy Bee Weekly Update",
         html_content=email_content,
-        sender={"email": SENDER, "name": "Buzzy Bee"}
+        sender={"email": SENDER, "name": "Buzzy Bee"},
+        attachment=[
+            {
+                "content":create_image_bytes(),
+                "content_id":"bee_image",
+                "name":"bee_image.png"
+            }
+        ]
     )
 
     try:
@@ -88,6 +107,8 @@ def send_email(email, current_week_info, student_name):
         print(f"Exception when sending email: {e}")
         
     return
+
+
 
 def create_db_snapshot(student_information, question_information):
     question_information["student_account_id"] = student_information.get("student_id")
@@ -99,7 +120,7 @@ def create_db_snapshot(student_information, question_information):
     return question_information
 
 def get_question_information(student_id, previous_snapshot):
-    subjects = ["MATH"]
+    subjects = ["MATH", "SPELLING"]
     summary_information = dict()
     db_response = get_student_account_responses(student_id)
     if db_response.success == True:

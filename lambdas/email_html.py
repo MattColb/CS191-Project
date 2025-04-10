@@ -1,11 +1,42 @@
 import datetime
+from PIL import Image
+import io
 import base64
 
-#Get the image bytes
-with open("./image.png", "rb") as f:
-    encoded_image = base64.b64encode(f.read()).decode("utf-8")
+def create_image_bytes():
+    image = Image.open("./image.png")
+    image_bytes = io.BytesIO()
+    image.save(image_bytes, format="png")
+    image_str = base64.b64encode(image_bytes.getvalue()).decode("utf-8")
+    image_final = f"data:image/png;base64,{image_str}"
+    return image_final
 
-def create_html(current_week_info, student_name):
+
+def create_html(current_week_info, student_name, previous_snapshot):
+    if previous_snapshot != None and len(previous_snapshot) != 0:
+        previous_snapshot = previous_snapshot[0]
+    else:
+        previous_snapshot = {"MATH_answered":0, "SPELLING_answered":0}
+
+    
+    try:
+        math_percentage = (current_week_info["MATH_answered"]/previous_snapshot["MATH_answered"])-1
+    except:
+        math_percentage = 1
+
+    try:
+        spelling_percentage = (current_week_info["SPELLING_answered"]/previous_snapshot["SPELLING_answered"])-1
+    except:
+        spelling_percentage = 1
+    
+    mn = 1000
+    mn_label = None
+    for k, v in current_week_info.items():
+        if "percentage" in k and v < mn:
+            mn_label = k.split("_")[0].lower()
+            mn = v
+    
+
     return f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -225,7 +256,7 @@ def create_html(current_week_info, student_name):
         <div class="student-name">{student_name}</div>
         
         <div class="snapshot-image">
-            <img src="data:image/png;base64,{encoded_image}" alt="{student_name}'s weekly progress showing their classroom activities and achievements in mathematics, spelling and grammar">
+            <img src="{create_image_bytes()}" alt="{student_name}'s weekly progress showing their classroom activities and achievements in mathematics, spelling and grammar">
         </div>
         
         <div class="subject-section">
@@ -234,9 +265,7 @@ def create_html(current_week_info, student_name):
                 Mathematics
             </div>
             <div class="subject-content">
-                <p>{student_name} showed great improvement in multiplication this week! they completed 25 problems with 92% accuracy, a 15% increase from last week.</p>
-                <p><strong>Accomplishments:</strong> Mastered multiplication tables up to 12 and demonstrated good understanding of division concepts.</p>
-                <p><strong>Hardest Question Solved:</strong> Successfully worked through a multi-step word problem involving fractions: <span class="highlight">"If 3/4 of the class of 24 students brought lunch, how many students didn't bring lunch?"</span></p>
+                <p><strong>{student_name} did well this week! they completed {current_week_info["MATH_answered"]} problems with {round(current_week_info["MATH_percentage"]*100, 2)}% accuracy, a {abs(round(math_percentage*100,2))}% {"increase" if math_percentage > 0 else "decrease"} in answering questions from last week.</strong></p>
             </div>
         </div>
         
@@ -246,9 +275,7 @@ def create_html(current_week_info, student_name):
                 Spelling
             </div>
             <div class="subject-content">
-                <p>{student_name} scored 18/20 on this week's spelling test, showing particular improvement with compound words.</p>
-                <p><strong>Accomplishments:</strong> Correctly spelled all challenge words including "necessary," "recommend," and "competition."</p>
-                <p><strong>Most Challenging Word:</strong> <span class="highlight">"Believe"</span> - {student_name} initially had difficulty with the "i-e" rule but mastered it by the end of the week.</p>
+                <p><strong>{student_name} did well this week! they completed {current_week_info["SPELLING_answered"]} problems with {round(current_week_info["SPELLING_percentage"]*100, 2)}% accuracy, a {abs(round(spelling_percentage*100,2))}% {"increase" if spelling_percentage > 0 else "decrease"} in answering questions from last week.</strong></p>
             </div>
         </div>
         
@@ -258,21 +285,14 @@ def create_html(current_week_info, student_name):
                 Grammar
             </div>
             <div class="subject-content">
-                <p>{student_name} demonstrated excellent command of punctuation rules and sentence structure this week.</p>
-                <p><strong>Accomplishments:</strong> Correctly identified and fixed run-on sentences with appropriate punctuation. Used quotation marks properly in dialogue writing.</p>
-                <p><strong>Challenging Concept:</strong> <span class="highlight">Subject-verb agreement</span> with collective nouns. {student_name} needed extra practice but showed improvement by week's end.</p>
+                <p><strong>This subject is currently under contstruction</strong></p>
             </div>
         </div>
         
         <div class="recommendation">
             <div class="recommendation-title">Recommendations & Feedback</div>
-            <p>{student_name} has shown excellent progress across all subjects this week! To continue their growth, we recommend:</p>
-            <ul>
-                <li><strong>Focus Area:</strong> Practice with word problems involving fractions and decimals to build on their mathematical reasoning skills.</li>
-                <li><strong>Home Activity:</strong> Read togettheir for 20 minutes daily, asking {student_name} to identify proper nouns and verbs to reinforce grammar concepts.</li>
-                <li><strong>Spelling Strategy:</strong> Continue using the visualization technique we practiced in class - having {student_name} close their eyes and mentally "see" challenging words before writing them.</li>
-            </ul>
-            <p>{student_name}'s enthusiasm for learning continues to shine through in their daily participation. Keep up the great work!</p>
+            <p>{student_name} has shown excellent progress across all subjects this week! To continue their growth, we recommend focusing in on {mn_label}</p>
+            <p>{student_name}'s enthusiasm for learning continues to shine through in their participation. Keep up the great work!</p>
         </div>
         
         <div class="download-section">
