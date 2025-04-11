@@ -36,5 +36,5 @@ class SpellingFunctions(SubjectClass):
         if correct:
             flash("Correct!")
         else:
-            flash(f"Sorry, the correct spelling was: {answer}")
+            flash(f"Wrong! The correct spelling was: {answer}")
         return correct, None
