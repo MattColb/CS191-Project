@@ -32,13 +32,15 @@ def record_question_response(student_account_id, question_id, time_taken, percen
         return QuestionUserResponse(success=True, response_id=response_data["response_id"], message="Response recorded successfully")
 
 # Retrieves all question responses for a given student_account_id
-def get_student_account_responses(student_account_id, subject):
+def get_student_account_responses(student_account_id, subject=None):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
         database = client.get_default_database()
         collection = database["QuestionUser"]
-        
-        responses = list(collection.find({"student_account_id": student_account_id, "subject":subject}, {"_id": 0}))  # Excludes the MongoDB _id field from the result
+        if subject != None:
+            responses = list(collection.find({"student_account_id": student_account_id, "subject":subject}, {"_id": 0}))  # Excludes the MongoDB _id field from the result
+        else:
+            responses = list(collection.find({"student_account_id": student_account_id}, {"_id": 0}))
         return QuestionUserResponse(success=True, responses=responses, message="Responses retrieved successfully")
 
 # Retrieves a single response for a given student_account_id and question_id
