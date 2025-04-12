@@ -1,31 +1,96 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spelling Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/spelling_base.css') }}">
+    <!-- FontAwesome CDN for the logout icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script>
+        // Function to hide the flash message after 2 seconds
+        function hideFlashMessage() {
+            setTimeout(function() {
+                const flashMessage = document.getElementById('flash-message');
+                if (flashMessage) {
+                    flashMessage.style.display = 'none';
+                }
+            }, 2000); // Hide after 2 seconds
+        }
+
+        // Function to check for flash messages and set appropriate styling
+        function showFlashMessage(message) {
+            const flashMessage = document.getElementById('flash-message');
+            if (message.includes('Correct')) {
+                flashMessage.style.backgroundColor = '#d2edd8'; // Green for correct
+                flashMessage.style.color = '#333';
+            } else if (message.includes('Wrong')) {
+                flashMessage.style.backgroundColor = '#efd5d7'; // Red for wrong
+                flashMessage.style.color = '#333';
+            }
+            flashMessage.innerHTML = message;
+            flashMessage.style.display = 'block';
+            hideFlashMessage(); // Hide after 2 seconds
+        }
+
+        // Function to handle logout redirection
+        function logout() {
+            window.location.href = "{{ url_for('login_register.logout') }}";
+        }
+    </script>
 </head>
 <body>
+    <!-- Decorative background elements -->
+    <div class="honeycomb-bg"></div>
+   
+    <!-- Decorative bee elements -->
+    <div class="bee bee1"></div>
+    <div class="bee bee2"></div>
+    <div class="bee bee3"></div>
 
-<!-- Get and play the audio from the spelling audio endpoint -->
-<audio id="audio" controls>
-    <source src="{{ url_for('spelling.spelling_audio', word=word) }}" type="audio/mpeg">
-    Your browser does not support the audio element.
-</audio>
+    <nav class="navbar">
+        <div class="logo-container">
+            <span class="logo-icon">🐝</span>
+            <h1 class="logo">BuzzyBee</h1>
+        </div>
+        <div class="nav-right">
+            <!-- Logout icon with FontAwesome -->
+            <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
+        </div>
+    </nav>
 
-<!-- Flash Message Display inside the form -->
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    <div id="flash-message" class="flash-message" style="display:none;"></div>
-    <script>
-        // Pass the flash message from backend to the frontend
-        const message = '{{ messages[0] }}'; // Assuming only one message is flashed at a time
-        showFlashMessage(message);
-    </script>
-{% endif %}
-{% endwith %}
+    <div class="container">
+        <h1>Spelling Game</h1>
 
-<!-- Form for the user to input answer -->
-<form action="{{ url_for('spelling.spelling_page', start_dt=start_dt, qtype=qtype) }}" method="POST">
-    <input type="text" name="user_answer" id="user_answer" required>
-    <button type="submit">Answer</button>
-</form>
+        <div class="game-frame-container">
+            <div class="game-frame">
+                <p class="instructions">Listen to the word and type your answer below:</p>
+                
+                <!-- Get and play the audio from the spelling audio endpoint -->
+                <audio id="audio" controls>
+                    <source src="{{ url_for('spelling.spelling_audio', word=word) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
 
+                <!-- Flash Message Display inside the form -->
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div id="flash-message" class="flash-message" style="display:none;"></div>
+                    <script>
+                        // Pass the flash message from backend to the frontend
+                        const message = '{{ messages[0] }}'; // Assuming only one message is flashed at a time
+                        showFlashMessage(message);
+                    </script>
+                {% endif %}
+                {% endwith %}
+
+                <!-- Form for the user to input answer -->
+                <form action="{{ url_for('spelling.spelling_page', start_dt=start_dt, qtype=qtype) }}" method="POST">
+                    <input type="text" name="user_answer" id="user_answer" required placeholder="Type the word you hear...">
+                    <button type="submit">Answer</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
