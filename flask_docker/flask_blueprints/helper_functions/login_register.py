@@ -1,6 +1,6 @@
 from flask import request, session, url_for, flash, redirect
 from buzzy_bee_db.account.main_account import register as parent_register, login as parent_login
-from buzzy_bee_db.account.stu_account import create_stu_account, delete_sub_account, update_stu_account
+from buzzy_bee_db.account.stu_account import create_stu_account, delete_sub_account, update_stu_account, add_teacher
 from buzzy_bee_db.account.teacher_account import register as teacher_register, login as teacher_login
 from hashlib import sha256
 import os
@@ -17,7 +17,7 @@ def hash_password(password):
 class LoginRegisterHandler:
     @staticmethod
     def login(request):
-        username = request.form.get("username")
+        username = request.form.get("username").lower()
         password = request.form.get("password")
         password = hash_password(password)
 
@@ -29,19 +29,23 @@ class LoginRegisterHandler:
 
         if account_type == "teacher":
             response = teacher_login(username=username, password=password)
+            session["user_id"] = response.teacher_id
+            if response.success == False:
+                flash(response.message)
+                return redirect(url_for("login_register.login", _method="GET"))
+            return redirect(url_for("login_register.teacher_account", _method="GET"))
         else:
             response = parent_login(username=username, password=password)
-        if response.success == False:
-            flash(response.message)
-            return redirect(url_for("login_register.login", _method="GET"))
-
-        session["user_id"] = response.user_id
-        return redirect(url_for("login_register.account", _method="GET"))
+            session["user_id"] = response.user_id
+            if response.success == False:
+                flash(response.message)
+                return redirect(url_for("login_register.login", _method="GET"))
+            return redirect(url_for("login_register.account", _method="GET"))
 
     @staticmethod
     def register(request):
         email = request.form.get("email")
-        username = request.form.get("username")
+        username = request.form.get("username").lower()
         password = request.form.get("password")
         password = hash_password(password)
 
@@ -53,21 +57,23 @@ class LoginRegisterHandler:
 
         if account_type == "teacher":
             response = teacher_register(username=username, email=email, password=password)
+            session["user_id"] = response.teacher_id
         else:
             response = parent_register(username=username, email=email, password=password)
+            session["user_id"] = response.user_id
         if response.success == False:
             flash(response.message)
             return redirect(url_for("login_register.register", _method="GET"))
-        session["user_id"] = response.user_id
 
         # Add the user to a queue to send them a verification email
-        if os.getenv("SQS_QUEUE_URL"):
+        if os.getenv("SQS_QUEUE_URL") and account_type != "teacher":
             import boto3
             queue_url = os.getenv("SQS_QUEUE_URL")
             sqs = boto3.client("sqs")
             message = json.dumps({"UserID": response.user_id, "email":email})
             sqs.send_message(QueueUrl=queue_url, MessageBody=message)
-
+        if account_type == "teacher":
+            return redirect(url_for("login_register.teacher_account", _method="GET"))
         return redirect(url_for("login_register.account", _method="GET"))
 
     @staticmethod
@@ -80,7 +86,7 @@ class LoginRegisterHandler:
 
     @staticmethod
     def post_sub_account(request):
-        sub_account_name = request.form.get("sub_account_name")
+        sub_account_name = request.form.get("sub_account_name").lower()
 
         user_id = session.get("user_id")
 
@@ -112,8 +118,20 @@ class LoginRegisterHandler:
         if sub_account_name == None:
             flash("Please enter all fields")
             return redirect(url_for("login_register.account", _method="GET"))
-        response = update_stu_account(user_id, sub_account_id, sub_account_name)
+        response = update_stu_account(sub_account_id, sub_account_name)
 
         if response.success == False:
             flash(response.message)
         return redirect(url_for("login_register.account", _method="GET"))
+    
+    @staticmethod
+    def add_teacher_to_student_account(request):
+        teacher_name = request.form.get("teacher_name").lower()
+        student_account_id = request.form.get("student_id")
+
+        db_response = add_teacher(student_account_id, teacher_name)
+        if db_response.success==True:
+            return redirect(url_for("login_register.account", _method="GET"))
+        else:
+            flash("That teacher doesn't exist")
+            return redirect(url_for("login_register.account", _method="GET"))

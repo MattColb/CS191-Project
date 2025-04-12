@@ -28,8 +28,8 @@ class SpellingFunctions(SubjectClass):
     def get_closest_questions(self):
         return get_closest_questions(self.rating, self.qtype, self.subject)
 
-    def update_rating(self, parent_id, student_id, new_rating):
-        update_stu_account(parent_id, student_id, score_in_spelling=new_rating)
+    def update_rating(self, student_id, new_rating):
+        update_stu_account(student_id, score_in_spelling=new_rating)
 
     def check_answer(self, user_answer, answer):
         #Added None because others want redirect on an error

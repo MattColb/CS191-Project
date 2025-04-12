@@ -83,7 +83,7 @@ def update_ratings(question_id, percentile, answered_correctly, question, subjec
     sub_account[subject_class.db_name] = new_user_difficulty
     session["sub_account_information"] = sub_account
     
-    subject_class.update_rating(account_id, sub_account_id, new_user_difficulty)
+    subject_class.update_rating(sub_account_id, new_user_difficulty)
 
     update_difficulty(question_id, new_question_difficulty)
 

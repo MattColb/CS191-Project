@@ -43,8 +43,8 @@ class MathFunctions(SubjectClass):
 
         return answered_correctly, None
     
-    def update_rating(self, parent_id, student_id, new_rating):
-        update_stu_account(parent_id, student_id, score_in_math=new_rating)
+    def update_rating(self, student_id, new_rating):
+        update_stu_account(student_id, score_in_math=new_rating)
 
     def redirect(self):
         return redirect(url_for("math.math_questions", qtype=self.qtype))

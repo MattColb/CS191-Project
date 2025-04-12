@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, request, redirect, url_for, render_template, session
 from jinja2 import TemplateNotFound
 from .helper_functions.login_register import LoginRegisterHandler
-from buzzy_bee_db.account.stu_account import get_stu_accounts, get_stu_account
+from buzzy_bee_db.account.stu_account import get_stu_accounts_main, get_stu_account, get_stu_accounts_teacher
 from functools import wraps
 
 login_register = Blueprint('login_register', __name__,
@@ -75,10 +75,18 @@ def index():
 @check_user_id_not_exists
 def account():
     if request.method == "GET":
-        sub_accounts=get_stu_accounts(session.get("user_id")).stu_accounts
+        sub_accounts=get_stu_accounts_main(session.get("user_id")).stu_accounts
         return render_template("account.html", sub_accounts=sub_accounts)
     if request.method == "POST":
         return LoginRegisterHandler.post_sub_account(request)
+
+@login_register.route("/Teacher", methods=["GET", "POST"])
+def teacher_account():
+    if request.method == "GET":
+        sub_accounts=get_stu_accounts_teacher(session.get("user_id")).stu_accounts
+        return render_template("teacher_portal.html", sub_accounts=sub_accounts)
+    if request.method == "POST":
+        return LoginRegisterHandler.add_teacher_to_student_account(request)
 
 @login_register.route("/Subaccount/<sub_account_id>", methods=["POST", "GET"])
 @check_user_id_not_exists
@@ -97,7 +105,7 @@ def update_sub_account(sub_account_id):
 def sub_account_login(sub_account_id):
     if request.method == "GET":
         session["sub_account_id"] = sub_account_id
-        sacct = get_stu_account(session.get("user_id"), sub_account_id).stu_account
+        sacct = get_stu_account(sub_account_id).stu_account
         session["sub_account_information"] = sacct
         return redirect(url_for("login_register.sub_account"))
         
