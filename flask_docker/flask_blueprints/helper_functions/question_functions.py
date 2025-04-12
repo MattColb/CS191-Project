@@ -12,6 +12,7 @@ from .subject_class import SubjectClass
 def get_best_question(subject_class:SubjectClass):
     rng = random.random()
     response = None
+    rng=1
     if rng <= .25:
         #Try and select a question that they've missed
         previous_questions = get_student_account_responses(session.get("sub_account_id"), subject_class.subject).responses
