@@ -1,14 +1,15 @@
 #Questions need: question, answer, question id, difficulty
 import hashlib
 import random
+from wonderwords import RandomWord
 
 def create_audio_question(rating):
-    words = ["apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew"]
-    current_word = random.choice(words)
+    print(type(rating))
+    current_word, rating = get_word(rating)
 
-    question_id = hashlib.sha256(str.encode("audio"+current_word)).hexdigest()
+    question_id = hashlib.sha256(str.encode("audio_"+current_word)).hexdigest()
 
-    return {"question":current_word, "answer":current_word, "difficulty":100, "question_id":question_id}
+    return {"question":current_word, "answer":current_word, "difficulty":rating, "question_id":question_id}
 
 def create_block_question(rating):
     word = get_word(rating)
@@ -23,8 +24,10 @@ def create_image_question(rating):
     pass
 
 def get_word(rating):
-    pass
-
+    length = int((rating//100)+1)
+    r = RandomWord()
+    word = r.word(word_max_length=length+2, word_min_length=length)
+    return word, (length-1)*100
 
 # TODO:
 # , "Block", "Image"

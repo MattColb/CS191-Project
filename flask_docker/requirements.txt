@@ -5,3 +5,4 @@ matplotlib
 numpy
 boto3
 gtts
+wonderwords
