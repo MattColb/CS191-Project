@@ -12,7 +12,7 @@ class SubjectClass:
     def check_answer(self, user_answer, answer):
         return user_answer == answer
     
-    def update_rating(self, parent_id, student_id, new_rating):
+    def update_rating(self, student_id, new_rating):
         print("Updating the student rating here")
 
     def redirect(self):

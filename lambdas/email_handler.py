@@ -2,7 +2,7 @@ import json
 import os
 import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
-from buzzy_bee_db.account.stu_account import get_stu_accounts
+from buzzy_bee_db.account.stu_account import get_stu_accounts_main
 from buzzy_bee_db.question_user.question_user import get_student_account_responses
 from buzzy_bee_db.weekly_snapshot.weekly_snapshot import get_latest_snapshot, get_snapshots, record_snapshot
 import matplotlib.pyplot as plt
@@ -38,7 +38,7 @@ def handler(event, context):
         user_id = verification_info.get("UserID")
         email = verification_info.get("email")
         
-        db_response = get_stu_accounts(user_id)
+        db_response = get_stu_accounts_main(user_id)
 
         if db_response.success == False:
             print(f"{user_id} was not able to be processed sucessfully")
