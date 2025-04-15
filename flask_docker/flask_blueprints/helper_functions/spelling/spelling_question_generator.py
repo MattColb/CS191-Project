@@ -2,6 +2,7 @@
 import hashlib
 import random
 from wonderwords import RandomWord
+import random
 
 def create_audio_question(rating):
     print(type(rating))
@@ -12,10 +13,16 @@ def create_audio_question(rating):
     return {"question":current_word, "answer":current_word, "difficulty":rating, "question_id":question_id}
 
 def create_block_question(rating):
-    word = get_word(rating)
-    question_id = "block_" + word
+    current_word, rating = get_word(rating)
+    question_id = "block_" + current_word
+
+    word_list = list(current_word)
+
+    random.shuffle(word_list)
     
-    pass
+    question_id = hashlib.sha256(str.encode("audio_"+current_word)).hexdigest()
+
+    return {"question":"".join(word_list), "answer":current_word, "difficulty":rating, "question_id":question_id}
 
 def create_image_question(rating):
     word = get_word(rating)
@@ -29,9 +36,7 @@ def get_word(rating):
     word = r.word(word_max_length=length+2, word_min_length=length)
     return word, (length-1)*100
 
-# TODO:
-# , "Block", "Image"
-SPELLING_QUESTION_TYPES = ["Audio"]
+SPELLING_QUESTION_TYPES = ["Block"]
 SPELLING_QUESTIONS_FUNCTIONS = {
     "Audio":create_audio_question,
     "Block":create_block_question,
