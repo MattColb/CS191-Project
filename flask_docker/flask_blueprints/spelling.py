@@ -27,7 +27,7 @@ def spelling_page():
         if spelling_question.qtype == "Audio":
             return render_template("spelling_base.html", word=question_data["question"], start_dt=start_dt)
         if spelling_question.qtype == "Block":
-            return render_template("block.html", scrambled_word = question_data["question"], start_dt=start_dt)
+            return render_template("block.html", scrambled_word = question_data["question"], start_dt=start_dt, word_length=len(question_data["question"]))
     
     if request.method == "POST":
         sub_account_info = session.get("sub_account_information")

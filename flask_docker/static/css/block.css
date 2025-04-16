@@ -1,0 +1,285 @@
+/* Font family for all text elements */
+.game-frame {
+    font-family: 'Nunito', Arial, sans-serif;
+}
+
+/* Styling for the letter blocks and target blocks - keeping the kid-friendly design */
+.letter-blocks, .target-blocks {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+    perspective: 1000px;
+    font-family: 'Nunito', Arial, sans-serif;
+}
+
+.letter-block, .target-block {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+    font-family: 'Nunito', Arial, sans-serif;
+}
+
+.letter-block {
+    background-color: #ffeba9; /* Bee yellow color */
+    border: 3px solid #ffd54f; /* Darker yellow border */
+    color: #333;
+    animation: float 3s ease-in-out infinite alternate;
+    transform-style: preserve-3d;
+}
+
+/* Different animations for each letter to create a playful effect */
+.letter-block:nth-child(odd) {
+    animation-delay: 0.5s;
+}
+
+.letter-block:nth-child(3n) {
+    animation-delay: 1s;
+}
+
+.letter-block:nth-child(2n) {
+    animation-delay: 1.5s;
+}
+
+/* Honey drip effect on letter blocks */
+.letter-block::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(circle, rgba(255,218,94,0.6) 0%, rgba(255,203,5,0) 70%);
+    transform: rotate(45deg);
+    animation: honeyGlow 4s ease-in-out infinite;
+}
+
+/* Sparkle effect on hover */
+.letter-block::after {
+    content: '✨';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 20px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    transform: scale(0);
+}
+
+.letter-block:hover {
+    transform: translateY(-10px) rotateY(10deg);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+.letter-block:hover::after {
+    opacity: 1;
+    transform: scale(1);
+    animation: twinkle 1s ease infinite;
+}
+
+.letter-block:active {
+    transform: scale(0.95);
+}
+
+.target-block {
+    background-color: #F0F0F0; /* Light gray for target blocks */
+    border: 3px dashed #BDBDBD; /* Dashed border for "fill me in" look */
+    color: #333;
+    min-width: 70px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.target-block::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #BDBDBD;
+    margin: 0 12px;
+    border-radius: 3px;
+}
+
+.target-block:hover {
+    background-color: #E5E5E5;
+    transform: scale(1.05);
+}
+
+/* When a letter is placed in target block - filled state */
+.target-block:not(:empty) {
+    border-style: solid;
+    background-color: #E8F5E9;
+    animation: wiggle 0.5s ease-in-out;
+}
+
+/* Animations */
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes honeyGlow {
+    0%, 100% {
+        opacity: 0.3;
+        transform: rotate(45deg) translateX(0);
+    }
+    50% {
+        opacity: 0.5;
+        transform: rotate(45deg) translateX(5%);
+    }
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+@keyframes wiggle {
+    0%, 100% {
+        transform: rotate(0);
+    }
+    25% {
+        transform: rotate(-3deg);
+    }
+    75% {
+        transform: rotate(3deg);
+    }
+}
+
+/* Animation for correct answer */
+@keyframes correctAnswer {
+    0% { transform: scale(1) rotate(0); }
+    25% { transform: scale(1.2) rotate(-5deg); }
+    50% { transform: scale(1.2) rotate(5deg); }
+    75% { transform: scale(1.1) rotate(-3deg); }
+    100% { transform: scale(1) rotate(0); }
+}
+
+.correct {
+    animation: correctAnswer 0.8s ease;
+    background-color: #8BC34A !important;
+    border-color: #7CB342 !important;
+    box-shadow: 0 0 15px rgba(139, 195, 74, 0.6) !important;
+}
+
+/* Animation for wrong answer */
+@keyframes wrongAnswer {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    20% { transform: translateX(-10px) rotate(-5deg); }
+    40% { transform: translateX(10px) rotate(5deg); }
+    60% { transform: translateX(-10px) rotate(-5deg); }
+    80% { transform: translateX(10px) rotate(5deg); }
+}
+
+.wrong {
+    animation: wrongAnswer 0.8s ease;
+    background-color: #FF5252 !important;
+    border-color: #E53935 !important;
+}
+
+/* Remove default styling for the hidden input */
+input[type="hidden"] {
+    display: none;
+}
+
+/* Original style submit button - reverted to original design */
+button[type="submit"] {
+    background: linear-gradient(135deg, var(--honey-color), var(--dark-honey));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Nunito', Arial, sans-serif;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
+ }
+
+/* Game frame - reverted to original design */
+.game-frame {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Original instructions style - reverted to original design */
+.instructions {
+    color: #272727;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 650px) {
+    .letter-block, .target-block {
+        width: 55px;
+        height: 55px;
+        font-size: 26px;
+    }
+    
+    .letter-blocks, .target-blocks {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 400px) {
+    .letter-block, .target-block {
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+    }
+    
+    .letter-blocks, .target-blocks {
+        gap: 8px;
+    }
+}
