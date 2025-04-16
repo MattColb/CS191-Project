@@ -45,11 +45,18 @@ def add_students_to_class():
 def manage_class_content(class_id):
     if request.method == "GET":
         content = get_class_content(class_id).content_information
-        #Adding content here doesn't work
+        #Adding content here doesn't work :3
         return render_template("content_archive.html", content=content, user_type="teacher")
     if request.method == "POST":
         teacher_id = session.get("user_id")
         video_link = request.form.get("video_link")
+
+        if "embed" not in video_link:
+            v = video_link.split("/")
+            last_item = v.pop()
+            v.append("embed")
+            v.append(last_item)
+            video_link = "/".join(v)
         
         due_date = request.form.get("due_date")
         due_date = datetime.datetime.strptime(due_date, "%Y-%m-%d").isoformat()
