@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, session, flash, url_for, redirect
 from buzzy_bee_db.account.stu_account import get_stu_accounts_teacher
 from buzzy_bee_db.classes_content.classes_content import *
+from buzzy_bee_db.classes_content.student_content import *
 import datetime
+import urllib
 
 classes = Blueprint('classes', __name__,
                         template_folder='templates')
@@ -45,24 +47,25 @@ def add_students_to_class():
 def manage_class_content(class_id):
     if request.method == "GET":
         content = get_class_content(class_id).content_information
-        #Adding content here doesn't work :3
-        return render_template("content_archive.html", content=content, user_type="teacher")
+        return render_template("content_archive.html", content=content, user_type="teacher", class_id=class_id)
     if request.method == "POST":
         teacher_id = session.get("user_id")
         video_link = request.form.get("video_link")
 
-        if "embed" not in video_link:
+        #Embeded video not working
+
+        if "v=" in video_link:
+            video_id = video_link.split("=")[-1]
+        else:
             v = video_link.split("/")
             last_item = v.pop()
-            v.append("embed")
-            v.append(last_item)
-            video_link = "/".join(v)
+            video_id = last_item.split("?")[0]
         
         due_date = request.form.get("due_date")
         due_date = datetime.datetime.strptime(due_date, "%Y-%m-%d").isoformat()
         title = request.form.get("title")
 
-        response = add_class_content(teacher_id, class_id, video_link, due_date, title)
+        response = add_class_content(teacher_id, class_id, video_id, due_date, title)
         if response.success == True:
             return redirect(url_for("classes.get_class", class_id=class_id))
         else:
@@ -73,7 +76,8 @@ def manage_class_content(class_id):
 def view_content(content_id):
     if request.method == "GET":
         content_information = get_content_information(content_id).content_information
-        return render_template("content.html", content=content_information)
+        video_id = content_information["video_url"].split("=")[-1]
+        return render_template("content.html", content=content_information, video_id=video_id)
     
 
 @classes.route("/Class/<class_id>/Students/Remove", methods=["POST"])
@@ -82,3 +86,16 @@ def remove_students(class_id):
         remove = request.form.getlist("student_ids")
         response = remove_students_db(class_id, remove)
         return redirect(url_for("classes.get_class", class_id=class_id))
+    
+
+@classes.route("/Student/Content")
+def get_student_content():
+    sub_account_id = session.get("sub_account_id")
+    classes = get_student_classes(sub_account_id).class_information
+    classes = [c.get("class_id") for c in classes]
+    content = get_student_content_db(classes).content_information
+    current_time = datetime.datetime.utcnow().isoformat()
+    content = [c for c in content if c.get('due_date') >= current_time]
+
+    return render_template("content_archive.html", content=content, user_type="student", class_id="")
+    pass
