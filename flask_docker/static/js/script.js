@@ -2,7 +2,13 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add Profile Modal
     const addModal = document.getElementById("add-modal");
     const addProfileBtn = document.getElementById("add-profile");
-    const closeBtn = document.querySelector(".close");
+    const closeBtn = document.getElementById("close");
+    const addClass = document.getElementById("add-class-modal");
+    const addClassBtn = document.getElementById("add-class");
+    const closeClassBtn = document.getElementById("close-class");
+
+
+
    
     // Array of animal emojis
     const animalEmojis = [
@@ -65,6 +71,36 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         
         addModal.style.display = "flex";
+    });
+
+    addClassBtn.addEventListener("click", function() {
+        // Generate a new random emoji each time modal is opened
+        selectedEmoji = getRandomAnimalEmoji();
+        
+        // Update hidden emoji input field
+        const emojiInput = document.getElementById("selected-emoji-class");
+        if (emojiInput) {
+            emojiInput.value = selectedEmoji;
+        }
+        
+        // Preview the emoji in the modal
+        const emojiPreview = document.getElementById("emoji-class-preview");
+        if (emojiPreview) {
+            emojiPreview.textContent = selectedEmoji;
+        }
+        
+        addClass.style.display = "flex";
+    });
+
+    closeClassBtn.addEventListener("click", function() {
+        addClass.style.display = "none";
+    });
+    
+    // Close add profile modal when clicking outside the modal
+    window.addEventListener("click", function(event) {
+        if (event.target === addClass) {
+            addClass.style.display = "none";
+        }
     });
     
     // Close add profile modal when the close button is clicked

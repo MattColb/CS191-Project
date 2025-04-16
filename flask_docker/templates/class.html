@@ -23,75 +23,86 @@
           <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
       </div>
   </nav>
+    <div class="container">
+    <h1>{{class_info["class_name"]}}</h1>
+    </div>
+
 
   <div class="container">
-        <h1>Which Class?</h1>
+        <h1>Which Content?</h1>
         <div class="profiles" id="class-container">
-            {% for class in classes %}
-            <div class="profile" onclick="goToClass('{{ class.class_id }}')">
+            {% for c in content %}
+            <div class="profile" onclick="goToContent('{{ c.content_id }}')">
                 <div class="profile-img-container">
-                    <span class="profile-emoji" data-account-id="{{ class.class_id }}">⏳</span>
+                    <span class="profile-emoji" data-account-id="{{ c.content_id }}">⏳</span>
                 </div>
-                <p>{{ class.class_name }}</p>
+                <p>{{ c.title }}</p>
             </div>
             {% endfor %}
             <div class="profile add-profile" id="add-class">
                 <div class="add-icon">+</div>
-                <p>Add Class</p>
+                <p>Add Content</p>
+            </div>
+            <div class="profile add-profile" onclick="goToContentArchive()">
+                <div class="add-icon">...</div>
+                <p>More Content</p>
             </div>
         </div>
     </div>
 
     <div id="add-class-modal" class="modal">
-        <form action="{{url_for('classes.add_class')}}" method="POST">
+        <form action="{{url_for('classes.manage_class_content', class_id=class_id)}}" method="POST">
             <div class="modal-content">
                 <span class="close" id="close-class">&times;</span>
-                <h2>Add New Profile</h2>
+                <h2>Add New Content</h2>
                 <div class="emoji-preview-container">
                     <span id="emoji-class-preview" class="emoji-preview"></span>
                 </div>
                 <input type="hidden" name="emoji" id="selected-class-emoji" value="">
-                <input type="text" name="class_name" id="sub-class-name" placeholder="Enter class name">
+                <input type="text" name="title" id="sub-class-name" placeholder="Enter content name">
+                <input type="text" name="video_link" id="sub-class-name" placeholder="Input the URL of the Content">
+                <label>Due Date: </label>
+                <input type="date" name="due_date" id="sub-class-name" placeholder="Input the Due Date of the Content">
                 <button type="submit" id="add-class" class="cta-btn">Add</button>
             </div>
         </form>
     </div>
 
-  <div class="container">
-      <h1>Who's studying?</h1>
-      <div class="profiles" id="profiles-container">
-          {% for sub_account in sub_accounts %}
-          <div class="profile" onclick="goToSubAccount('{{ sub_account.student_id }}')">
-              <div class="profile-img-container">
-                  <span class="profile-emoji" data-account-id="{{ sub_account.student_id }}">⏳</span>
-              </div>
-              <p>{{ sub_account.stu_username }}</p>
-          </div>
-          {% endfor %}
-          <div class="profile add-profile" id="add-profile">
-              <div class="add-icon">+</div>
-              <p>Add Kid</p>
-          </div>
-      </div>
-
-      <button class="manage-btn" onclick="openManageModal()">Manage Profiles</button>
-  </div>
+    <div class="container">
+        <h1>Who's studying?</h1>
+        <div class="profiles" id="profiles-container">
+            {% for sub_account in sub_accounts %}
+            <div class="profile" onclick="goToSubAccount('{{ sub_account.student_id }}')">
+                <div class="profile-img-container">
+                    <span class="profile-emoji" data-account-id="{{ sub_account.student_id }}">⏳</span>
+                </div>
+                <p>{{ sub_account.stu_username }}</p>
+            </div>
+            {% endfor %}
+            <div class="profile add-profile" id="add-profile" style="display: none;">
+                <div class="add-icon">+</div>
+                <p>Add Kid</p>
+            </div>
+        </div>
   
-  <!-- Popup Modal for Adding a New Subaccount -->
-  <div id="add-modal" class="modal">
-      <form action="{{url_for('login_register.account')}}" method="POST">
-          <div class="modal-content">
-              <span id="close" class="close">&times;</span>
-              <h2>Add New Profile</h2>
-              <div class="emoji-preview-container">
-                  <span id="emoji-preview" class="emoji-preview"></span>
-              </div>
-              <input type="hidden" name="emoji" id="selected-emoji" value="">
-              <input type="text" name="sub_account_name" id="sub-account-name" placeholder="Enter kid's name">
-              <button type="submit" id="add-subaccount" class="cta-btn">Add</button>
-          </div>
-      </form>
-  </div>
+        <button class="manage-btn" onclick="openManageModal()">Manage Profiles</button>
+    </div>
+    
+    <!-- Popup Modal for Adding a New Subaccount -->
+    <div id="add-modal" class="modal">
+        <form action="{{url_for('login_register.account')}}" method="POST">
+            <div class="modal-content">
+                <span id="close" class="close">&times;</span>
+                <h2>Add New Profile</h2>
+                <div class="emoji-preview-container">
+                    <span id="emoji-preview" class="emoji-preview"></span>
+                </div>
+                <input type="hidden" name="emoji" id="selected-emoji" value="">
+                <input type="text" name="sub_account_name" id="sub-account-name" placeholder="Enter kid's name">
+                <button type="submit" id="add-subaccount" class="cta-btn">Add</button>
+            </div>
+        </form>
+    </div>
 
   <!-- Popup Modal for Managing Profiles with Tabs -->
   <div id="manage-modal" class="modal">
@@ -124,41 +135,17 @@
                   </div>
                   <div class="tab-item" onclick="showTabContent('add-class-tab')">
                     <i class="fas fa-trash"></i>
-                    <span>Add Students to Class</span>
+                    <span>Remove Students from Class</span>
                 </div>
               </div>
               <button class="close-btn" onclick="closeManageModal()">Close</button>
           </div>
-        
-          <!-- Delete Profile Tab Content -->
-          <div id="delete-profile-tab" class="tab-content" style="display: none;">
-              <h3>Delete a Profile</h3>
-              <div class="profile-list">
-                  {% for sub_account in sub_accounts %}
-                  <div class="profile-item">
-                        
-                      <div class="profile-info">
-                          <span class="profile-small-emoji" data-account-id="{{ sub_account.student_id }}">⏳</span>
-                          <span>{{ sub_account.stu_username }}</span>
-                      </div>
-                      <button class="delete-btn" onclick="deleteSubAccount('{{ sub_account.student_id }}', event)">
-                          <i class="fas fa-trash"></i> Delete
-                      </button>
-                  </div>
-                  {% endfor %}
-              </div>
-              <button class="back-btn" onclick="goBackToTabs()">Go Back</button>
-          </div>
 
-          <!-- Adding a teacher to a student -->
+          <!-- Deleting a teacher from a class -->
           <div id="add-class-tab" class="tab-content" style="display: none;">
-            <h3>Add a Student to a Class</h3>
-            <form method="POST" action="{{url_for('classes.add_students_to_class')}}">
+            <h3>Select Students to Remove from the Class</h3>
+            <form method="POST" action="{{url_for('classes.remove_students', class_id=class_id)}}">
             <div class="profile-list">
-                {% for class in classes %}
-                <label>{{class.class_name}}</label>
-                <input type="radio" name="class_id" value="{{class.class_id}}" >
-                {% endfor %}
                 {% for sub_account in sub_accounts %}
                 <div class="profile-item">
                     <div class="profile-info">
@@ -180,6 +167,10 @@
       function logout() {
           window.location.href = "{{ url_for('login_register.logout') }}";
       }
+
+      function goToContentArchive() {
+          window.location.href = "{{ url_for('classes.manage_class_content', class_id=class_id) }}";
+      }
     
       // Navigate to subaccount function
       function goToSubAccount(subAccountId) {
@@ -193,15 +184,15 @@
           window.location.href = `/Subaccount/Login/${encodeURIComponent(subAccountId)}`;
       }
 
-      function goToClass(classId) {
+      function goToContent(contentId) {
           // Store selected profile in localStorage
-          localStorage.setItem("selectedProfile", classId);
+          localStorage.setItem("selectedProfile", contentId);
 
           // Debugging: Check if subAccountId is captured correctly
-          console.log("Navigating to class for:", classId);
+          console.log("Navigating to content for:", contentId);
 
           // Redirect to the correct subaccount login route
-          window.location.href = `/Class/${encodeURIComponent(classId)}`;
+          window.location.href = `/Content/${encodeURIComponent(contentId)}`;
       }
     
       // Delete subaccount function
