@@ -8,6 +8,18 @@ import urllib
 classes = Blueprint('classes', __name__,
                         template_folder='templates')
 
+@classes.route("/Teacher/Remove/Students", methods=["POST"])
+def remove_student():
+    if request.method == "POST":
+        teacher_id = session.get("user_id")
+        students = request.form.getlist("student_ids")
+
+        remove_students_teacher_db(teacher_id, students)
+
+        return redirect(url_for("login_register.teacher_account"))
+        
+    pass
+
 @classes.route("/Class", methods=["POST"])
 def add_class():
     if request.method == "POST":

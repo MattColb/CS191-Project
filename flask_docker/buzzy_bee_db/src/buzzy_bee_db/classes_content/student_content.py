@@ -27,3 +27,16 @@ def get_student_content_db(classes):
 
         return ClassContentResponse(success=True, content_information=response)
 
+def remove_students_teacher_db(teacher_id, students):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client.get_default_database()
+        teachers = database["Teachers"]
+        
+        teachers.update_one({"teacher_id":teacher_id}, {"$pull":{"students":{"$in": students}}})
+
+        stdnts = database["Students"]
+
+        stdnts.update_many({"student_id":{"$in":students}}, {"$pull":{"teacher_ids":teacher_id}})
+
+        return ClassContentResponse(success=True)
