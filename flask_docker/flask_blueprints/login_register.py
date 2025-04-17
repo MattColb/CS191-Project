@@ -3,6 +3,7 @@ from jinja2 import TemplateNotFound
 from .helper_functions.login_register import LoginRegisterHandler
 from buzzy_bee_db.account.stu_account import get_stu_accounts_main, get_stu_account, get_stu_accounts_teacher
 from functools import wraps
+from buzzy_bee_db.classes_content.classes_content import get_teacher_classes
 
 login_register = Blueprint('login_register', __name__,
                         template_folder='templates')
@@ -22,6 +23,8 @@ def check_user_id_exists(func):
     @wraps(func)
     def check_user_id_dne(*kwargs, **args):
         if session.get("user_id") != None:
+            if session.get("user_type") == "teacher":
+                return redirect("/Teacher")
             return redirect("/Account")
         return func(*kwargs, **args)
     return check_user_id_dne
@@ -30,6 +33,8 @@ def check_sub_account_not_exists(func):
     @wraps(func)
     def check_sub_exists(*kwargs, **args):
         if session.get("sub_account_id") == None:
+            if session.get("user_type") == "teacher":
+                return redirect("/Teacher")
             return redirect("/Account")
         return func(*kwargs, **args)
     return check_sub_exists
@@ -41,7 +46,6 @@ def check_sub_account_exists(func):
             return redirect("/Subaccount")
         return func(*kwargs, **args)
     return check_sub_not_exists
-
 
 @login_register.route('/Login', methods=["GET", "POST"])
 @check_user_id_exists
@@ -83,8 +87,9 @@ def account():
 @login_register.route("/Teacher", methods=["GET", "POST"])
 def teacher_account():
     if request.method == "GET":
+        classes = get_teacher_classes(session.get("user_id")).class_information
         sub_accounts=get_stu_accounts_teacher(session.get("user_id")).stu_accounts
-        return render_template("teacher_portal.html", sub_accounts=sub_accounts)
+        return render_template("teacher_portal.html", sub_accounts=sub_accounts, classes=classes)
     if request.method == "POST":
         return LoginRegisterHandler.add_teacher_to_student_account(request)
 

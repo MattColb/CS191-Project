@@ -24,21 +24,14 @@ def create_block_question(rating):
 
     return {"question":"".join(word_list), "answer":current_word, "difficulty":rating, "question_id":question_id}
 
-def create_image_question(rating):
-    word = get_word(rating)
-    question_id = "image_" + word
-
-    pass
-
 def get_word(rating):
     length = int((rating//100)+1)
     r = RandomWord()
     word = r.word(word_max_length=length+2, word_min_length=length)
     return word, (length-1)*100
 
-SPELLING_QUESTION_TYPES = ["Block"]
+SPELLING_QUESTION_TYPES = ["Block", "Audio"]
 SPELLING_QUESTIONS_FUNCTIONS = {
     "Audio":create_audio_question,
     "Block":create_block_question,
-    "Image":create_block_question
 }

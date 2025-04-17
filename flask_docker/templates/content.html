@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids Accounts</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="honeycomb-bg"></div>
+  <div class="bee bee1"></div>
+  <div class="bee bee2"></div>
+  <div class="bee bee3"></div>
+
+  <nav class="navbar">
+      <div class="logo-container">
+          <span class="logo-icon">🐝</span>
+          <h1 class="logo">BuzzyBee</h1>
+      </div>
+      <div class="nav-right">
+          <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
+      </div>
+  </nav>
+    
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ video_id }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <p>https://www.youtube.com/embed/{{ video_id }}</p>
+
+</body>
+</html>

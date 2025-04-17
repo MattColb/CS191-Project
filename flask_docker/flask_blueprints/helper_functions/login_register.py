@@ -30,6 +30,7 @@ class LoginRegisterHandler:
         if account_type == "teacher":
             response = teacher_login(username=username, password=password)
             session["user_id"] = response.teacher_id
+            session["user_type"] = "teacher"
             if response.success == False:
                 flash(response.message)
                 return redirect(url_for("login_register.login", _method="GET"))
@@ -37,6 +38,7 @@ class LoginRegisterHandler:
         else:
             response = parent_login(username=username, password=password)
             session["user_id"] = response.user_id
+            session["user_type"] = "parent"
             if response.success == False:
                 flash(response.message)
                 return redirect(url_for("login_register.login", _method="GET"))
@@ -58,9 +60,11 @@ class LoginRegisterHandler:
         if account_type == "teacher":
             response = teacher_register(username=username, email=email, password=password)
             session["user_id"] = response.teacher_id
+            session["user_type"] = "teacher"
         else:
             response = parent_register(username=username, email=email, password=password)
             session["user_id"] = response.user_id
+            session["user_type"] = "parent"
         if response.success == False:
             flash(response.message)
             return redirect(url_for("login_register.register", _method="GET"))
