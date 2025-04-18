@@ -1,94 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spelling Game</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/spelling_base.css') }}">
-    <!-- FontAwesome CDN for the logout icon -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script>
-        // Function to hide the flash message after 2 seconds
-        function hideFlashMessage() {
-            setTimeout(function() {
-                const flashMessage = document.getElementById('flash-message');
-                if (flashMessage) {
-                    flashMessage.style.display = 'none';
-                }
-            }, 2000); // Hide after 2 seconds
-        }
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Spelling Game</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/spelling_base.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/block.css') }}">
+   <!-- FontAwesome CDN for the logout icon -->
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+   <script>
+       // Function to hide the flash message after 2 seconds
+       function hideFlashMessage() {
+           setTimeout(function() {
+               const flashMessage = document.getElementById('flash-message');
+               if (flashMessage) {
+                   flashMessage.style.display = 'none';
+               }
+           }, 2000); // Hide after 2 seconds
+       }
 
-        // Function to check for flash messages and set appropriate styling
-        function showFlashMessage(message) {
-            const flashMessage = document.getElementById('flash-message');
-            if (message.includes('Correct')) {
-                flashMessage.style.backgroundColor = '#d2edd8'; // Green for correct
-                flashMessage.style.color = '#333';
-            } else if (message.includes('Wrong')) {
-                flashMessage.style.backgroundColor = '#efd5d7'; // Red for wrong
-                flashMessage.style.color = '#333';
-            }
-            flashMessage.innerHTML = message;
-            flashMessage.style.display = 'block';
-            hideFlashMessage(); // Hide after 2 seconds
-        }
+       // Function to check for flash messages and set appropriate styling
+       function showFlashMessage(message) {
+           const flashMessage = document.getElementById('flash-message');
+           if (message.includes('Correct')) {
+               flashMessage.style.backgroundColor = '#d2edd8'; // Green for correct
+               flashMessage.style.color = '#333';
+           } else if (message.includes('Wrong')) {
+               flashMessage.style.backgroundColor = '#efd5d7'; // Red for wrong
+               flashMessage.style.color = '#333';
+           }
+           flashMessage.innerHTML = message;
+           flashMessage.style.display = 'block';
+           hideFlashMessage(); // Hide after 2 seconds
+       }
 
-        // Function to handle logout redirection
-        function logout() {
-            window.location.href = "{{ url_for('login_register.logout') }}";
-        }
-    </script>
+       // Function to handle logout redirection
+       function logout() {
+           window.location.href = "{{ url_for('login_register.logout') }}";
+       }
+       
+       // Function to handle letter selection and placement
+       function selectLetter(letter, index) {
+           // Find the first empty target block
+           const targetBlocks = document.querySelectorAll('.target-block');
+           for (let i = 0; i < targetBlocks.length; i++) {
+               if (targetBlocks[i].innerText === '') {
+                   targetBlocks[i].innerText = letter;
+                   targetBlocks[i].dataset.sourceIndex = index;
+                   document.getElementById('letter-' + index).style.visibility = 'hidden';
+                   break;
+               }
+           }
+           updateHiddenInput();
+       }
+       
+       // Function to clear a letter from a target block
+       function clearLetter(index) {
+           const targetBlock = document.getElementById('target-' + index);
+           if (targetBlock.innerText !== '') {
+               const sourceIndex = targetBlock.dataset.sourceIndex;
+               document.getElementById('letter-' + sourceIndex).style.visibility = 'visible';
+               targetBlock.innerText = '';
+               targetBlock.dataset.sourceIndex = '';
+           }
+           updateHiddenInput();
+       }
+       
+       // Function to update the hidden input with the current answer
+       function updateHiddenInput() {
+           const targetBlocks = document.querySelectorAll('.target-block');
+           let answer = '';
+           for (let i = 0; i < targetBlocks.length; i++) {
+               answer += targetBlocks[i].innerText;
+           }
+           document.getElementById('user_answer').value = answer;
+       }
+   </script>
 </head>
 <body>
-    <!-- Decorative background elements -->
-    <div class="honeycomb-bg"></div>
-   
-    <!-- Decorative bee elements -->
-    <div class="bee bee1"></div>
-    <div class="bee bee2"></div>
-    <div class="bee bee3"></div>
+   <!-- Decorative background elements -->
+   <div class="honeycomb-bg"></div>
+ 
+   <!-- Decorative bee elements -->
+   <div class="bee bee1"></div>
+   <div class="bee bee2"></div>
+   <div class="bee bee3"></div>
 
-    <nav class="navbar">
-        <div class="logo-container">
-            <span class="logo-icon">🐝</span>
-            <h1 class="logo">BuzzyBee</h1>
-        </div>
-        <div class="nav-right">
-            <!-- Logout icon with FontAwesome -->
-            <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
-        </div>
-    </nav>
+   <nav class="navbar">
+       <div class="logo-container">
+           <span class="logo-icon">🐝</span>
+           <h1 class="logo">BuzzyBee</h1>
+       </div>
+       <div class="nav-right">
+           <!-- Logout icon with FontAwesome -->
+           <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
+       </div>
+   </nav>
 
-    <div class="container">
-        <h1>Spelling Game</h1>
+   <div class="container">
+       <h1>Spelling Game</h1>
 
-        <div class="game-frame-container">
-            <div class="game-frame">
-                <p class="instructions">Listen to the word and type your answer below:</p>
-                
-                {% for c in scrambled_word %}
-                    {{c}}
-                {% endfor %}
+       <div class="game-frame-container">
+           <div class="game-frame">
+               <p class="instructions">Unscramble the letters to match the image</p>
 
-                <!-- Flash Message Display inside the form -->
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div id="flash-message" class="flash-message" style="display:none;"></div>
-                    <script>
-                        // Pass the flash message from backend to the frontend
-                        const message = '{{ messages[0] }}'; // Assuming only one message is flashed at a time
-                        showFlashMessage(message);
-                    </script>
-                {% endif %}
-                {% endwith %}
+               <!-- Image container for word hint -->
+               <div class="word-image-container">
+                   <img id="word-image" src="/api/placeholder/300/200" alt="Word hint">
+               </div>
+              
+               <!-- Scrambled letters in yellow blocks -->
+               <div class="letter-blocks">
+                   {% for c in scrambled_word %}
+                       <div class="letter-block" id="letter-{{ loop.index0 }}" onclick="selectLetter('{{ c }}', '{{ loop.index0 }}')">{{ c }}</div>
+                   {% endfor %}
+               </div>
 
-                <!-- Form for the user to input answer -->
-                <form action="{{ url_for('spelling.spelling_page', start_dt=start_dt) }}" method="POST">
-                    <input type="text" name="user_answer" id="user_answer" required placeholder="Type the word you hear...">
-                    <button type="submit">Answer</button>
-                </form>
-            </div>
-        </div>
-    </div>
+               <!-- Target blocks where letters will be placed -->
+               <div class="target-blocks">
+                   {% for i in range(word_length) %}
+                       <div class="target-block" id="target-{{ loop.index0 }}" onclick="clearLetter('{{ loop.index0 }}')"></div>
+                   {% endfor %}
+               </div>
+
+               <!-- Flash Message Display inside the form -->
+               {% with messages = get_flashed_messages() %}
+               {% if messages %}
+                   <div id="flash-message" class="flash-message" style="display:none;"></div>
+                   <script>
+                       // Pass the flash message from backend to the frontend
+                       const message = '{{ messages[0] }}'; // Assuming only one message is flashed at a time
+                       showFlashMessage(message);
+                   </script>
+               {% endif %}
+               {% endwith %}
+
+               <!-- Form for the user to submit answer -->
+               <form action="{{ url_for('spelling.spelling_page', start_dt=start_dt) }}" method="POST">
+                   <input type="hidden" name="user_answer" id="user_answer" value="">
+                   <button type="submit">Answer</button>
+               </form>
+           </div>
+       </div>
+   </div>
 </body>
 </html>
