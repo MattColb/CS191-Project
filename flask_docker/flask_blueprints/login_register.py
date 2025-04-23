@@ -85,6 +85,8 @@ def account():
         return LoginRegisterHandler.post_sub_account(request)
 
 @login_register.route("/Teacher", methods=["GET", "POST"])
+@check_sub_account_exists
+@check_user_id_not_exists
 def teacher_account():
     if request.method == "GET":
         classes = get_teacher_classes(session.get("user_id")).class_information
