@@ -1,131 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>BuzzyBee – Fun Learning!</title>
-   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-   <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>BuzzyBee – Fun Learning!</title>
+ <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+ <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+ <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-   <!-- Decorative Bee Elements -->
-   <div class="bee bee1"></div>
-   <div class="bee bee2"></div>
-   <div class="bee bee3"></div>
-   
-   <!-- Honeycomb Background Elements -->
-   <div class="honeycomb-bg"></div>
-   
-   <!-- Navigation Bar -->
-   <nav class="navbar">
-       <div class="logo-container">
-           <div class="logo-icon">🐝</div>
-           <h1 class="logo">BuzzyBee</h1>
-       </div>
-       <div class="button-container">
-           <a href="{{ url_for('login_register.login') }}" class="btn login">Login <i class="fas fa-sign-in-alt"></i></a>
-           <a href="{{ url_for('login_register.register') }}" class="btn signup">Sign Up <i class="fas fa-user-plus"></i></a>
-       </div>
-   </nav>
+ <!-- Decorative Bee Elements -->
+ <div class="flying-bee">
+  <div class="bee-body"></div>
+  <div class="bee-wing-left"></div>
+  <div class="bee-wing-right"></div>
+  <div class="bee-face">
+    <div class="bee-eye-left"></div>
+    <div class="bee-eye-right"></div>
+    <div class="bee-smile"></div>
+    <div class="bee-antenna-left"></div>
+    <div class="bee-antenna-right"></div>
+  </div>
+</div>
+<div class="flying-bee">
+  <div class="bee-body"></div>
+  <div class="bee-wing-left"></div>
+  <div class="bee-wing-right"></div>
+  <div class="bee-face">
+    <div class="bee-eye-left"></div>
+    <div class="bee-eye-right"></div>
+    <div class="bee-smile"></div>
+    <div class="bee-antenna-left"></div>
+    <div class="bee-antenna-right"></div>
+  </div>
+</div>
+ <!-- Honeycomb Background Elements -->
+ <div class="honeycomb-bg"></div>
+ <!-- Navigation Bar -->
+ <nav class="navbar">
+     <div class="logo-container">
+         <div class="logo-icon">🐝</div>
+         <h1 class="logo">BuzzyBee</h1>
+     </div>
+     <div class="button-container">
+         <a href="{{ url_for('login_register.login') }}" class="btn login">Login <i class="fas fa-sign-in-alt"></i></a>
+         <a href="{{ url_for('login_register.register') }}" class="btn signup">Sign Up <i class="fas fa-user-plus"></i></a>
+     </div>
+ </nav>
 
-   <!-- Hero Section -->
-   <header class="hero">
-       <div class="hero-content">
-           <h2>Buzzing with Fun Learning! <span class="bee-emoji">🐝</span></h2>
-           <p class="tagline">Where learning feels like play and every achievement is sweet as honey!</p>
-           <div class="cta-buttons">
-               <a href="{{ url_for('login_register.register') }}" class="cta-btn">Get Started Today!</a>
-               <a href="#learn-more" class="cta-secondary">Learn More</a>
-           </div>
-       </div>
-       <div class="hero-image">
-           <img src="{{ url_for('static', filename='images/bee_reading.png') }}" alt="Bee Studying" class="floating">
-           <div class="honeycomb-shape"></div>
-       </div>
-   </header>
 
-   <!-- Features Section -->
-   <section id="learn-more" class="features-section">
-       <h2 class="section-title">Why Students Love BuzzyBee <i class="fas fa-heart"></i></h2>
+ <!-- Hero Section -->
+ <header class="hero">
+     <div class="hero-content">
+         <h2>Buzzing with Fun Learning!</h2>
+         <p class="tagline">Where learning feels like play and every achievement is sweet as honey!</p>
+         <div class="cta-buttons">
+             <a href="{{ url_for('login_register.register') }}" class="cta-btn">Get Started Today!</a>
+             <a href="#learn-more" class="cta-secondary">Learn More</a>
+         </div>
+     </div>
+     <div class="animated-fly fly-graduate">
+       <div class="fly-body"></div>
+       <div class="fly-wing-left"></div>
+       <div class="fly-wing-right"></div>
+       <div class="fly-face">
+         <div class="fly-eye-left"></div>
+         <div class="fly-eye-right"></div>
+         <div class="fly-smile"></div>
+         <div class="fly-antenna-left"></div>
+         <div class="fly-antenna-right"></div>
+       </div>
+       <div class="graduation-cap"></div>
+     </div>
+ </header>
+
+ <!-- Features Section -->
+ <section id="learn-more" class="features-section">
+     <h2 class="section-title">Why Students Love BuzzyBee <i class="fas fa-heart"></i></h2>
+   
+     <div class="features">
+         <div class="feature">
+          <div class="animated-bee bee-achievement">
+              <div class="bee-body"></div>
+              <div class="bee-wing-left"></div>
+              <div class="bee-wing-right"></div>
+              <div class="bee-face">
+                <div class="bee-eye-left"></div>
+                <div class="bee-eye-right"></div>
+                <div class="bee-smile"></div>
+                <div class="bee-antenna-left"></div>
+                <div class="bee-antenna-right"></div>
+              </div>
+              <div class="trophy">
+                <div class="trophy-cup"></div>
+                <div class="trophy-middle"></div>
+                <div class="trophy-base"></div>
+                <div class="sparkles">
+                  <div class="sparkle"></div>
+                  <div class="sparkle"></div>
+                  <div class="sparkle"></div>
+                  <div class="sparkle"></div>
+                </div>
+              </div>
+            </div>
+             <h3>Track Your Progress</h3>
+             <p>Watch your skills grow with colorful charts and fun achievement badges!</p>
+         </div>
        
-       <div class="features">
-           <div class="feature">
-               <div class="feature-icon-container">
-                   <img src="{{ url_for('static', filename='images/bee_studying.png') }}" alt="Bee Reward" class="feature-icon pulse">
-               </div>
-               <h3>Track Your Progress</h3>
-               <p>Watch your skills grow with colorful charts and fun achievement badges!</p>
-           </div>
-           
-           <div class="feature">
-               <div class="feature-icon-container">
-                   <img src="{{ url_for('static', filename='images/bee_math.png') }}" alt="Bee Doing Math" class="feature-icon pulse">
-               </div>
-               <h3>Math Games</h3>
-               <p>Count, calculate, and conquer with our engaging math challenges!</p>
-           </div>
-           
-           <div class="feature">
-               <div class="feature-icon-container">
-                   <img src="{{ url_for('static', filename='images/bee_math.png') }}" alt="Bee Reading" class="feature-icon pulse">
-               </div>
-               <h3>Spelling Games</h3>
-               <p>Spell your way to success with word puzzles and vocabulary adventures!</p>
-           </div>
-           
-           <div class="feature">
-               <div class="feature-icon-container">
-                   <img src="{{ url_for('static', filename='images/bee_teacher.png') }}" alt="Bee Teaching" class="feature-icon pulse">
-               </div>
-               <h3>Parent & Teacher Insights</h3>
-               <p>Easy-to-read reports help adults support learning journeys!</p>
-           </div>
-       </div>
-   </section>
+         <div class="feature">
+          <div class="animated-bee bee-math">
+              <div class="bee-body"></div>
+              <div class="bee-wing-left"></div>
+              <div class="bee-wing-right"></div>
+              <div class="bee-face">
+                <div class="bee-eye-left"></div>
+                <div class="bee-eye-right"></div>
+                <div class="bee-smile"></div>
+                <div class="bee-antenna-left"></div>
+                <div class="bee-antenna-right"></div>
+              </div>
+              <div class="bee-thought">
+                <span class="equations">2+2=4</span>
+              </div>
+            </div>
+             <h3>Math Games</h3>
+             <p>Count, calculate, and conquer with our engaging math challenges!</p>
+         </div>
+       
+         <div class="feature">
+          <div class="animated-bee bee-reading">
+              <div class="bee-body"></div>
+              <div class="bee-wing-left"></div>
+              <div class="bee-wing-right"></div>
+              <div class="bee-face">
+                <div class="bee-eye-left"></div>
+                <div class="bee-eye-right"></div>
+                <div class="bee-smile"></div>
+                <div class="bee-antenna-left"></div>
+                <div class="bee-antenna-right"></div>
+              </div>
+              <div class="bee-book"></div>
+              <div class="bee-hands"></div>
+            </div>
+             <h3>Spelling Games</h3>
+             <p>Spell your way to success with word puzzles and vocabulary adventures!</p>
+         </div>
+       
+         <div class="feature">
+          <div class="animated-bee bee-teacher">
+              <div class="bee-body"></div>
+              <div class="bee-wing-left"></div>
+              <div class="bee-wing-right"></div>
+              <div class="bee-face">
+                <div class="bee-eye-left"></div>
+                <div class="bee-eye-right"></div>
+                <div class="bee-smile"></div>
+                <div class="bee-antenna-left"></div>
+                <div class="bee-antenna-right"></div>
+                <div class="glasses"></div>
+              </div>
+              <div class="pointer"></div>
+              <div class="board"></div>
+            </div>
+             <h3>Parent & Teacher Insights</h3>
+             <p>Easy-to-read reports help adults support learning journeys!</p>
+         </div>
+     </div>
+ </section>
 
-   <!-- Testimonial Section -->
-   <section class="testimonial-section">
-       <div class="testimonial-container">
-           <div class="quote-mark">"</div>
-           <p class="testimonial-text">BuzzyBee helped my daughter improve her math skills while having so much fun! The progress tracking makes it easy to see how she's growing.</p>
-           <p class="testimonial-author">- Proud Parent</p>
-       </div>
-   </section>
+ <!-- Testimonial Section -->
+ <section class="testimonial-section">
+     <div class="testimonial-container">
+         <div class="quote-mark">"</div>
+         <p class="testimonial-text">BuzzyBee helped my daughter improve her math skills while having so much fun! The progress tracking makes it easy to see how she's growing.</p>
+         <p class="testimonial-author">- Proud Parent</p>
+     </div>
+ </section>
 
-   <!-- Call to Action -->
-   <section class="cta-section">
-       <div class="cta-content">
-           <h2>Ready to start buzzing with learning?</h2>
-           <a href="{{ url_for('login_register.register') }}" class="cta-btn large">Join BuzzyBee Today!</a>
-       </div>
-   </section>
+ <!-- Call to Action -->
+ <section class="cta-section">
+     <div class="cta-content">
+         <h2>Ready to start buzzing with learning?</h2>
+         <a href="{{ url_for('login_register.register') }}" class="cta-btn large">Join BuzzyBee Today!</a>
+     </div>
+ </section>
 
-   <!-- Footer -->
-   <footer class="footer">
-       <div class="footer-content">
-           <div class="footer-logo">
-               <div class="logo-icon small">🐝</div>
-               <h3>BuzzyBee</h3>
-           </div>
-           
-           <div class="footer-links">
-               <a href="#">Terms & Conditions</a>
-               <a href="#">Privacy Policy</a>
-               <a href="#">Customer Care</a>
-               <a href="#">Accessibility Statement</a>
-           </div>
-           
-           <div class="social-icons">
-               <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-               <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-               <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-               <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-           </div>
-           
-           <p class="copyright">© 2025 BuzzyBee. Keep Learning, Keep Buzzing! 🐝</p>
-       </div>
-   </footer>
+ <!-- Footer -->
+ <footer class="footer">
+     <div class="footer-content">
+         <div class="footer-logo">
+             <div class="logo-icon small">🐝</div>
+             <h3>BuzzyBee</h3>
+         </div>
+       
+         <div class="footer-links">
+             <a href="#">Terms & Conditions</a>
+             <a href="#">Privacy Policy</a>
+             <a href="#">Customer Care</a>
+             <a href="#">Accessibility Statement</a>
+         </div>
+       
+         <div class="social-icons">
+             <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+             <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+             <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+             <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+         </div>
+       
+         <p class="copyright">© 2025 BuzzyBee. Keep Learning, Keep Buzzing! 🐝</p>
+     </div>
+ </footer>
 </body>
 </html>

@@ -664,3 +664,469 @@
         width: 100%;
     }
  }
+
+ /* Animated Bee Character Styles */
+.animated-bee {
+   position: relative;
+   width: 120px;
+   height: 120px;
+   margin: 0 auto;
+ }
+ /* Base Bee Body */
+ .bee-body {
+   position: absolute;
+   width: 80px;
+   height: 60px;
+   background-color: #ffca28;
+   border-radius: 50%;
+   top: 30px;
+   left: 20px;
+   animation: hover 3s ease-in-out infinite;
+   z-index: 2;
+ }
+ /* Bee Stripes - Fixed to align with body */
+ .bee-body::before {
+   content: "";
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   left: 0;
+   top: 0;
+   border-radius: 50%;
+   background: repeating-linear-gradient(
+     90deg,
+     transparent,
+     transparent 15px,
+     #212121 15px,
+     #212121 25px
+   );
+   opacity: 0.7;
+ }
+ /* Bee Wings */
+ .bee-wing-left, .bee-wing-right {
+   position: absolute;
+   width: 40px;
+   height: 30px;
+   background-color: rgba(240, 240, 238, 0.7);
+   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+   z-index: 1;
+ }
+ .bee-wing-left {
+   top: 20px;
+   left: 15px;
+   transform-origin: right center;
+   animation: flap-left 0.2s ease-in-out infinite alternate;
+ }
+ .bee-wing-right {
+   top: 20px;
+   left: 65px;
+   transform-origin: left center;
+   animation: flap-right 0.2s ease-in-out infinite alternate;
+ }
+ /* Bee Face */
+ .bee-face {
+   position: absolute;
+   width: 50px;
+   height: 40px;
+   top: 10px;
+   left: 15px;
+   z-index: 3;
+ }
+ .bee-eye-left, .bee-eye-right {
+   position: absolute;
+   width: 12px;
+   height: 12px;
+   background-color: white;
+   border-radius: 50%;
+   top: 15px;
+ }
+ .bee-eye-left {
+   left: 10px;
+ }
+ .bee-eye-right {
+   right: 10px;
+ }
+ .bee-eye-left::after, .bee-eye-right::after {
+   content: "";
+   position: absolute;
+   width: 6px;
+   height: 6px;
+   background-color: #212121;
+   border-radius: 50%;
+   top: 3px;
+   left: 3px;
+ }
+ .bee-smile {
+   position: absolute;
+   width: 20px;
+   height: 10px;
+   border-bottom: 3px solid #212121;
+   border-radius: 0 0 10px 10px;
+   bottom: 5px;
+   left: 15px;
+ }
+ /* Bee Antenna - Fixed to connect with black dots */
+ .bee-antenna-left, .bee-antenna-right {
+   position: absolute;
+   width: 2px;
+   height: 15px;
+   background-color: #212121;
+   top: -5px;
+   z-index: 1;
+ }
+ .bee-antenna-left {
+   left: 15px;
+   transform: rotate(-20deg);
+ }
+ .bee-antenna-right {
+   right: 15px;
+   transform: rotate(20deg);
+ }
+ .bee-antenna-left::after, .bee-antenna-right::after {
+   content: "";
+   position: absolute;
+   width: 6px;
+   height: 6px;
+   background-color: #212121;
+   border-radius: 50%;
+   top: -5px;
+   /* Fix for antenna dots alignment */
+   left: -2px;
+ }
+ /* Bee in different poses/activities */
+ /* 1. Reading Bee */
+ .bee-reading .bee-hands {
+   position: absolute;
+   bottom: 20px;
+   left: 25px;
+   width: 30px;
+   height: 20px;
+   z-index: 4;
+ }
+ .bee-reading .bee-hands::before, .bee-reading .bee-hands::after {
+   content: "";
+   position: absolute;
+   width: 8px;
+   height: 15px;
+   background-color: #ffca28;
+   border-radius: 5px;
+ }
+ .bee-reading .bee-hands::before {
+   left: 0;
+   transform: rotate(-20deg);
+ }
+ .bee-reading .bee-hands::after {
+   right: 0;
+   transform: rotate(20deg);
+ }
+ .bee-reading .bee-book {
+   position: absolute;
+   width: 40px;
+   height: 25px;
+   background: linear-gradient(to right, #4caf50, #388e3c);
+   border-radius: 3px;
+   bottom: 4px;
+   left: 20px;
+   z-index: 3;
+   transform-origin: center top;
+   animation: book-move 3s ease-in-out infinite;
+ }
+ .bee-reading .bee-book::after {
+   content: "";
+   position: absolute;
+   top: 5px;
+   left: 5px;
+   right: 5px;
+   height: 2px;
+   background-color: white;
+   box-shadow: 0 5px 0 white, 0 10px 0 white;
+ }
+ .bee-reading .bee-glasses {
+   position: absolute;
+   top: 15px;
+   left: 5px;
+   width: 40px;
+   height: 15px;
+   z-index: 4;
+ }
+ .bee-reading .bee-glasses::before, .bee-reading .bee-glasses::after {
+   content: "";
+   position: absolute;
+   width: 15px;
+   height: 15px;
+   border: 2px solid #8d6e63;
+   border-radius: 50%;
+ }
+ .bee-reading .bee-glasses::before {
+   left: 0;
+ }
+ .bee-reading .bee-glasses::after {
+   right: 0;
+ }
+ /* 2. Math Bee */
+ .bee-math .bee-thought {
+   position: absolute;
+   width: 60px;
+   height: 40px;
+   background-color: rgb(250, 245, 205);
+   border-radius: 50%;
+   top: -23px;
+   right: -8px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   font-weight: bold;
+   color: #333;
+   font-size: 14px;
+   animation: pulsate 2s ease-in-out infinite;
+ }
+ .bee-math .bee-thought::after {
+   content: "";
+   position: absolute;
+   width: 20px;
+   height: 20px;
+   background-color: rgb(246, 241, 203);
+   border-radius: 50%;
+   bottom: -5px;
+   left: 0;
+   z-index: -1;
+ }
+ .bee-math .bee-thought::before {
+   content: "";
+   position: absolute;
+   width: 10px;
+   height: 10px;
+   background-color: rgb(225, 220, 184);
+   border-radius: 50%;
+   bottom: -10px;
+   left: -5px;
+   z-index: -1;
+ }
+ .bee-math .equations {
+   animation: equation-change 5s infinite;
+ }
+ /* 3. Achievement Bee */
+ .bee-achievement .trophy {
+   position: absolute;
+   width: 40px;
+   height: 50px;
+   bottom: -19px;
+   left: 40px;
+   z-index: 3;
+ }
+ .bee-achievement .trophy-cup {
+   position: absolute;
+   width: 30px;
+   height: 20px;
+   background-color: #ffd700;
+   border-radius: 15px 15px 0 0;
+   top: 0;
+   left: 5px;
+ }
+ .bee-achievement .trophy-base {
+   position: absolute;
+   width: 20px;
+   height: 15px;
+   background-color: #ffd700;
+   bottom: 0;
+   left: 10px;
+ }
+ .bee-achievement .trophy-middle {
+   position: absolute;
+   width: 10px;
+   height: 15px;
+   background-color: #ffd700;
+   top: 20px;
+   left: 15px;
+ }
+ .bee-achievement .sparkles {
+   position: absolute;
+   width: 100%;
+   height: 100%;
+ }
+ .bee-achievement .sparkle {
+   position: absolute;
+   width: 8px;
+   height: 8px;
+   background-color: #fff176;
+   opacity: 0;
+ }
+ .bee-achievement .sparkle:nth-child(1) {
+   top: 0;
+   left: 50%;
+   animation: sparkle 2s ease-in-out infinite;
+ }
+ .bee-achievement .sparkle:nth-child(2) {
+   top: 50%;
+   left: 0;
+   animation: sparkle 2s ease-in-out 0.4s infinite;
+ }
+ .bee-achievement .sparkle:nth-child(3) {
+   bottom: 0;
+   left: 50%;
+   animation: sparkle 2s ease-in-out 0.8s infinite;
+ }
+ .bee-achievement .sparkle:nth-child(4) {
+   top: 50%;
+   right: 0;
+   animation: sparkle 2s ease-in-out 1.2s infinite;
+ }
+ /* 4. Teacher Bee */
+ .bee-teacher .pointer {
+   position: absolute;
+   width: 30px;
+   height: 5px;
+   background-color: #8d6e63;
+   bottom: 22px;
+   right: 10px;
+   transform-origin: right center;
+   animation: point 3s ease-in-out infinite;
+ }
+ .bee-teacher .board {
+   position: absolute;
+   width: 50px;
+   height: 40px;
+   background-color: #388e3c;
+   border: 3px solid #8d6e63;
+   bottom: -13px;
+   left: 35px;
+   z-index: 1;
+ }
+ .bee-teacher .board::after {
+   content: "ABC";
+   position: absolute;
+   color: white;
+   font-weight: bold;
+   font-size: 12px;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+ }
+ .bee-teacher .glasses {
+   position: absolute;
+   top: 15px;
+   left: 5px;
+   width: 40px;
+   height: 15px;
+   z-index: 4;
+ }
+ .bee-teacher .glasses::before, .bee-teacher .glasses::after {
+   content: "";
+   position: absolute;
+   width: 15px;
+   height: 15px;
+   border: 2px solid #8d6e63;
+   border-radius: 50%;
+ }
+ .bee-teacher .glasses::before {
+   left: 0;
+ }
+ .bee-teacher .glasses::after {
+   right: 0;
+ }
+ /* Animations */
+ @keyframes hover {
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-10px); }
+ }
+ @keyframes flap-left {
+   0% { transform: rotate(5deg); }
+   100% { transform: rotate(25deg); }
+ }
+ @keyframes flap-right {
+   0% { transform: rotate(-5deg); }
+   100% { transform: rotate(-25deg); }
+ }
+ @keyframes book-move {
+   0%, 100% { transform: rotate(-5deg); }
+   50% { transform: rotate(5deg); }
+ }
+ @keyframes pulsate {
+   0%, 100% { transform: scale(1); }
+   50% { transform: scale(1.1); }
+ }
+ @keyframes equation-change {
+   0%, 20% { content: "2+2=4"; }
+   25%, 45% { content: "3×3=9"; }
+   50%, 70% { content: "10-5=5"; }
+   75%, 95% { content: "8÷2=4"; }
+ }
+ @keyframes sparkle {
+   0% { transform: scale(0); opacity: 0; }
+   50% { transform: scale(1); opacity: 1; }
+   100% { transform: scale(0); opacity: 0; }
+ }
+ @keyframes point {
+   0%, 100% { transform: rotate(0deg); }
+   50% { transform: rotate(-20deg); }
+ }
+ /* Honeycomb Background Enhancement */
+ .honeycomb-bg {
+   background-color: #fff8e1;
+   opacity: 0.3;
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   top: 0;
+   left: 0;
+   z-index: -1;
+   background-image: radial-gradient(#ffd54f 15%, transparent 15%),
+                     radial-gradient(#ffd54f 15%, transparent 15%);
+   background-size: 60px 60px;
+   background-position: 0 0, 30px 30px;
+   animation: bg-move 60s linear infinite;
+ }
+ @keyframes bg-move {
+   0% { background-position: 0 0, 30px 30px; }
+   100% { background-position: 1000px 1000px, 1030px 1030px; }
+ }
+
+/* Flying Bees Animation - Updated*/
+.flying-bee {
+   position: absolute;
+   width: 40px;
+   height: 40px;
+   z-index: 10;
+   pointer-events: none;
+ }
+ 
+ .flying-bee:nth-child(1) {
+   top: 15%;
+   left: 5%;
+   animation: fly1 20s linear infinite;
+ }
+ 
+ /* Position the first bee to the right of "Buzzing with Fun Learning!" */
+ .flying-bee:nth-child(1) {
+   top: 10%;
+   right: 25%;
+   left: auto;
+   animation: fly1 20s linear infinite;
+ }
+ 
+ .flying-bee:nth-child(2) {
+   bottom: 30%;
+   left: 15%;
+   animation: fly3 30s linear infinite;
+ }
+ 
+ 
+ @keyframes fly1 {
+   0% { transform: translate(0, 0) scale(0.8); }
+   25% { transform: translate(100px, 50px) scale(1); }
+   50% { transform: translate(200px, 0) scale(1.2); }
+   75% { transform: translate(100px, -50px) scale(1); }
+   100% { transform: translate(0, 0) scale(0.8); }
+ }
+ @keyframes fly2 {
+   0% { transform: translate(0, 0) rotate(10deg); }
+   33% { transform: translate(-150px, 80px) rotate(-5deg); }
+   66% { transform: translate(-300px, 0) rotate(10deg); }
+   100% { transform: translate(0, 0) rotate(-5deg); }
+ }
+ @keyframes fly3 {
+   0% { transform: translate(0, 0) scale(0.9) rotate(-5deg); }
+   50% { transform: translate(250px, -100px) scale(1.1) rotate(10deg); }
+   100% { transform: translate(0, 0) scale(0.9) rotate(-5deg); }
+ }
+ 
