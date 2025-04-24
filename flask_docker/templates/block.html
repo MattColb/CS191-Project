@@ -105,9 +105,10 @@
                <p class="instructions">Unscramble the letters to match the image</p>
 
                <!-- Image container for word hint -->
-               <div class="word-image-container">
-                   <img id="word-image" src="/api/placeholder/300/200" alt="Word hint">
-               </div>
+               <audio id="audio" controls>
+                    <source src="{{ url_for('spelling.spelling_audio', word=word) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
               
                <!-- Scrambled letters in yellow blocks -->
                <div class="letter-blocks">

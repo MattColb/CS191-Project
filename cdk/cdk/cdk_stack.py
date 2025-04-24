@@ -9,6 +9,10 @@ from constructs import Construct
 from cdk.components.lightsail_mongo import create_mongo
 from cdk.components.fargate import fargate_creation
 from cdk.components.email_components.notification_system import create_notification_system
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class CdkStack(Stack):
 
@@ -22,6 +26,8 @@ class CdkStack(Stack):
         
         verification_queue = aws_sqs.Queue(self, "BuzzyBeeVerificationQueue")
 
-        url = fargate_creation(self, mongo_connection, static_ip, vpc, verification_queue)
+        api_key = os.getenv("SPELLING_API_KEY")
+
+        url = fargate_creation(self, mongo_connection, static_ip, vpc, verification_queue, api_key)
 
         components = create_notification_system(self, mongo_connection, url, verification_queue)

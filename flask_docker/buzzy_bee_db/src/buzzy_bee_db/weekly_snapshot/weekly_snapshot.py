@@ -52,6 +52,16 @@ def get_snapshots(student_account_id):
         snapshots = list(collection.find({"student_account_id": student_account_id}, {"_id": 0}).sort("timestamp_utc", -1))
         return WeeklySnapshotResponse(success=True, responses=snapshots, message="Snapshots retrieved successfully")
 
+def get_snapshots_list(student_account_ids):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client.get_default_database()
+        collection = database["WeeklySnapshot"]
+
+        snapshots = collection.find({"student_account_id": {"$in": student_account_ids}}, {"_id": 0}).sort("timestamp_utc", -1)
+        snapshots = snapshots.to_list()
+        return WeeklySnapshotResponse(success=True, responses=snapshots, message="Snapshots retrieved successfully")
+
 # Retrieves the latest weekly snapshot for a given student_account_id
 def get_latest_snapshot(student_account_id):
     connection = os.getenv("MONGODB_CONN_STRING")

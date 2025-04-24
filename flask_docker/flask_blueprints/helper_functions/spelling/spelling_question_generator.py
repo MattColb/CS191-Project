@@ -5,7 +5,6 @@ from wonderwords import RandomWord
 import random
 
 def create_audio_question(rating):
-    print(type(rating))
     current_word, rating = get_word(rating)
 
     question_id = hashlib.sha256(str.encode("audio_"+current_word)).hexdigest()

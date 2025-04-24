@@ -3,7 +3,7 @@ import subprocess
 subprocess.run("pip install --upgrade ./buzzy_bee_db".split(" "))
 from flask import Flask, request, redirect
 from flask_blueprints.login_register import login_register
-from flask_blueprints.math import math
+from flask_blueprints.math_funcs import math
 from flask_blueprints.spelling import spelling
 from flask_blueprints.writing import writing
 from flask_blueprints.verification import verification

@@ -126,6 +126,16 @@ def get_stu_account(student_id):
             return GetStuAccount(success=False, message="Student account not found")
         return GetStuAccount(success=True, stu_account=student_doc)
     
+def get_stu_accounts_list(student_ids):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client.get_default_database()
+        students = database["Students"]
+
+        all_students = list(students.find({"student_id":{"$in": students}}))
+
+        GetStuAccounts(success=True, stu_accounts=all_students)
+
 def add_teacher(student_id, teacher_name):
     connection = os.getenv("MONGODB_CONN_STRING")
     with MongoClient(connection) as client:
