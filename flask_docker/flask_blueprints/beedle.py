@@ -4,28 +4,21 @@ from .helper_functions.math.math_functions import MathFunctions
 from .helper_functions.spelling.spelling_functions import SpellingFunctions
 import datetime
 from .helper_functions.question_functions import user_response
-
+from buzzy_bee_db.beedle.beedle_questions import get_questions, add_questions
+from buzzy_bee_db.beedle.beedle_responses import get_beedle_results, add_beedle_question_response
+from .helper_functions.question_functions import get_best_question
+import random
 
 beedle = Blueprint('beedle', __name__,
                         template_folder='templates')
 
-#Left to figure out
-# Choosing Questions
-# Redirecting
-# Checking the tracking of questions
-# Getting Questions
-
 @beedle.route("/beedle", methods=["GET", "POST"])
 def run_beedle():
     if request.method == "GET":
-        prev_question = session.pop("current_question", dict())
-        pq = prev_question.get("question_id", None)
+        session.pop("current_question", dict())
+        pq = get_user_beedle()
         
-        questions = [
-            "86fd799d69f0cadc0836085121279c8aec886e0e893f5e4ec651e1382b3b8ddb",
-            "318684f2ba12d8825b4d69d2ad457886183c4513a238d31847f1d824f0248f46",
-            "9d104a630770abd88d9f76ff4f60d032dc712fd8f3db398127a904d3aece1173"
-        ]
+        questions = get_beedle_questions()
 
         if pq in questions:
             pq_idx = questions.index(pq)
@@ -65,13 +58,55 @@ def run_beedle():
 
     if request.method == "POST":
         question_data = session.get("current_question")
+        question_id = question_data.get("question_id")
+        subaccount_id = session.get("sub_account_id")
+        current_date = datetime.date.today().isoformat()
         sub_account_info = session.get("sub_account_information", dict())
         qtype = question_data.get("category")
         if question_data.get("subject") == "MATH":
             math = MathFunctions(sub_account_info.get("score_in_math", 0), qtype)
             user_response(request, math)
+            result = math.result
         if question_data.get("subject") == "SPELLING":
             spelling_question = SpellingFunctions(sub_account_info.get("score_in_spelling", 0))
             user_response(request, spelling_question)
+            result = spelling_question.result
             pass
+
+        add_beedle_question_response(subaccount_id, current_date, question_id, result)
+
         return redirect(url_for("beedle.run_beedle"))
+    
+
+def get_beedle_questions():
+    current_date = datetime.date.today().isoformat()
+    db_response = get_questions(current_date)
+
+    if db_response.success == False:
+        question_ids = []
+        for i in range(5):
+            rating = i*200
+            question_id = generate_question(rating)
+            question_ids.append(question_id)
+        add_questions(current_date, question_ids)
+        db_response = get_questions(current_date)
+    questions = db_response.questions
+    return questions
+
+def get_user_beedle():
+    current_date = datetime.date.today().isoformat()
+    subaccount_id = session.get("sub_account_id")
+    responses = get_beedle_results(subaccount_id, current_date)
+    latest_question_id = ""
+    if len(responses.questions) != 0:
+        questions = responses.questions
+        print(questions)
+        latest_question_id = questions[-1].get("question_id")
+    return latest_question_id
+
+def generate_question(rating):
+    question_func = random.choice([SpellingFunctions, MathFunctions])
+    question_func = question_func(rating)
+    question_data = get_best_question(question_func)
+    question_id = question_data.get("question_id")
+    return question_id

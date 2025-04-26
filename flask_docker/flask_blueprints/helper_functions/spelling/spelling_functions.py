@@ -10,7 +10,7 @@ class SpellingFunctions(SubjectClass):
     def __init__(self, rating):
         #Should be the same across all
         qtype = random.choice(SPELLING_QUESTION_TYPES)
-        super().__init__(qtype, rating)
+        super().__init__(rating, qtype)
         self.subject = "SPELLING"
         self.db_name = "score_in_spelling"
 
@@ -34,6 +34,7 @@ class SpellingFunctions(SubjectClass):
     def check_answer(self, user_answer, answer):
         #Added None because others want redirect on an error
         correct = user_answer.lower().strip() == answer.lower().strip()
+        self.result = correct
         if correct:
             flash("Correct!")
         else:
