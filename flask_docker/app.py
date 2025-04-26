@@ -8,6 +8,7 @@ from flask_blueprints.spelling import spelling
 from flask_blueprints.writing import writing
 from flask_blueprints.verification import verification
 from flask_blueprints.classes import classes
+from flask_blueprints.beedle import beedle
 
 app = Flask(__name__)
 app.secret_key="TestSecret"
@@ -17,6 +18,7 @@ app.register_blueprint(spelling)
 app.register_blueprint(writing)
 app.register_blueprint(verification)
 app.register_blueprint(classes)
+app.register_blueprint(beedle)
 
 
 if __name__ == "__main__":

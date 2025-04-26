@@ -137,7 +137,7 @@
                {% endwith %}
 
                <!-- Form for the user to submit answer -->
-               <form action="{{ url_for('spelling.spelling_page', start_dt=start_dt) }}" method="POST">
+               <form action="{{ redirect }}" method="POST">
                    <input type="hidden" name="user_answer" id="user_answer" value="">
                    <button type="submit">Answer</button>
                </form>
