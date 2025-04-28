@@ -50,3 +50,12 @@ def register(username, password, email):
 
         return MainAccountResponse(success=True, user_id=user_id, students=[])
 
+def get_main_account(user_id):
+    connection = os.getenv("MONGODB_CONN_STRING")
+    with MongoClient(connection) as client:
+        database = client.get_default_database()
+        collection = database["Users"]
+
+        user = collection.find_one({"user_id": user_id})
+
+        return MainAccountResponse(success=True, user=user)

@@ -89,7 +89,7 @@
                 {% endwith %}
 
                 <!-- Form for the user to input answer -->
-                <form action="{{ url_for('spelling.spelling_page', start_dt=start_dt, qtype=qtype) }}" method="POST">
+                <form action="{{ redirect }}" method="POST">
                     <input type="text" name="user_answer" id="user_answer" required placeholder="Type the word you hear...">
                     <button type="submit">Answer</button>
                 </form>

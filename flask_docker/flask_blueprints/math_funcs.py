@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, send_file
+from flask import Blueprint, render_template, request, session, send_file, url_for
 import datetime
 from .helper_functions.question_functions import user_response,  get_best_question
 from .login_register import check_sub_account_not_exists
@@ -28,14 +28,16 @@ def math_questions(qtype):
         # Make sure the question is set in the session before returning
         session["current_question"] = question_data
 
-        if qtype == "Clock":
-            return render_template("math_questions.html", question=question_data['question'], start_dt=start_dt, qtype=qtype, time=question_data['answer'])
+        new_redirect = url_for('math.math_questions', start_dt=start_dt, qtype=qtype)
 
-        return render_template("math_questions.html", question=question_data['question'], start_dt=start_dt, qtype=qtype)
+        if qtype == "Clock":
+            return render_template("math_questions.html", question=question_data['question'], start_dt=start_dt, qtype=qtype, time=question_data['answer'], redirect=new_redirect)
+
+        return render_template("math_questions.html", question=question_data['question'], start_dt=start_dt, qtype=qtype, redirect=new_redirect)
     
     if request.method == "POST":
         # Handle user response (this part would remain as it is)
-        sub_account_info = session.get("sub_account_information")
+        sub_account_info = session.get("sub_account_information", dict())
         math = MathFunctions(sub_account_info.get("score_in_math", 0), qtype)
         return user_response(request, math)
 

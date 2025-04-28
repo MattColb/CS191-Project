@@ -1,7 +1,8 @@
 class SubjectClass:
-    def __init__(self, qtype, rating):
+    def __init__(self, rating, qtype):
         self.rating=rating
         self.qtype=qtype
+        self.result = None
 
     def create_question(self):
         print("Create a Question!")

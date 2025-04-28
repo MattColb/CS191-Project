@@ -2,7 +2,8 @@ import json
 import os
 import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
-from buzzy_bee_db.account.stu_account import get_stu_accounts_main
+from buzzy_bee_db.account.stu_account import get_stu_account
+from buzzy_bee_db.account.main_account import get_main_account
 from buzzy_bee_db.question_user.question_user import get_student_account_responses
 from buzzy_bee_db.weekly_snapshot.weekly_snapshot import get_latest_snapshot, get_snapshots, record_snapshot
 import matplotlib.pyplot as plt
@@ -35,41 +36,45 @@ def handler(event, context):
     for record in records:
         message = record.get("body")
         verification_info = json.loads(message)
-        user_id = verification_info.get("UserID")
-        email = verification_info.get("email")
-        
-        db_response = get_stu_accounts_main(user_id)
+        user_id = verification_info.get("main_user_id")
+        student_id = verification_info.get("student_id")
+
+        db_response = get_stu_account(student_id)
 
         if db_response.success == False:
-            print(f"{user_id} was not able to be processed sucessfully")
+            print(f"{student_id} was not able to be processed sucessfully")
             continue
-        student_accounts = db_response.stu_accounts
+        student = db_response.stu_account
 
-        for student in student_accounts:
-            student_id = student.get("student_id")
-            student_name = student.get("name")
-            print(student_name)
+        
+        student_name = student.get("name")
 
-            #Get information (Mainly Question information)
-            previous_week_information = get_latest_snapshot(student_id)
-            previous_week_information = previous_week_information.response
+        #Get information (Mainly Question information)
+        previous_week_information = get_latest_snapshot(student_id)
+        previous_week_information = previous_week_information.response
 
-            #Add in subject to question user
-            question_information = get_question_information(student_id, previous_week_information)
+        #Add in subject to question user
+        question_information = get_question_information(student_id, previous_week_information)
 
-            #Snapshot their information
-            weeks_information = create_db_snapshot(student, question_information)
+        #Snapshot their information
+        weeks_information = create_db_snapshot(student, question_information)
 
-            #Get all snapshots
-            snapshots_response = get_snapshots(student_id)
-            if snapshots_response.success == True:
-                snapshots = snapshots_response.responses
-            else:
-                continue
+        #Get all snapshots
+        snapshots_response = get_snapshots(student_id)
+        if snapshots_response.success == True:
+            snapshots = snapshots_response.responses
+        else:
+            continue
 
-            #Create graph to save in snapshot_graph.png
-            create_graph(snapshots)
+        #Create graph to save in snapshot_graph.png
+        create_graph(snapshots)
 
+        main_user = get_main_account(user_id)
+
+        main_user = main_user.user
+
+        if main_user.get("weekly_updates"):
+            email = main_user.get("email")
             #Send Email with information
             send_email(email, weeks_information, student_name, previous_week_information)
 
@@ -79,8 +84,6 @@ def create_image_bytes():
     image.save(image_bytes, format="png")
     image_str = base64.b64encode(image_bytes.getvalue()).decode("utf-8")
     return image_str
-    image_final = f"data:image/png;base64,{image_str}"
-    return image_final
 
 def send_email(email, current_week_info, student_name, previous_week_info):
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
@@ -179,7 +182,7 @@ if __name__ == "__main__":
     event = {
         "Records":[
             {
-                "body":'{"UserID":"5691d497-007d-4e54-bd98-73025634342d", "email":"colbertmatt12@gmail.com"}'
+                "body":'{"main_user_id":"1fdc8c15-e04e-4eed-8002-fcf44ffa9d90", "student_id":"76396d82-ded9-4807-ac5a-8c7f3920ef57"}'
             }
         ]
     }

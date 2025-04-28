@@ -4,6 +4,8 @@ from .helper_functions.login_register import LoginRegisterHandler
 from buzzy_bee_db.account.stu_account import get_stu_accounts_main, get_stu_account, get_stu_accounts_teacher
 from functools import wraps
 from buzzy_bee_db.classes_content.classes_content import get_teacher_classes
+from buzzy_bee_db.beedle.beedle_responses import get_beedle_results
+import datetime
 
 login_register = Blueprint('login_register', __name__,
                         template_folder='templates')
@@ -85,6 +87,8 @@ def account():
         return LoginRegisterHandler.post_sub_account(request)
 
 @login_register.route("/Teacher", methods=["GET", "POST"])
+@check_sub_account_exists
+@check_user_id_not_exists
 def teacher_account():
     if request.method == "GET":
         classes = get_teacher_classes(session.get("user_id")).class_information
@@ -120,7 +124,13 @@ def sub_account_login(sub_account_id):
 @check_sub_account_not_exists
 def sub_account():
     if request.method == "GET":
-        return render_template("sub_account.html")
+        sub_account_id = session.get("sub_account_id")
+        current_date = datetime.date.today().isoformat()
+        beedle_questions = get_beedle_results(sub_account_id, current_date).questions
+        completed_beedle = len(beedle_questions) == 5
+        print(beedle_questions)
+        number_correct = len([b for b in beedle_questions if b.get("answered_correctly") == True])
+        return render_template("sub_account.html", completed_beedle=completed_beedle, number_correct=number_correct)
     
 @login_register.route("/clear_subaccount_session", methods=["POST"])
 @check_user_id_not_exists

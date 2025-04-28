@@ -4,9 +4,12 @@ from buzzy_bee_db.account.stu_account import update_stu_account
 from flask import redirect, url_for, flash
 from ..subject_class import SubjectClass
 import numbers
+import random
 
 class MathFunctions(SubjectClass):
-    def __init__(self, qtype, rating):
+    def __init__(self, rating, qtype=None):
+        if qtype == None:
+            qtype = random.choice(MATH_QUESTIONS_TYPES)
         super().__init__(rating, qtype)
         self.subject = "MATH"
         self.db_name = "score_in_math"
@@ -26,7 +29,7 @@ class MathFunctions(SubjectClass):
         return get_closest_questions(self.rating, self.qtype, self.subject)
     
     def check_answer(self, user_answer, answer):
-        #This will be different
+        self.result=False
         if isinstance(answer, numbers.Number):
             answer = round(answer, 2)
             try:
@@ -36,12 +39,12 @@ class MathFunctions(SubjectClass):
                 return None, "Error"
         if user_answer == answer:
             flash("Correct")
-            answered_correctly = True
+            self.result = True
         else:
             flash(f"Wrong, the correct answer was: {answer}")
-            answered_correctly = False
+            self.result = False
 
-        return answered_correctly, None
+        return self.result, None
     
     def update_rating(self, student_id, new_rating):
         update_stu_account(student_id, score_in_math=new_rating)
