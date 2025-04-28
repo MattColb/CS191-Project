@@ -2,6 +2,10 @@ import subprocess
 
 subprocess.run("pip install --upgrade ./buzzy_bee_db".split(" "))
 from flask import Flask
+app = Flask(__name__)
+app.secret_key="TestSecret"
+
+
 from flask_blueprints.login_register import login_register
 from flask_blueprints.math_funcs import math
 from flask_blueprints.spelling import spelling
@@ -10,8 +14,6 @@ from flask_blueprints.verification import verification
 from flask_blueprints.classes import classes
 from flask_blueprints.beedle import beedle
 
-app = Flask(__name__)
-app.secret_key="TestSecret"
 app.register_blueprint(login_register)
 app.register_blueprint(math)
 app.register_blueprint(spelling)
