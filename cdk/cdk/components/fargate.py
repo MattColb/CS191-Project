@@ -3,14 +3,24 @@ from aws_cdk import (
     aws_ecs,
     aws_ec2,
     aws_iam,
-    CfnOutput
+    CfnOutput,
+    aws_ecr_assets,
+    AssetHashType
 )
 
 
-def fargate_creation(scope, connection_string, static_ip, vpc, verification_queue, api_key):
-    ecs_cluster = aws_ecs.Cluster(scope, "MyEcsCluster", vpc=vpc)
-
+def fargate_creation(scope, connection_string, ip_address, vpc, verification_queue, api_key):
     # Create a security group for the Flask service
+    flask_docker_asset = aws_ecr_assets.DockerImageAsset(
+        scope,
+        "FlaskDockerImage",
+        directory="flask_docker",
+        invalidation=aws_ecr_assets.DockerImageAssetInvalidationOptions(
+            build_args=False,
+            extra_hash=True
+        )
+    )
+
     flask_security_group = aws_ec2.SecurityGroup(
         scope, 
         "FlaskServiceSG",
@@ -21,7 +31,7 @@ def fargate_creation(scope, connection_string, static_ip, vpc, verification_queu
 
     #If this breaks, change it back to any ipv4
     flask_security_group.add_ingress_rule(
-        peer=aws_ec2.Peer.ipv4(f"{static_ip.attr_ip_address}/32"),
+        peer=aws_ec2.Peer.ipv4(f"{ip_address}/32"),
         connection=aws_ec2.Port.tcp(27017)
     )
 
@@ -30,17 +40,17 @@ def fargate_creation(scope, connection_string, static_ip, vpc, verification_queu
         scope, 
         "FargateService",
         cpu=256,
-        cluster=ecs_cluster,
         memory_limit_mib=512,
         task_image_options=aws_ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
-            image=aws_ecs.ContainerImage.from_asset("flask_docker"),
+            image=aws_ecs.ContainerImage.from_docker_image_asset(flask_docker_asset),
             environment={
                 "MONGODB_CONN_STRING": connection_string,
-                "SQS_QUEUE_URL":verification_queue.queue_url,
-                "SPELLING_API_KEY":api_key
+                "SQS_QUEUE_URL": verification_queue.queue_url,
+                "SPELLING_API_KEY": api_key
             }
         ),
         public_load_balancer=True,
+        vpc=vpc,
         security_groups=[flask_security_group]
     )
 
@@ -49,6 +59,18 @@ def fargate_creation(scope, connection_string, static_ip, vpc, verification_queu
         aws_iam.PolicyStatement(
             actions=["sqs:SendMessage"],
             resources=[verification_queue.queue_arn]
+        )
+    )
+
+    load_balanced_fargate_service.task_definition.add_to_task_role_policy(
+        aws_iam.PolicyStatement(
+            actions=[
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage"
+            ],
+            resources=["*"]
         )
     )
 
