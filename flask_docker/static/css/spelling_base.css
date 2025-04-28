@@ -334,3 +334,38 @@
        padding: 10px 15px;
     }
  }
+
+ /* Back to Subjects button */
+.back-to-subjects-btn {
+   margin-top: 30px;
+   padding: 12px 25px;
+   background-color: var(--primary-yellow);
+   border: none;
+   border-radius: 30px;
+   color: var(--bee-black);
+   font-weight: 700;
+   font-size: 16px;
+   cursor: pointer;
+   display: inline-flex;
+   align-items: center;
+   transition: all 0.3s ease;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-to-subjects-btn i {
+   margin-right: 8px;
+}
+
+.back-to-subjects-btn:hover {
+   background-color: var(--dark-honey);
+   transform: translateY(-3px);
+   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+   .back-to-subjects-btn {
+       padding: 10px 20px;
+       font-size: 14px;
+   }
+}
