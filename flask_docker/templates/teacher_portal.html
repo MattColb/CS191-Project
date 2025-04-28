@@ -68,7 +68,7 @@
               <p>{{ sub_account.stu_username }}</p>
           </div>
           {% endfor %}
-          <div class="profile add-profile" id="add-profile">
+          <div class="profile add-profile" id="add-profile" style="display: none;">
               <div class="add-icon">+</div>
               <p>Add Kid</p>
           </div>
@@ -78,7 +78,7 @@
   </div>
   
   <!-- Popup Modal for Adding a New Subaccount -->
-  <div id="add-modal" class="modal">
+  <div id="add-modal" class="modal" style="display: none;">
       <form action="{{url_for('login_register.account')}}" method="POST">
           <div class="modal-content">
               <span id="close" class="close">&times;</span>

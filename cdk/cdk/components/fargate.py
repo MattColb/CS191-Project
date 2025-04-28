@@ -7,7 +7,7 @@ from aws_cdk import (
 )
 
 
-def fargate_creation(scope, connection_string, static_ip, vpc, verification_queue):
+def fargate_creation(scope, connection_string, static_ip, vpc, verification_queue, api_key):
     ecs_cluster = aws_ecs.Cluster(scope, "MyEcsCluster", vpc=vpc)
 
     # Create a security group for the Flask service
@@ -36,7 +36,8 @@ def fargate_creation(scope, connection_string, static_ip, vpc, verification_queu
             image=aws_ecs.ContainerImage.from_asset("flask_docker"),
             environment={
                 "MONGODB_CONN_STRING": connection_string,
-                "SQS_QUEUE_URL":verification_queue.queue_url
+                "SQS_QUEUE_URL":verification_queue.queue_url,
+                "SPELLING_API_KEY":api_key
             }
         ),
         public_load_balancer=True,
