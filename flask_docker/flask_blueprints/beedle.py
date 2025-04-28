@@ -39,7 +39,7 @@ def run_beedle():
 
         session["current_question"] = question_data
 
-        if question_data.get("subject") == "MATH":
+        if question_data.get("subject") == "MATH" or qtype == "Clock":
             if qtype == "Clock":
                 return render_template("math_questions.html", question=question_data['question'], redirect=new_redirect,
                                        start_dt=start_dt, qtype=qtype, time=question_data['answer'])
@@ -63,7 +63,7 @@ def run_beedle():
         current_date = datetime.date.today().isoformat()
         sub_account_info = session.get("sub_account_information", dict())
         qtype = question_data.get("category")
-        if question_data.get("subject") == "MATH":
+        if question_data.get("subject") == "MATH" or qtype == "Clock":
             math = MathFunctions(sub_account_info.get("score_in_math", 0), qtype)
             user_response(request, math)
             result = math.result
