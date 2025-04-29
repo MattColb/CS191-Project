@@ -45,7 +45,7 @@ def mongo_db_creation(scope:Construct, vpc):
         security_group=security_group,
         instance_type=aws_ec2.InstanceType("t2.micro"),
         machine_image=aws_ec2.MachineImage.latest_amazon_linux2023(),
-        vpc_subnets=aws_ec2.SubnetSelection(subnet_type=aws_ec2.SubnetType.PRIVATE_ISOLATED)
+        vpc_subnets=aws_ec2.SubnetSelection(subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS, one_per_az=True)
     )
 
     ssmPolicyDoc = aws_iam.PolicyDocument(

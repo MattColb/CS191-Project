@@ -47,10 +47,10 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         ]
     )
 
-    # Allow Lambda to send emails via SES
+    #Add to role to allow lambda to access VPC
     lambda_role.add_to_policy(
         iam.PolicyStatement(
-            actions=["ses:SendEmail", "ses:SendRawEmail"],
+            actions=["ec2:DescribeNetworkInterfaces", "ec2:CreateNetworkInterface", "ec2:DeleteNetworkInterface"],
             resources=["*"]
         )
     )
@@ -69,6 +69,10 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         },
         timeout=Duration.seconds(25),
         layers=[lambda_layer],
+        vpc=vpc,
+        vpc_subnets=aws_ec2.SubnetSelection(
+            subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
+        ),
         role=lambda_role
     )
 
@@ -90,6 +94,10 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         },
         timeout=Duration.seconds(25),
         layers=[lambda_layer],
+        vpc=vpc,
+        vpc_subnets=aws_ec2.SubnetSelection(
+            subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
+        ),
         role=lambda_role
     )
 
@@ -113,6 +121,10 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         },
         timeout=Duration.seconds(25),
         layers=[lambda_layer],
+        vpc=vpc,
+        vpc_subnets=aws_ec2.SubnetSelection(
+            subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
+        ),
         role=lambda_role
     )
 

@@ -25,16 +25,22 @@ class CdkStack(Stack):
         vpc = aws_ec2.Vpc(self, 
                           "MyVpc", 
                           max_azs=2,
-                          nat_gateways=1,
                           subnet_configuration=[
-                              aws_ec2.SubnetConfiguration(
-                                  name="Public",
-                                  subnet_type=aws_ec2.SubnetType.PUBLIC
-                              ),
-                              aws_ec2.SubnetConfiguration(
-                                  name="Isolated",
-                                  subnet_type=aws_ec2.SubnetType.PRIVATE_ISOLATED
-                              )
+                                aws_ec2.SubnetConfiguration(
+                                    name="Public",
+                                    subnet_type=aws_ec2.SubnetType.PUBLIC,
+                                    cidr_mask=24
+                                ),
+                                aws_ec2.SubnetConfiguration(
+                                    name="Private",
+                                    subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+                                    cidr_mask=24
+                                ),
+                                aws_ec2.SubnetConfiguration(
+                                    name="Isolated",
+                                    subnet_type=aws_ec2.SubnetType.PRIVATE_ISOLATED,
+                                    cidr_mask=24
+                                )
                           ]
                           )
 

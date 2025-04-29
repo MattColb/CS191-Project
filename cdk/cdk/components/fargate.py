@@ -3,24 +3,14 @@ from aws_cdk import (
     aws_ecs,
     aws_ec2,
     aws_iam,
-    CfnOutput,
-    aws_ecr_assets,
-    AssetHashType
+    CfnOutput
 )
 
+#CHANGED: Remove Nat, Added Task Subnet, added vpc in fargate service rather than is aws_ecs.cluster
 
-def fargate_creation(scope, connection_string, ip_address, vpc, verification_queue, api_key):
+
+def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queue, api_key):
     # Create a security group for the Flask service
-    flask_docker_asset = aws_ecr_assets.DockerImageAsset(
-        scope,
-        "FlaskDockerImage",
-        directory="flask_docker",
-        invalidation=aws_ecr_assets.DockerImageAssetInvalidationOptions(
-            build_args=False,
-            extra_hash=True
-        )
-    )
-
     flask_security_group = aws_ec2.SecurityGroup(
         scope, 
         "FlaskServiceSG",
@@ -31,27 +21,39 @@ def fargate_creation(scope, connection_string, ip_address, vpc, verification_que
 
     #If this breaks, change it back to any ipv4
     flask_security_group.add_ingress_rule(
-        peer=aws_ec2.Peer.ipv4(f"{ip_address}/32"),
+        peer=aws_ec2.Peer.ipv4(f"{private_ip}/32"),
+        connection=aws_ec2.Port.tcp(27017)
+    )
+
+    flask_security_group.add_egress_rule(
+        peer=aws_ec2.Peer.ipv4(f"{private_ip}/32"),
         connection=aws_ec2.Port.tcp(27017)
     )
 
     # Create a docker container from the flask_docker folder
+    
     load_balanced_fargate_service = aws_ecs_patterns.ApplicationLoadBalancedFargateService(
         scope, 
         "FargateService",
         cpu=256,
         memory_limit_mib=512,
         task_image_options=aws_ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
-            image=aws_ecs.ContainerImage.from_docker_image_asset(flask_docker_asset),
+            image=aws_ecs.ContainerImage.from_asset("flask_docker"),
             environment={
-                "MONGODB_CONN_STRING": connection_string,
-                "SQS_QUEUE_URL": verification_queue.queue_url,
-                "SPELLING_API_KEY": api_key
+                "MONGODB_CONN_STRING": mongo_connection,
+                "SQS_QUEUE_URL":verification_queue.queue_url,
+                "SPELLING_API_KEY":api_key
             }
         ),
         public_load_balancer=True,
+        security_groups=[flask_security_group],
+        task_subnets=aws_ec2.SubnetSelection(
+            subnet_type=aws_ec2.SubnetType.PUBLIC,
+            one_per_az=True
+        ),
         vpc=vpc,
-        security_groups=[flask_security_group]
+        assign_public_ip=True,
+        desired_count=1,
     )
 
     #Questionable, but could work
@@ -59,18 +61,6 @@ def fargate_creation(scope, connection_string, ip_address, vpc, verification_que
         aws_iam.PolicyStatement(
             actions=["sqs:SendMessage"],
             resources=[verification_queue.queue_arn]
-        )
-    )
-
-    load_balanced_fargate_service.task_definition.add_to_task_role_policy(
-        aws_iam.PolicyStatement(
-            actions=[
-                "ecr:GetAuthorizationToken",
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage"
-            ],
-            resources=["*"]
         )
     )
 
