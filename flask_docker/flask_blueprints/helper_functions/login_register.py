@@ -133,6 +133,10 @@ class LoginRegisterHandler:
         teacher_name = request.form.get("teacher_name").lower()
         student_account_id = request.form.get("student_id")
 
+        if None in [teacher_name, student_account_id]:
+            flash("Please enter all fields")
+            return redirect(url_for("login_register.account", _method="GET"))
+
         db_response = add_teacher(student_account_id, teacher_name)
         if db_response.success==True:
             return redirect(url_for("login_register.account", _method="GET"))

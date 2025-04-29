@@ -128,7 +128,6 @@ def sub_account():
         current_date = datetime.date.today().isoformat()
         beedle_questions = get_beedle_results(sub_account_id, current_date).questions
         completed_beedle = len(beedle_questions) == 5
-        print(beedle_questions, completed_beedle)
         number_correct = len([b for b in beedle_questions if b.get("answered_correctly") == True])
         return render_template("sub_account.html", completed_beedle=completed_beedle, number_correct=number_correct)
     

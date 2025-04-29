@@ -34,7 +34,6 @@ def spelling_page():
         if spelling_question.qtype == "Block":
             return render_template("block.html", scrambled_word = question_data["question"], start_dt=start_dt, 
                                    word=question_data["answer"], word_length=len(question_data["question"]), redirect=new_redirect)
-    
     if request.method == "POST":
         sub_account_info = session.get("sub_account_information", dict())
         spelling_question = SpellingFunctions(sub_account_info.get("score_in_spelling", 0))

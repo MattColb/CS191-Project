@@ -1,10 +1,10 @@
 import subprocess
 
 subprocess.run("pip install --upgrade ./buzzy_bee_db".split(" "))
-from flask import Flask
+from flask import Flask, send_from_directory
+import os
 app = Flask(__name__)
 app.secret_key="TestSecret"
-
 
 from flask_blueprints.login_register import login_register
 from flask_blueprints.math_funcs import math
@@ -22,6 +22,17 @@ app.register_blueprint(verification)
 app.register_blueprint(classes)
 app.register_blueprint(beedle)
 
+@app.route("/health")
+def health():
+    return "OK", 200
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),  # Use app.root_path to resolve the static directory
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)

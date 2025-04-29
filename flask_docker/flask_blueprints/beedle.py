@@ -100,7 +100,6 @@ def get_user_beedle():
     latest_question_id = ""
     if len(responses.questions) != 0:
         questions = responses.questions
-        print(questions)
         latest_question_id = questions[-1].get("question_id")
     return latest_question_id
 
