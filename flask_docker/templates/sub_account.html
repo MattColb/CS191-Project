@@ -12,22 +12,7 @@
           window.location.href = "{{ url_for('login_register.logout') }}";
       }
       
-      function goBackToAccount() {
-          // First, clear the sub_account_id from session
-          fetch('/clear_subaccount_session', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          })
-          .then(response => {
-              // Then redirect to account page
-              window.location.href = "{{ url_for('login_register.account') }}";
-          })
-          .catch(error => {
-              console.error('Error:', error);
-          });
-      }
+
   </script>
 </head>
 <body>
@@ -93,9 +78,7 @@
             {% endif %}
        </a>
       </div>
-      <button class="back-to-account-btn" onclick="goBackToAccount()">
-          <i class="fas fa-arrow-left"></i> Back to Accounts
-      </button>
+      
   </div>
 </body>
 </html>
