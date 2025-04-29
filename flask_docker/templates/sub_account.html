@@ -2,65 +2,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Sub Account</title>
-   <link rel="stylesheet" href="{{ url_for('static', filename='css/sub_account.css') }}">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-   <script>
-       function logout() {
-           window.location.href = "{{ url_for('login_register.logout') }}";
-       }
-   </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sub Account</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/sub_account.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script>
+      function logout() {
+          window.location.href = "{{ url_for('login_register.logout') }}";
+      }
+      
+      function goBackToAccount() {
+          // First, clear the sub_account_id from session
+          fetch('/clear_subaccount_session', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          })
+          .then(response => {
+              // Then redirect to account page
+              window.location.href = "{{ url_for('login_register.account') }}";
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+      }
+  </script>
 </head>
 <body>
 
-   <!-- Background Elements -->
-   <div class="honeycomb-bg"></div>
-   
-   <!-- Decorative Bee Elements -->
-   <div class="bee bee1"></div>
-   <div class="bee bee2"></div>
-   <div class="bee bee3"></div>
+  <!-- Background Elements -->
+  <div class="honeycomb-bg"></div>
+ 
+  <!-- Decorative Bee Elements -->
+  <div class="bee bee1"></div>
+  <div class="bee bee2"></div>
+  <div class="bee bee3"></div>
 
-   <nav class="navbar">
-       <div class="logo-container">
-           <span class="logo-icon">🐝</span>
-           <h1 class="logo">BuzzyBee</h1>
-       </div>
-       <div class="nav-right">
-           <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
-       </div>
-   </nav>
+  <nav class="navbar">
+      <div class="logo-container">
+          <span class="logo-icon">🐝</span>
+          <h1 class="logo">BuzzyBee</h1>
+      </div>
+      <div class="nav-right">
+          <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
+      </div>
+  </nav>
 
-   <div class="container">
-       <h1>Choose a Subject</h1>
-       <div class="game-options">
-           <a href="{{ url_for('math.math_page') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-calculator"></i>
-               </div>
-               <p>Math</p>
-           </a>
-           <a href="{{ url_for('spelling.spelling_page') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-spell-check"></i>
-               </div>
-               <p>Spelling</p>
-           </a>
-           <a href="{{ url_for('writing.writing_page') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-pencil-alt"></i>
-               </div>
-               <p>Writing</p>
-           </a>
-           <a href="{{ url_for('classes.get_student_content') }}" class="game-card">
-            <div class="game-card-icon">
-                <i class="fas fa-pencil-alt"></i>
-            </div>
-            <p>Content</p>
-        </a>
-            {% if beedle_complete == False %}
+  <div class="container">
+      <h1>Choose a Subject</h1>
+      <div class="game-options">
+          <a href="{{ url_for('math.math_page') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-calculator"></i>
+              </div>
+              <p>Math</p>
+          </a>
+          <a href="{{ url_for('spelling.spelling_page') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-spell-check"></i>
+              </div>
+              <p>Spelling</p>
+          </a>
+          <a href="{{ url_for('writing.writing_page') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-pencil-alt"></i>
+              </div>
+              <p>Writing</p>
+          </a>
+          <a href="{{ url_for('classes.get_student_content') }}" class="game-card">
+           <div class="game-card-icon">
+               <i class="fas fa-pencil-alt"></i>
+           </div>
+           <p>Content</p>
+            {% if completed_beedle == False %}
             <a href="{{ url_for('beedle.run_beedle') }}" class="game-card">
             <div class="game-card-icon">
                 <i class="fas fa-pencil-alt"></i>
@@ -75,7 +91,11 @@
                 <p>Beedle</p>
             </a>
             {% endif %}
-       </div>
-   </div>
+       </a>
+      </div>
+      <button class="back-to-account-btn" onclick="goBackToAccount()">
+          <i class="fas fa-arrow-left"></i> Back to Accounts
+      </button>
+  </div>
 </body>
 </html>

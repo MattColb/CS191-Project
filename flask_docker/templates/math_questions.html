@@ -37,6 +37,10 @@
        function logout() {
            window.location.href = "{{ url_for('login_register.logout') }}";
        }
+
+       function goBackToSubAccount() {
+          window.location.href = "/Math";
+        }
    </script>
 </head>
 <body>
@@ -89,6 +93,9 @@
                </form>
            </div>
        </div>
+       <button class="back-to-subjects-btn" onclick="goBackToSubAccount()">
+        <i class="fas fa-arrow-left"></i> Back to Math Games
+       </button>
    </div>
 </body>
 </html>

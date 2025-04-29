@@ -38,6 +38,10 @@
        function logout() {
            window.location.href = "{{ url_for('login_register.logout') }}";
        }
+
+       function goBackToSubAccount() {
+          window.location.href = "{{ url_for('login_register.sub_account') }}";
+        }
        
        // Function to handle letter selection and placement
        function selectLetter(letter, index) {
@@ -143,6 +147,9 @@
                </form>
            </div>
        </div>
+       <button class="back-to-subjects-btn" onclick="goBackToSubAccount()">
+        <i class="fas fa-arrow-left"></i> Back to Subjects
+       </button>
    </div>
 </body>
 </html>

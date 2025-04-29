@@ -146,7 +146,7 @@ def add_teacher(student_id, teacher_name):
         query = teachers.find({"username": teacher_name})
         list_query = query.to_list()
         if len(list_query) != 1:
-           DBResponse(success=False, message="That teacher doesn't exist")
+           return DBResponse(success=False, message="That teacher doesn't exist")
         teacher_id = list_query[0].get("teacher_id")
     
         students = database["Students"]

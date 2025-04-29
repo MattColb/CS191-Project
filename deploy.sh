@@ -1,0 +1,1 @@
+cdk deploy --app="${PWD}/cdk/app.py"

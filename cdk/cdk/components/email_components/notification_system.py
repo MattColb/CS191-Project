@@ -5,6 +5,7 @@ from aws_cdk import (
     aws_iam as iam,
     aws_events as events,
     aws_ses,
+    aws_ec2,
     aws_events_targets as targets,
     aws_lambda_event_sources as event_sources
 )
@@ -28,14 +29,10 @@ def create_lambda_layer(scope):
 
 # Used chatgpt to see how to move from SNS to a more individualized method in SES: https://chatgpt.com/share/67e4a548-4930-8013-8a80-5fd29127de63
 
-#Need to add one more thing to give web application access to the SQS queue
-def create_notification_system(scope, mongo_connection_string, verification_endpoint, verification_queue):
+#These have to be in a Private with NAT to interact with Email API
 
-    # SQS Queue that app puts into
-    # Sends out a verification email
-    # Once verified, they are added to the email weekly list (verification endpoint)
-    # A lambda is triggered once a week to get all of the emails and add them to a queue
-    # Another lambda injests from the queue, sending an email to the email in the queue
+#Need to add one more thing to give web application access to the SQS queue
+def create_notification_system(scope, mongo_connection_string, verification_endpoint, verification_queue, vpc):
 
     load_dotenv(os.path.join(os.path.dirname(__file__), '../../../../.env'))
 
@@ -50,10 +47,10 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         ]
     )
 
-    # Allow Lambda to send emails via SES
+    #Add to role to allow lambda to access VPC
     lambda_role.add_to_policy(
         iam.PolicyStatement(
-            actions=["ses:SendEmail", "ses:SendRawEmail"],
+            actions=["ec2:DescribeNetworkInterfaces", "ec2:CreateNetworkInterface", "ec2:DeleteNetworkInterface"],
             resources=["*"]
         )
     )
@@ -72,6 +69,10 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         },
         timeout=Duration.seconds(25),
         layers=[lambda_layer],
+        vpc=vpc,
+        vpc_subnets=aws_ec2.SubnetSelection(
+            subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
+        ),
         role=lambda_role
     )
 
@@ -93,6 +94,10 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         },
         timeout=Duration.seconds(25),
         layers=[lambda_layer],
+        vpc=vpc,
+        vpc_subnets=aws_ec2.SubnetSelection(
+            subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
+        ),
         role=lambda_role
     )
 
@@ -116,6 +121,10 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         },
         timeout=Duration.seconds(25),
         layers=[lambda_layer],
+        vpc=vpc,
+        vpc_subnets=aws_ec2.SubnetSelection(
+            subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS
+        ),
         role=lambda_role
     )
 

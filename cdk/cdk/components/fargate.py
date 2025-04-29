@@ -6,10 +6,10 @@ from aws_cdk import (
     CfnOutput
 )
 
+#CHANGED: Remove Nat, Added Task Subnet, added vpc in fargate service rather than is aws_ecs.cluster
 
-def fargate_creation(scope, connection_string, static_ip, vpc, verification_queue, api_key):
-    ecs_cluster = aws_ecs.Cluster(scope, "MyEcsCluster", vpc=vpc)
 
+def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queue, api_key, mongo_security_group):
     # Create a security group for the Flask service
     flask_security_group = aws_ec2.SecurityGroup(
         scope, 
@@ -19,29 +19,47 @@ def fargate_creation(scope, connection_string, static_ip, vpc, verification_queu
         allow_all_outbound=True
     )
 
+    mongo_security_group.add_ingress_rule(
+        peer=flask_security_group,  # Allow traffic from the Fargate service's security group
+        connection=aws_ec2.Port.tcp(27017),
+        description="Allow Fargate service to connect to MongoDB"
+    )
+
     #If this breaks, change it back to any ipv4
     flask_security_group.add_ingress_rule(
-        peer=aws_ec2.Peer.ipv4(f"{static_ip.attr_ip_address}/32"),
+        peer=aws_ec2.Peer.ipv4(f"{private_ip}/32"),
+        connection=aws_ec2.Port.tcp(27017)
+    )
+
+    flask_security_group.add_egress_rule(
+        peer=aws_ec2.Peer.ipv4(f"{private_ip}/32"),
         connection=aws_ec2.Port.tcp(27017)
     )
 
     # Create a docker container from the flask_docker folder
+    
     load_balanced_fargate_service = aws_ecs_patterns.ApplicationLoadBalancedFargateService(
         scope, 
         "FargateService",
         cpu=256,
-        cluster=ecs_cluster,
         memory_limit_mib=512,
         task_image_options=aws_ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
             image=aws_ecs.ContainerImage.from_asset("flask_docker"),
             environment={
-                "MONGODB_CONN_STRING": connection_string,
+                "MONGODB_CONN_STRING": mongo_connection,
                 "SQS_QUEUE_URL":verification_queue.queue_url,
                 "SPELLING_API_KEY":api_key
             }
         ),
         public_load_balancer=True,
-        security_groups=[flask_security_group]
+        security_groups=[flask_security_group],
+        task_subnets=aws_ec2.SubnetSelection(
+            subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+            one_per_az=True
+        ),
+        vpc=vpc,
+        assign_public_ip=True,
+        desired_count=1,
     )
 
     #Questionable, but could work

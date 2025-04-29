@@ -2,94 +2,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Math Games</title>
-   <link rel="stylesheet" href="{{ url_for('static', filename='css/math.css') }}">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-   <script>
-       function logout() {
-           window.location.href = "{{ url_for('login_register.logout') }}";
-       }
-   </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Games</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/math.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script>
+      function logout() {
+          window.location.href = "{{ url_for('login_register.logout') }}";
+      }
+      
+      function goBackToSubAccount() {
+          window.location.href = "{{ url_for('login_register.sub_account') }}";
+      }
+  </script>
 </head>
 <body>
-   <div class="honeycomb-bg"></div>
-   
-   <!-- Decorative Bee Elements -->
-   <div class="bee bee1"></div>
-   <div class="bee bee2"></div>
-   <div class="bee bee3"></div>
-   
-   <nav class="navbar">
-       <div class="logo-container">
-           <span class="logo-icon">🐝</span>
-           <h1 class="logo">BuzzyBee</h1>
-       </div>
-       <div class="nav-right">
-           <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
-       </div>
-   </nav>
-  
+  <div class="honeycomb-bg"></div>
+ 
+  <!-- Decorative Bee Elements -->
+  <div class="bee bee1"></div>
+  <div class="bee bee2"></div>
+  <div class="bee bee3"></div>
+ 
+  <nav class="navbar">
+      <div class="logo-container">
+          <span class="logo-icon">🐝</span>
+          <h1 class="logo">BuzzyBee</h1>
+      </div>
+      <div class="nav-right">
+          <i class="fas fa-sign-out-alt logout-icon" onclick="logout()"></i>
+      </div>
+  </nav>
    <div class="container">
-       <h1>Choose a Math Game</h1>
-       <div class="game-options">
-           <!-- Links for each math operation (Addition, Subtraction, etc.) -->
-           <a href="{{ url_for('math.math_questions', qtype='Addition') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-plus"></i>
-               </div>
-               <p>Addition</p>
-           </a>
-           <a href="{{ url_for('math.math_questions', qtype='Subtraction') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-minus"></i>
-               </div>
-               <p>Subtraction</p>
-           </a>
-           <a href="{{ url_for('math.math_questions', qtype='Multiplication') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-times"></i>
-               </div>
-               <p>Multiplication</p>
-           </a>
-           <a href="{{ url_for('math.math_questions', qtype='Division') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-divide"></i>
-               </div>
-               <p>Division</p>
-           </a>
-           <a href="{{ url_for('math.math_questions', qtype='Inequalities') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-not-equal"></i>
-               </div>
-               <p>Inequality</p>
-           </a>
-           <a href="{{ url_for('math.math_questions', qtype='Fraction') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-chart-pie"></i>
-               </div>
-               <p>Fractions</p>
-           </a>
-           <a href="{{ url_for('math.math_questions', qtype='Rounding') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-circle-notch"></i>
-               </div>
-               <p>Rounding</p>
-           </a>
-           <a href="{{ url_for('math.math_questions', qtype='Patterns') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-stream"></i>
-               </div>
-               <p>Identifying Patterns</p>
-           </a>
-           <a href="{{ url_for('math.math_questions', qtype='Clock') }}" class="game-card">
-               <div class="game-card-icon">
-                   <i class="fas fa-clock"></i>
-               </div>
-               <p>Reading Analog Clock</p>
-           </a>
-       </div>
-   </div>
+      <h1>Choose a Math Game</h1>
+      <div class="game-options">
+          <!-- Links for each math operation (Addition, Subtraction, etc.) -->
+          <a href="{{ url_for('math.math_questions', qtype='Addition') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-plus"></i>
+              </div>
+              <p>Addition</p>
+          </a>
+          <a href="{{ url_for('math.math_questions', qtype='Subtraction') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-minus"></i>
+              </div>
+              <p>Subtraction</p>
+          </a>
+          <a href="{{ url_for('math.math_questions', qtype='Multiplication') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-times"></i>
+              </div>
+              <p>Multiplication</p>
+          </a>
+          <a href="{{ url_for('math.math_questions', qtype='Division') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-divide"></i>
+              </div>
+              <p>Division</p>
+          </a>
+          <a href="{{ url_for('math.math_questions', qtype='Inequalities') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-not-equal"></i>
+              </div>
+              <p>Inequality</p>
+          </a>
+          <a href="{{ url_for('math.math_questions', qtype='Fraction') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-chart-pie"></i>
+              </div>
+              <p>Fractions</p>
+          </a>
+          <a href="{{ url_for('math.math_questions', qtype='Rounding') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-circle-notch"></i>
+              </div>
+              <p>Rounding</p>
+          </a>
+          <a href="{{ url_for('math.math_questions', qtype='Patterns') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-stream"></i>
+              </div>
+              <p>Identifying Patterns</p>
+          </a>
+          <a href="{{ url_for('math.math_questions', qtype='Clock') }}" class="game-card">
+              <div class="game-card-icon">
+                  <i class="fas fa-clock"></i>
+              </div>
+              <p>Reading Analog Clock</p>
+          </a>
+      </div>
+      <button class="back-to-subjects-btn" onclick="goBackToSubAccount()">
+          <i class="fas fa-arrow-left"></i> Back to Subjects
+      </button>
+  </div>
 </body>
 </html>
