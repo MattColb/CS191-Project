@@ -9,7 +9,7 @@ from aws_cdk import (
 #CHANGED: Remove Nat, Added Task Subnet, added vpc in fargate service rather than is aws_ecs.cluster
 
 
-def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queue, api_key):
+def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queue, api_key, mongo_security_group):
     # Create a security group for the Flask service
     flask_security_group = aws_ec2.SecurityGroup(
         scope, 
@@ -17,6 +17,12 @@ def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queu
         vpc=vpc,
         description="Allow MongoDB security group to access Flask service",
         allow_all_outbound=True
+    )
+
+    mongo_security_group.add_ingress_rule(
+        peer=flask_security_group,  # Allow traffic from the Fargate service's security group
+        connection=aws_ec2.Port.tcp(27017),
+        description="Allow Fargate service to connect to MongoDB"
     )
 
     #If this breaks, change it back to any ipv4
@@ -48,7 +54,7 @@ def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queu
         public_load_balancer=True,
         security_groups=[flask_security_group],
         task_subnets=aws_ec2.SubnetSelection(
-            subnet_type=aws_ec2.SubnetType.PUBLIC,
+            subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
             one_per_az=True
         ),
         vpc=vpc,

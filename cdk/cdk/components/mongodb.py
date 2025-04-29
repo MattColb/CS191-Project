@@ -121,4 +121,4 @@ EOF
 
     CfnOutput(scope, "MongoDBConnString", value=mongo_connection)
 
-    return ec2, mongo_connection, private_ip
+    return security_group, mongo_connection, private_ip

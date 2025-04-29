@@ -44,12 +44,12 @@ class CdkStack(Stack):
                           ]
                           )
 
-        ec2_instance, mongo_connection, private_ip = mongo_db_creation(self, vpc)
+        mongo_security_group, mongo_connection, private_ip = mongo_db_creation(self, vpc)
         
         verification_queue = aws_sqs.Queue(self, "BuzzyBeeVerificationQueue")
 
         api_key = os.getenv("SPELLING_API_KEY")
 
-        url = fargate_creation(self, mongo_connection, private_ip, vpc, verification_queue, api_key)
+        url = fargate_creation(self, mongo_connection, private_ip, vpc, verification_queue, api_key, mongo_security_group)
 
         components = create_notification_system(self, mongo_connection, url, verification_queue, vpc)
