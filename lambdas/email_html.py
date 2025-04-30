@@ -3,8 +3,8 @@ from PIL import Image
 import io
 import base64
 
-def create_image_bytes():
-    image = Image.open("./image.png")
+def create_image_bytes(image_bytes):
+    image = Image.open(image_bytes)
     sizes = image.size
     image = image.resize((int(sizes[0]*.6), int(sizes[1]*.6)))
     image_bytes = io.BytesIO()
@@ -14,7 +14,7 @@ def create_image_bytes():
     return image_final
 
 
-def create_html(current_week_info, student_name, previous_snapshot):
+def create_html(current_week_info, student_name, previous_snapshot, image_bytes):
     if previous_snapshot != None and len(previous_snapshot) != 0:
         previous_snapshot = previous_snapshot[0]
     else:
@@ -258,7 +258,7 @@ def create_html(current_week_info, student_name, previous_snapshot):
         <div class="student-name">{student_name}</div>
         
         <div class="snapshot-image">
-            <img src="{create_image_bytes()}" alt="{student_name}'s weekly progress showing their classroom activities and achievements in mathematics, spelling and grammar">
+            <img src="{create_image_bytes(image_bytes)}" alt="{student_name}'s weekly progress showing their classroom activities and achievements in mathematics, spelling and grammar">
         </div>
         
         <div class="subject-section">

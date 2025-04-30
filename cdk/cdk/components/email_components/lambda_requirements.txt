@@ -1,3 +1,4 @@
 pymongo==4.11.1
 sib-api-v3-sdk
 matplotlib
+python-dotenv

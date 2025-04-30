@@ -67,7 +67,7 @@ def handler(event, context):
             continue
 
         #Create graph to save in snapshot_graph.png
-        create_graph(snapshots)
+        image_str, image_bytes = create_graph(snapshots)
 
         main_user = get_main_account(user_id)
 
@@ -76,19 +76,12 @@ def handler(event, context):
         if main_user.get("weekly_updates"):
             email = main_user.get("email")
             #Send Email with information
-            send_email(email, weeks_information, student_name, previous_week_information)
+            send_email(email, weeks_information, student_name, previous_week_information, image_bytes, image_str)
 
-def create_image_bytes():
-    image = Image.open("./image.png")
-    image_bytes = io.BytesIO()
-    image.save(image_bytes, format="png")
-    image_str = base64.b64encode(image_bytes.getvalue()).decode("utf-8")
-    return image_str
-
-def send_email(email, current_week_info, student_name, previous_week_info):
+def send_email(email, current_week_info, student_name, previous_week_info,image_bytes, image_str):
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
-    email_content = create_html(current_week_info, student_name, previous_week_info)
+    email_content = create_html(current_week_info, student_name, previous_week_info, image_bytes)
 
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
         to=[{"email": email, "name": "User"}],
@@ -97,7 +90,7 @@ def send_email(email, current_week_info, student_name, previous_week_info):
         sender={"email": SENDER, "name": "Buzzy Bee"},
         attachment=[
             {
-                "content":create_image_bytes(),
+                "content":image_str,
                 "content_id":"bee_image",
                 "name":"bee_image.png"
             }
@@ -176,7 +169,10 @@ def create_graph(snapshots):
     plt.setp(ax.get_xticklabels(), rotation=45, ha='right')
 
     # Show the plot
-    plt.savefig("./image.png")
+    image_bytes = io.BytesIO()
+    plt.savefig(image_bytes, format="png")
+    image_str = base64.b64encode(image_bytes.getvalue()).decode("utf-8")
+    return image_str, image_bytes
 
 if __name__ == "__main__":
     event = {
