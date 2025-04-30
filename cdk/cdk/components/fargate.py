@@ -4,6 +4,7 @@ from aws_cdk import (
     aws_ec2,
     aws_iam,
     CfnOutput,
+    aws_elasticloadbalancingv2,
     Duration
 )
 
@@ -60,9 +61,8 @@ def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queu
         ),
         vpc=vpc,
         assign_public_ip=True,
-        health_check=aws_ecs.HealthCheck(
-            command=["CMD-SHELL", "exit 0"]
-        ),
+        health_check_grace_period=Duration.minutes(10),
+        min_healthy_percent=0,
         desired_count=1,
     )
 
