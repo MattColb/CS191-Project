@@ -15,10 +15,8 @@ load_dotenv()
 
 #Help from https://bobbyhadz.com/blog/aws-cdk-ec2-instance-example
 
-# Need: Proper connection
-
 def mongo_db_creation(scope:Construct, vpc):
-
+    #Create security group
     security_group = aws_ec2.SecurityGroup(
         scope,
         "MongoDB Security Group",
@@ -26,17 +24,20 @@ def mongo_db_creation(scope:Construct, vpc):
         allow_all_outbound=True,
     )
 
+    #Allow mongo traffic in
     security_group.add_ingress_rule(
         peer=aws_ec2.Peer.ipv4(vpc.vpc_cidr_block),
         connection=aws_ec2.Port.tcp(27017),
         description="Allow MongoDB access from within the VPC"
     )
 
+    #Create a role
     role = aws_iam.Role(
         scope, "MongoDBRole",
         assumed_by=aws_iam.ServicePrincipal("ec2.amazonaws.com")
     )
 
+    #Create EC2 instance
     ec2 = aws_ec2.Instance(
         scope,
         "MongoDB",
@@ -48,6 +49,7 @@ def mongo_db_creation(scope:Construct, vpc):
         vpc_subnets=aws_ec2.SubnetSelection(subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS, one_per_az=True)
     )
 
+    #Allow scripts to run on the instance
     ssmPolicyDoc = aws_iam.PolicyDocument(
         statements=[
             aws_iam.PolicyStatement(
@@ -65,11 +67,11 @@ def mongo_db_creation(scope:Construct, vpc):
         ]
     )
     
+    #Make a policy with the doc above
     ssmPolicy = aws_iam.Policy(
         scope, "MongoDBSSMPolicy",
         document=ssmPolicyDoc
     )
-
     role.attach_inline_policy(ssmPolicy)
 
     username = os.getenv("MONGODB_USER")
@@ -81,6 +83,7 @@ def mongo_db_creation(scope:Construct, vpc):
     #https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-amazon/
     #Used this conversation with copilot to also help: https://github.com/copilot/share/40555334-4be0-8841-8902-2a43a0f86886
     ec2.user_data.add_commands(
+        #Update and install mongo on the instance
         "sudo yum update -y",
         """sudo tee /etc/yum.repos.d/mongodb-org-8.0.repo <<EOF
 [mongodb-org-8.0]
@@ -97,8 +100,9 @@ EOF""",
         "sudo systemctl status mongod",
 
         "sudo chkconfig mongod on",
-
+# Let it rest for a little bit
         "sleep 20",
+        #Create a buzzy_bee_db database and a role that we can use with user that has username and password
 f"""
 mongosh <<EOF
 use buzzy_bee_db
@@ -117,6 +121,7 @@ EOF
     "sudo systemctl restart mongod",
     )
 
+    #Make connection string and output it
     mongo_connection = f"mongodb://{username}:{password}@{private_ip}/buzzy_bee_db"
 
     CfnOutput(scope, "MongoDBConnString", value=mongo_connection)

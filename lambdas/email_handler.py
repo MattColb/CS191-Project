@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 load_dotenv("../flask_docker/.env")
 load_dotenv("../.env")
 
+#Get the email key and mongo connection string
 API_KEY = os.getenv("EMAIL_API_KEY")
 if API_KEY != None:
     configuration = sib_api_v3_sdk.Configuration()
@@ -29,24 +30,25 @@ connection_string = os.getenv("MONGO_CONNECTION_STRING")
 
 
 def handler(event, context):
+    #Get the records
     records = event.get("Records")
     if not isinstance(records, list):
         return
 
     for record in records:
+        #Get information from the message
         message = record.get("body")
         verification_info = json.loads(message)
         user_id = verification_info.get("main_user_id")
         student_id = verification_info.get("student_id")
 
+        #Get the student information
         db_response = get_stu_account(student_id)
 
         if db_response.success == False:
             print(f"{student_id} was not able to be processed sucessfully")
             continue
         student = db_response.stu_account
-
-        
         student_name = student.get("name")
 
         #Get information (Mainly Question information)
@@ -78,6 +80,7 @@ def handler(event, context):
             #Send Email with information
             send_email(email, weeks_information, student_name, previous_week_information, image_bytes, image_str)
 
+#Send the email to the parent account
 def send_email(email, current_week_info, student_name, previous_week_info,image_bytes, image_str):
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
@@ -104,8 +107,7 @@ def send_email(email, current_week_info, student_name, previous_week_info,image_
         
     return
 
-
-
+#Create a snapshot of the current data
 def create_db_snapshot(student_information, question_information):
     question_information["student_account_id"] = student_information.get("student_id")
     question_information["timestamp_utc"] = datetime.isoformat(datetime.utcnow())
@@ -115,6 +117,7 @@ def create_db_snapshot(student_information, question_information):
     record_snapshot(question_information)
     return question_information
 
+#Get informations
 def get_question_information(student_id, previous_snapshot):
     subjects = ["MATH", "SPELLING"]
     summary_information = dict()
@@ -142,6 +145,7 @@ def get_question_information(student_id, previous_snapshot):
 
     return summary_information
 
+#Create a graph of the information
 def create_graph(snapshots):
     # Create the plot
     fig, ax = plt.subplots()

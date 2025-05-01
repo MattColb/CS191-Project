@@ -1,3 +1,4 @@
+#General subject class that has the 3 attributes and 5 methods needed
 class SubjectClass:
     def __init__(self, rating, qtype):
         self.rating=rating

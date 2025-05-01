@@ -9,6 +9,7 @@ import json
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '../../.env'))
 
+# Hash whatever is given
 def hash_password(password):
     new_password = ""
     new_password = sha256(str.encode(new_password)).hexdigest()
@@ -17,16 +18,18 @@ def hash_password(password):
 class LoginRegisterHandler:
     @staticmethod
     def login(request):
+        #Get user information
         username = request.form.get("username").lower()
         password = request.form.get("password")
         password = hash_password(password)
 
         account_type = request.form.get("account_type", "parent")
-
+        # If not all fields, make them try again
         if None in [username, password]:
             flash("Please enter all fields")
             return redirect(url_for("login_register.login", _method="GET"))
 
+        # If they are teacher, login as teacher
         if account_type == "teacher":
             response = teacher_login(username=username, password=password)
             session["user_id"] = response.teacher_id
@@ -35,6 +38,7 @@ class LoginRegisterHandler:
                 flash(response.message)
                 return redirect(url_for("login_register.login", _method="GET"))
             return redirect(url_for("login_register.teacher_account", _method="GET"))
+        #Otherwise login as parent
         else:
             response = parent_login(username=username, password=password)
             session["user_id"] = response.user_id
@@ -52,11 +56,13 @@ class LoginRegisterHandler:
         password = hash_password(password)
 
         account_type = request.form.get("account_type", "parent")
-        
+
+        #Need all fields
         if None in [email, username, password]:
             flash("Please enter all fields")
             return redirect(url_for("login_register.register", _method="GET"))
 
+        #Register as parent, teacher, or flash error
         if account_type == "teacher":
             response = teacher_register(username=username, email=email, password=password)
             session["user_id"] = response.teacher_id
@@ -76,10 +82,12 @@ class LoginRegisterHandler:
             sqs = boto3.client("sqs")
             message = json.dumps({"UserID": response.user_id, "email":email})
             sqs.send_message(QueueUrl=queue_url, MessageBody=message)
+        #Render appropriate page
         if account_type == "teacher":
             return redirect(url_for("login_register.teacher_account", _method="GET"))
         return redirect(url_for("login_register.account", _method="GET"))
 
+    #Logout user
     @staticmethod
     def logout(request):
         if session.get("user_id") != None:
@@ -88,6 +96,7 @@ class LoginRegisterHandler:
             session.pop("sub_account_id")
         return redirect("/")
 
+    #Create a sub account
     @staticmethod
     def post_sub_account(request):
         sub_account_name = request.form.get("sub_account_name").lower()
@@ -104,6 +113,7 @@ class LoginRegisterHandler:
             return redirect(url_for("login_register.account", _method="GET"))
         return redirect(url_for("login_register.account", _method="GET"))
 
+    #Delete a sub account
     @staticmethod
     def del_sub_account(sub_account_id):
         user_id = session.get("user_id")
@@ -114,6 +124,7 @@ class LoginRegisterHandler:
             flash(response.message)
         return redirect(url_for("login_register.account", _method="GET"))
 
+    #Update a sub account with information
     @staticmethod
     def put_sub_account(request, sub_account_id):
         user_id = session.get("user_id")
@@ -128,6 +139,7 @@ class LoginRegisterHandler:
             flash(response.message)
         return redirect(url_for("login_register.account", _method="GET"))
     
+    #Add a teacher to a student account
     @staticmethod
     def add_teacher_to_student_account(request):
         teacher_name = request.form.get("teacher_name").lower()

@@ -8,8 +8,6 @@ from aws_cdk import (
     Duration
 )
 
-#CHANGED: Remove Nat, Added Task Subnet, added vpc in fargate service rather than is aws_ecs.cluster
-
 
 def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queue, api_key, mongo_security_group):
     # Create a security group for the Flask service
@@ -21,18 +19,18 @@ def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queu
         allow_all_outbound=True
     )
 
+    #Add ingress rule for mongo group from flask group
     mongo_security_group.add_ingress_rule(
         peer=flask_security_group,  # Allow traffic from the Fargate service's security group
         connection=aws_ec2.Port.tcp(27017),
         description="Allow Fargate service to connect to MongoDB"
     )
 
-    #If this breaks, change it back to any ipv4
+    #Add flask group ingress and egress from the mongo ip
     flask_security_group.add_ingress_rule(
         peer=aws_ec2.Peer.ipv4(f"{private_ip}/32"),
         connection=aws_ec2.Port.tcp(27017)
     )
-
     flask_security_group.add_egress_rule(
         peer=aws_ec2.Peer.ipv4(f"{private_ip}/32"),
         connection=aws_ec2.Port.tcp(27017)
@@ -66,7 +64,7 @@ def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queu
         desired_count=1,
     )
 
-    #Questionable, but could work
+    #Add SQS to verification queue
     load_balanced_fargate_service.task_definition.add_to_task_role_policy(
         aws_iam.PolicyStatement(
             actions=["sqs:SendMessage"],

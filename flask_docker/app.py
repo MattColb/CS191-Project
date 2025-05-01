@@ -1,6 +1,4 @@
-import subprocess
-
-subprocess.run("pip install --upgrade ./buzzy_bee_db".split(" "))
+#Settin Up Flask App
 from flask import Flask, send_from_directory
 import os
 app = Flask(__name__)
@@ -14,6 +12,7 @@ from flask_blueprints.verification import verification
 from flask_blueprints.classes import classes
 from flask_blueprints.beedle import beedle
 
+#Registering Blueprints
 app.register_blueprint(login_register)
 app.register_blueprint(math)
 app.register_blueprint(spelling)
@@ -22,6 +21,7 @@ app.register_blueprint(verification)
 app.register_blueprint(classes)
 app.register_blueprint(beedle)
 
+#Adding paths for a basic health check and to route our favicon
 @app.route("/health")
 def health():
     return "OK", 200

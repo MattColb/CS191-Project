@@ -12,33 +12,34 @@ import random
 beedle = Blueprint('beedle', __name__,
                         template_folder='templates')
 
+#
 @beedle.route("/beedle", methods=["GET", "POST"])
 def run_beedle():
     if request.method == "GET":
+        #Get the questions
         session.pop("current_question", dict())
         pq = get_user_beedle()
         
         questions = get_beedle_questions()
 
+        #Get the latest question they haven't answered
         if pq in questions:
             pq_idx = questions.index(pq)
             questions = questions[pq_idx+1:]
 
+        #If they finished, exit
         if len(questions) == 0:
             return redirect(url_for("login_register.sub_account"))
 
+        #Get the question data
         current_question = questions[0]
-
         question_data = get_question(current_question).question
-
         qtype = question_data.get("category")
-
         start_dt = datetime.datetime.utcnow().isoformat()
-
         new_redirect = url_for("beedle.run_beedle", qtype=qtype, start_dt=start_dt)
-
         session["current_question"] = question_data
 
+        #If it's math, return a math question
         if question_data.get("subject") == "MATH" or qtype == "Clock":
             if qtype == "Clock":
                 return render_template("math_questions.html", question=question_data['question'], redirect=new_redirect,
@@ -46,7 +47,7 @@ def run_beedle():
 
             return render_template("math_questions.html", question=question_data['question'], redirect=new_redirect,
                                    start_dt=start_dt, qtype=qtype)
-
+        #If spelling, return spelling question
         if question_data.get("subject") == "SPELLING":
             if qtype == "Audio":
                 return render_template("spelling_base.html", word=question_data["question"], start_dt=start_dt, redirect=new_redirect)
@@ -57,31 +58,37 @@ def run_beedle():
         return question_data
 
     if request.method == "POST":
+        #Get the important information
         question_data = session.get("current_question")
         question_id = question_data.get("question_id")
         subaccount_id = session.get("sub_account_id")
         current_date = datetime.date.today().isoformat()
         sub_account_info = session.get("sub_account_information", dict())
         qtype = question_data.get("category")
+        #If math, check the math answer
         if question_data.get("subject") == "MATH" or qtype == "Clock":
             math = MathFunctions(sub_account_info.get("score_in_math", 0), qtype)
             user_response(request, math)
             result = math.result
+        #If spelling, check the spelling_question
         if question_data.get("subject") == "SPELLING":
             spelling_question = SpellingFunctions(sub_account_info.get("score_in_spelling", 0))
             user_response(request, spelling_question)
             result = spelling_question.result
             pass
 
+        #Add the response
         add_beedle_question_response(subaccount_id, current_date, question_id, result)
 
         return redirect(url_for("beedle.run_beedle"))
     
-
+#Get/Generate all beedle questions
 def get_beedle_questions():
+    #Get the date
     current_date = datetime.date.today().isoformat()
     db_response = get_questions(current_date)
 
+    #If beedle doesn't exist, generate them at 0,200,400,...
     if db_response.success == False:
         question_ids = []
         for i in range(5):
@@ -93,6 +100,7 @@ def get_beedle_questions():
     questions = db_response.questions
     return questions
 
+#Get the last question that the user answered
 def get_user_beedle():
     current_date = datetime.date.today().isoformat()
     subaccount_id = session.get("sub_account_id")
@@ -103,6 +111,7 @@ def get_user_beedle():
         latest_question_id = questions[-1].get("question_id")
     return latest_question_id
 
+#Generate a question based on the rating chosen randomly from spelling/math
 def generate_question(rating):
     question_func = random.choice([SpellingFunctions, MathFunctions])
     question_func = question_func(rating)

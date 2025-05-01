@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from flask import send_file
 import matplotlib.dates as mdates
 
+#Get a student progress graph based on class info
 def create_student_progress_graph(new_info):
     fig, ax = plt.subplots()
 

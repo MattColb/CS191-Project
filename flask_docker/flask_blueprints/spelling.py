@@ -24,8 +24,6 @@ def spelling_page():
         spelling_question = SpellingFunctions(sub_account_info.get("score_in_spelling", 0))
         question_data = get_best_question(spelling_question)
         start_dt = datetime.datetime.utcnow().isoformat()
-
-
         new_redirect = url_for('spelling.spelling_page', start_dt=start_dt)
 
         #Render the correct template
@@ -40,17 +38,21 @@ def spelling_page():
         return user_response(request, spelling_question)
 
 
+#Get the word to add audio to
 @spelling.route("/Spelling/Audio/<word>", methods=["GET"])
 @check_sub_account_not_exists
 def spelling_audio(word):
+    #Get an examples with the word and get the audio for it
     sentence = get_example(word)
     audio = gtts.gTTS(text=sentence, lang="en")
 
+    #Return the audio
     audio_io = BytesIO()
     audio.write_to_fp(audio_io)
     audio_io.seek(0)
     return Response(audio_io, mimetype="audio/mpeg")
 
+#Get an example of the word from the words api and return an example
 def get_example(word):
     load_dotenv(os.path.join(os.path.abspath(os.path.dirname(__file__)), "../.env"))
     api_key = os.getenv("SPELLING_API_KEY")

@@ -12,7 +12,7 @@ from .subject_class import SubjectClass
 def get_best_question(subject_class:SubjectClass):
     rng = random.random()
     response = None
-    rng=1
+    #Generate data
     if rng <= .25:
         #Try and select a question that they've missed
         previous_questions = get_student_account_responses(session.get("sub_account_id"), subject_class.subject).responses
@@ -28,14 +28,16 @@ def get_best_question(subject_class:SubjectClass):
                 continue
             question_response = get_question(question["question_id"]).question_id
             response = question_response
-    elif rng <= .75:
+    #Try and collect a question from the database
+    elif rng <= .5:
         response = subject_class.get_closest_questions()
+    #Otherwise generate a new question and add to session
     if response == None:
         response = subject_class.create_question()
     session["current_question"] = response
     return response
 
-
+#Get the percentile of time it took to create a question
 def get_percentile(question_id, user_time):
     response = get_question_responses(question_id)
     question_responses = response.responses
@@ -102,8 +104,8 @@ def user_response(request, subject_class):
         print("DEBUG: current_question is not available in session.")
         return subject_class.redirect()
 
+    #Get information
     seconds_taken = round((end_dt - start_dt).total_seconds(), 2)
-
     answer = question.get("answer")
     question_id = question.get("question_id")
     percentile = get_percentile(question_id, seconds_taken)
