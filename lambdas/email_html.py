@@ -267,7 +267,7 @@ def create_html(current_week_info, student_name, previous_snapshot, image_bytes)
                 Mathematics
             </div>
             <div class="subject-content">
-                <p><strong>{student_name} did well this week! they completed {current_week_info["MATH_answered"]} problems with {round(current_week_info["MATH_percentage"]*100, 2)}% accuracy, a {abs(round(math_percentage*100,2))}% {"increase" if math_percentage > 0 else "decrease"} in answering questions from last week.</strong></p>
+                <p><strong>{student_name} did well this week! they completed {current_week_info["MATH_answered"]} problems with {round(current_week_info["MATH_percentage"], 2)}% accuracy, a {abs(round(math_percentage*100,2))}% {"increase" if math_percentage > 0 else "decrease"} in answering questions from last week.</strong></p>
             </div>
         </div>
         
@@ -277,7 +277,7 @@ def create_html(current_week_info, student_name, previous_snapshot, image_bytes)
                 Spelling
             </div>
             <div class="subject-content">
-                <p><strong>{student_name} did well this week! they completed {current_week_info["SPELLING_answered"]} problems with {round(current_week_info["SPELLING_percentage"]*100, 2)}% accuracy, a {abs(round(spelling_percentage*100,2))}% {"increase" if spelling_percentage > 0 else "decrease"} in answering questions from last week.</strong></p>
+                <p><strong>{student_name} did well this week! they completed {current_week_info["SPELLING_answered"]} problems with {round(current_week_info["SPELLING_percentage"], 2)}% accuracy, a {abs(round(spelling_percentage*100,2))}% {"increase" if spelling_percentage > 0 else "decrease"} in answering questions from last week.</strong></p>
             </div>
         </div>
         
