@@ -3,7 +3,9 @@ from aws_cdk import (
     aws_ecs,
     aws_ec2,
     aws_iam,
-    CfnOutput
+    CfnOutput,
+    aws_elasticloadbalancingv2,
+    Duration
 )
 
 #CHANGED: Remove Nat, Added Task Subnet, added vpc in fargate service rather than is aws_ecs.cluster
@@ -59,6 +61,8 @@ def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queu
         ),
         vpc=vpc,
         assign_public_ip=True,
+        health_check_grace_period=Duration.minutes(10),
+        min_healthy_percent=0,
         desired_count=1,
     )
 

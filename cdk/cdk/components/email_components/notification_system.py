@@ -90,7 +90,7 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         code = aws_lambda.Code.from_asset(os.path.join(os.path.dirname(__file__), '../../../../lambdas')),
         environment = {
             "SQS_QUEUE_URL": email_queue.queue_url,
-            "MONGO_CONNECTION_STRING": mongo_connection_string
+            "MONGODB_CONN_STRING": mongo_connection_string
         },
         timeout=Duration.seconds(25),
         layers=[lambda_layer],
@@ -115,7 +115,7 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         handler = "email_handler.handler",
         code = aws_lambda.Code.from_asset(os.path.join(os.path.dirname(__file__), '../../../../lambdas')),
         environment = {
-            "MONGO_CONNECTION_STRING": mongo_connection_string,
+            "MONGODB_CONN_STRING": mongo_connection_string,
             "SENDER_EMAIL":sender_email,
             "EMAIL_API_KEY":email_api_key
         },
