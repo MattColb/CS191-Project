@@ -3,6 +3,8 @@ from aws_cdk import (
     aws_ecs,
     aws_ec2,
     aws_iam,
+    aws_route53 as route53,
+    aws_certificatemanager as acm,
     CfnOutput,
     aws_elasticloadbalancingv2,
     Duration
@@ -36,6 +38,19 @@ def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queu
         connection=aws_ec2.Port.tcp(27017)
     )
 
+    domain_name = "buzzy-bee.xyz"
+
+    hosted_zone = route53.HostedZone.from_lookup(
+        scope, "Route53HostedZone",
+        domain_name=domain_name
+    )
+
+    certificate = acm.Certificate(
+        scope, "SiteCertificate",
+        domain_name=domain_name,
+        validation=acm.CertificateValidation.from_dns(hosted_zone)
+    )
+
     # Create a docker container from the flask_docker folder
     
     load_balanced_fargate_service = aws_ecs_patterns.ApplicationLoadBalancedFargateService(
@@ -45,6 +60,7 @@ def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queu
         memory_limit_mib=512,
         task_image_options=aws_ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
             image=aws_ecs.ContainerImage.from_asset("flask_docker"),
+            container_port=80,
             environment={
                 "MONGODB_CONN_STRING": mongo_connection,
                 "SQS_QUEUE_URL":verification_queue.queue_url,
@@ -57,6 +73,10 @@ def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queu
             subnet_type=aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
             one_per_az=True
         ),
+        domain_name=domain_name,
+        domain_zone=hosted_zone,
+        certificate=certificate,
+        redirect_http=True,
         vpc=vpc,
         assign_public_ip=True,
         health_check_grace_period=Duration.minutes(10),
