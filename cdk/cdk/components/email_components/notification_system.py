@@ -29,16 +29,14 @@ def create_lambda_layer(scope):
 
 # Used chatgpt to see how to move from SNS to a more individualized method in SES: https://chatgpt.com/share/67e4a548-4930-8013-8a80-5fd29127de63
 
-#These have to be in a Private with NAT to interact with Email API
-
-#Need to add one more thing to give web application access to the SQS queue
 def create_notification_system(scope, mongo_connection_string, verification_endpoint, verification_queue, vpc):
-
     load_dotenv(os.path.join(os.path.dirname(__file__), '../../../../.env'))
 
+    #Get sender email and email API key
     sender_email = os.getenv("SENDER_EMAIL")
     email_api_key = os.getenv("EMAIL_API_KEY")
 
+    #Create lambda role
     lambda_role = iam.Role(
         scope, "EmailLambdaRole",
         assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
@@ -54,9 +52,10 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
             resources=["*"]
         )
     )
-
+    #Create a lambda layer with needed depnendencies
     lambda_layer = create_lambda_layer(scope)
 
+    #Create a lambda for verification
     verification_lambda = aws_lambda.Function(
         scope, "BBVerificationLambda",
         runtime= aws_lambda.Runtime.PYTHON_3_10,
@@ -76,13 +75,15 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         role=lambda_role
     )
 
+    #Connect to queue
     verification_queue.grant_consume_messages(verification_lambda)
-
     verification_event_source = event_sources.SqsEventSource(verification_queue)
     verification_lambda.add_event_source(verification_event_source)
 
+    #Create a weekly update queue
     email_queue = aws_sqs.Queue(scope, "BuzzyBee")
 
+    #Get all students to email with this lambda and put it in queue
     email_init_lambda = aws_lambda.Function(
         scope, "BBEmailInitLambda",
         runtime= aws_lambda.Runtime.PYTHON_3_10,
@@ -100,7 +101,7 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         ),
         role=lambda_role
     )
-
+    #Grant send message and send every friday at 5
     email_queue.grant_send_messages(email_init_lambda)
 
     rule = events.Rule(
@@ -109,6 +110,7 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
     )
     rule.add_target(targets.LambdaFunction(email_init_lambda))
 
+    #Process each of the students and send email to parents
     email_processing_lambda = aws_lambda.Function(
         scope, "BBEmailProcessQueue",
         runtime= aws_lambda.Runtime.PYTHON_3_10,
@@ -128,9 +130,9 @@ def create_notification_system(scope, mongo_connection_string, verification_endp
         role=lambda_role
     )
 
+    #Have it based on the queue and grant permission
     email_queue_event_source = event_sources.SqsEventSource(email_queue)
     email_processing_lambda.add_event_source(email_queue_event_source)
-
     email_queue.grant_consume_messages(email_processing_lambda)
 
     email_system_cdk_objects = cdk_object(verification_queue, verification_lambda, email_init_lambda, email_queue, email_processing_lambda)

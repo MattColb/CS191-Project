@@ -11,7 +11,8 @@ login_register = Blueprint('login_register', __name__,
                         template_folder='templates')
 
 
-# Can adjust as needed
+# If user trying to access something that needs user when they are not
+#redirect them to login
 def check_user_id_not_exists(func):
     @wraps(func)
     def check_id_exists(*kwargs, **args):
@@ -21,6 +22,8 @@ def check_user_id_not_exists(func):
         
     return check_id_exists
 
+#If user is verified with a user id:
+#restrict them from accessing the resource
 def check_user_id_exists(func):
     @wraps(func)
     def check_user_id_dne(*kwargs, **args):
@@ -31,6 +34,8 @@ def check_user_id_exists(func):
         return func(*kwargs, **args)
     return check_user_id_dne
 
+#If user is verified with a user id:
+#But is not verified with a student id, restrict them from accessing
 def check_sub_account_not_exists(func):
     @wraps(func)
     def check_sub_exists(*kwargs, **args):
@@ -41,6 +46,8 @@ def check_sub_account_not_exists(func):
         return func(*kwargs, **args)
     return check_sub_exists
 
+#User is verified with a student Id, so don't allow them to
+#access things that someone with a student id can't
 def check_sub_account_exists(func):
     @wraps(func)
     def check_sub_not_exists(*kwargs, **args):
@@ -49,6 +56,7 @@ def check_sub_account_exists(func):
         return func(*kwargs, **args)
     return check_sub_not_exists
 
+#Login User
 @login_register.route('/Login', methods=["GET", "POST"])
 @check_user_id_exists
 def login():
@@ -57,6 +65,7 @@ def login():
     if request.method == "POST":
         return LoginRegisterHandler.login(request)
 
+#Register home page
 @login_register.route('/Register', methods=["GET", "POST"])
 @check_user_id_exists
 def register():
@@ -65,17 +74,20 @@ def register():
     if request.method == "POST":
         return LoginRegisterHandler.register(request)
     
+#Logout a user
 @login_register.route("/Logout", methods=["GET"])
 @check_user_id_not_exists
 def logout():
     if request.method == "GET":
         return LoginRegisterHandler.logout(request)
 
+#Home page
 @login_register.route('/', methods=["GET"])
 def index():
     if request.method == "GET":
         return render_template("index.html")
 
+#Get the account for a parent
 @login_register.route("/Account", methods=["GET", "POST"])
 @check_sub_account_exists
 @check_user_id_not_exists
@@ -86,6 +98,7 @@ def account():
     if request.method == "POST":
         return LoginRegisterHandler.post_sub_account(request)
 
+#Get the page for a teacher based on user id
 @login_register.route("/Teacher", methods=["GET", "POST"])
 @check_sub_account_exists
 @check_user_id_not_exists
@@ -97,6 +110,7 @@ def teacher_account():
     if request.method == "POST":
         return LoginRegisterHandler.add_teacher_to_student_account(request)
 
+#Update or delete the student account
 @login_register.route("/Subaccount/<sub_account_id>", methods=["POST", "GET"])
 @check_user_id_not_exists
 @check_sub_account_exists
@@ -108,6 +122,7 @@ def update_sub_account(sub_account_id):
     if request.method == "GET":
         return LoginRegisterHandler.del_sub_account(sub_account_id)
 
+#Login to the student account
 @login_register.route("/Subaccount/Login/<sub_account_id>", methods=["GET"])
 @check_user_id_not_exists
 @check_sub_account_exists
@@ -118,13 +133,14 @@ def sub_account_login(sub_account_id):
         session["sub_account_information"] = sacct
         return redirect(url_for("login_register.sub_account"))
         
-
+#Acess the logged in student account
 @login_register.route("/Subaccount", methods=["GET"])
 @check_user_id_not_exists
 @check_sub_account_not_exists
 def sub_account():
     if request.method == "GET":
         sub_account_id = session.get("sub_account_id")
+        #Get information about the beedle to register information
         current_date = datetime.date.today().isoformat()
         beedle_questions = get_beedle_results(sub_account_id, current_date).questions
         completed_beedle = len(beedle_questions) == 5

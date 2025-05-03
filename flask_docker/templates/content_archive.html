@@ -6,8 +6,14 @@
   <title>Kids Accounts</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/sub_account.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/math_questions.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script>
+    function goBackToSubAccount() {
+        window.location.href = "/Teacher";
+    }
+  </script>
 </head>
 <body>
   <div class="honeycomb-bg"></div>
@@ -29,23 +35,20 @@
         <h1>Which Content?</h1>
         <div class="profiles" id="class-container">
             {% for c in content %}
+            <a href="{{url_for('classes.view_content', content_id=c['content_id'])}}">
             <div class="profile" onclick="goToContent('{{ c.content_id }}')">
                 <div class="profile-img-container">
                     <span class="profile-emoji" data-account-id="{{ c.content_id }}">⏳</span>
                 </div>
                 <p>{{ c.title }}</p>
             </div>
+            </a>
             {% endfor %}
-            {% if user_type == "teacher" %}
-            <div class="profile add-profile" id="add-class">
-                <div class="add-icon">+</div>
-                <p>Add Content</p>
-            </div>
-            {% endif %}
         </div>
-    </div>
-        <button class="back-to-account-btn">
-            <i class="fas fa-arrow-left"></i> Back to Accounts
+        <button class="back-to-subjects-btn" onclick="goBackToSubAccount()">
+            <i class="fas fa-arrow-left"></i> Back to Classes
         </button>
+    </div>
+    
 </body>
 </html>

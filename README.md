@@ -1,58 +1,34 @@
+## Buzzy Bee!
 
-# Welcome to your CDK Python project!
+This is the repository that contains the CS191 project of Matt, Lyra, and Zosia. This is our student education system that contains games for spelling and math, a daily game called the Beedle, parent account management, teachers with classes, content, and student management, and a notification system.
 
-This is a blank project for CDK development with Python.
+To run, create an environment and activate it using the following commands
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
-
-To manually create a virtualenv on MacOS and Linux:
-
+FOR MAC
 ```
-$ python3 -m venv .venv
+python -m venv .venv
+source .venv/bin/activate
 ```
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
-
+FOR WINDOWS
 ```
-$ source .venv/bin/activate
-```
-
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
-Once the virtualenv is activated, you can install the required dependencies.
+From there, you can deploy the CDK code if you have the npm package installed, and an AWS credentials file using
 
 ```
-$ pip install -r requirements.txt
+cdk deploy --app="{$PWD}/cdk/app.py"
 ```
 
-At this point you can now synthesize the CloudFormation template for this code.
-
+You will also want an .env file in the root of the folder:
 ```
-$ cdk synth
+MONGODB_USER=
+MONGODB_PASS=
+SENDER_EMAIL=
+EMAIL_API_KEY=
+SPELLING_API_KEY=
 ```
 
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+Where the EMAIL_API_KEY is from brevo and the SPELLING_API_KEY is from words api

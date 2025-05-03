@@ -4,6 +4,7 @@ from buzzy_bee_db.account.verification_notification import update_verification_a
 verification = Blueprint('verification', __name__,
                         template_folder='templates')
 
+#Verify the user from the user id in the link
 @verification.route("/verify", methods=["GET"])
 def verify():
     if request.method == "GET":
