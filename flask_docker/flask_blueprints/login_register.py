@@ -147,13 +147,4 @@ def sub_account():
         number_correct = len([b for b in beedle_questions if b.get("answered_correctly") == True])
         return render_template("sub_account.html", completed_beedle=completed_beedle, number_correct=number_correct)
     
-@login_register.route("/clear_subaccount_session", methods=["POST"])
-@check_user_id_not_exists
-def clear_sub_account_session():
-    if request.method == "POST":
-        # Clear the sub_account_id and related information from session
-        if "sub_account_id" in session:
-            session.pop("sub_account_id")
-        if "sub_account_information" in session:
-            session.pop("sub_account_information")
-        return {'success': True}, 200
+    

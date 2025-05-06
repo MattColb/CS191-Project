@@ -163,7 +163,9 @@
       </div>
   </div>
 
-  <img src="{{ url_for('classes.get_class_progress_visual', class_id=class_id) }}">
+  <div style="text-align: center; margin: 20px auto;">
+    <img src="{{ url_for('classes.get_class_progress_visual', class_id=class_id) }}" alt="Class Progress Visual">
+  </div>
 
   <script>
       function logout() {
