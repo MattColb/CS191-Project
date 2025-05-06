@@ -110,4 +110,4 @@ def fargate_creation(scope, mongo_connection, private_ip, vpc, verification_queu
 
     CfnOutput(scope, "LoadBalancerDNS", value=output)
 
-    return output
+    return domain_name
