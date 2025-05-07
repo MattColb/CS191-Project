@@ -4,6 +4,8 @@ import fractions
 from .generate_clock import draw_clock
 
 # Used this chat to help with generating questions: https://chatgpt.com/share/67cc8779-7414-8013-8da8-362b5d61bb42
+#The main thing that this helped with was to minimize the time spent on this process since it felt pretty repetitive,
+#as well as get a better range of questions that would fir for K-5
 
 def create_addition(rating):
     operands = []

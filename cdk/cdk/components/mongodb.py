@@ -11,6 +11,9 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+
+#The main thing that these helped with was what else I needed outside of the EC2 instance to 
+#make the ec2 instance run properly and connect up with my flask application in the VPC.
 #Help from: https://medium.com/@davidnsoesie1/deploying-and-configuring-mongodb-on-ec2-with-aws-cdk-2530d8d5ec17
 
 #Help from https://bobbyhadz.com/blog/aws-cdk-ec2-instance-example
@@ -81,7 +84,7 @@ def mongo_db_creation(scope:Construct, vpc):
 
     # User Data to install MongoDB
     #https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-amazon/
-    #Used this conversation with copilot to also help: https://github.com/copilot/share/40555334-4be0-8841-8902-2a43a0f86886
+    #The
     ec2.user_data.add_commands(
         #Update and install mongo on the instance
         "sudo yum update -y",

@@ -51,6 +51,9 @@ def get_percentile(question_id, user_time):
 
 
 # https://chatgpt.com/share/67cc8779-7414-8013-8da8-362b5d61bb42 (Using ChatGPT to think up a little bit of a somewhat decent updating algorithm)
+#The main thing that I used this chat for was helping to come up with an idea of how I could calculate rating adjustments
+#Once I found out about the idea of generating a probability that the user was correct and a function that could do that,
+#I was able to assign some arbitrary numbers to make users need to answer about 80% of questions correctly to grow
 def update_ratings(question_id, percentile, answered_correctly, question, subject_class):
     account_id = session.get("user_id")
     sub_account_id = session.get("sub_account_id")
