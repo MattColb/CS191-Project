@@ -7,7 +7,8 @@ import os
 
 load_dotenv()
 
-
+#This mostly uses the same code as the ec2 instance in the cdk folder, just in a lightsail instance that is public so it can be a little cheaper
+#That we would also have public access to for testing development
 def create_mongo_public(scope):
 
     username = os.getenv("MONGODB_USER")

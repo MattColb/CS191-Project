@@ -15,6 +15,8 @@ from dotenv import load_dotenv
 import subprocess
 
 # Ref: https://cloudbytes.dev/aws-academy/using-lambda-layers-with-aws-cdk-in-python
+#The main thing that this helped with is how I can get dependencies on the lambdas
+#This especially was helpful for the more custom pip packages that I wanted to create, such as our buzzy_bee_db package
 def create_lambda_layer(scope):
     requirements_file = os.path.join(os.path.dirname(__file__), './lambda_requirements.txt')
     output_dir = ".build/app"
@@ -28,6 +30,8 @@ def create_lambda_layer(scope):
     return aws_lambda.LayerVersion(scope, "Lambda DB Layer", code=layer_code)
 
 # Used chatgpt to see how to move from SNS to a more individualized method in SES: https://chatgpt.com/share/67e4a548-4930-8013-8a80-5fd29127de63
+# I mainly used this to find other services that would provide me with an email API, since I would need to adjust my 
+#aws account to get access to the SES
 
 def create_notification_system(scope, mongo_connection_string, verification_endpoint, verification_queue, vpc):
     load_dotenv(os.path.join(os.path.dirname(__file__), '../../../../.env'))
